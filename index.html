@@ -14,14 +14,11 @@
         }
 
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background-color: var(--cs-bg);
             color: var(--cs-text);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex; justify-content: center; align-items: center;
             height: 100vh;
             background-image: radial-gradient(circle at top right, #0a1a14 0%, var(--cs-bg) 60%);
         }
@@ -29,90 +26,29 @@
         .login-container {
             background: var(--cs-panel);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             padding: 40px 30px;
             border-radius: 16px;
             border: 1px solid var(--cs-border);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-            width: 85%;
-            max-width: 340px;
+            width: 85%; max-width: 340px;
             text-align: center;
         }
 
-        .logo {
-            font-size: 34px;
-            font-weight: 800;
-            color: var(--cs-neon);
-            margin-bottom: 35px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            line-height: 1.1;
-        }
+        .logo { font-size: 34px; font-weight: 800; color: var(--cs-neon); margin-bottom: 35px; text-transform: uppercase; line-height: 1.1; }
+        .logo span { color: var(--cs-text); font-weight: 300; font-size: 18px; letter-spacing: 3px; }
 
-        .logo span {
-            color: var(--cs-text);
-            font-weight: 300;
-            font-size: 18px;
-            letter-spacing: 3px;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 11px;
-            color: #888;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-size: 11px; color: #888; margin-bottom: 6px; text-transform: uppercase; }
         .input-group input {
-            width: 100%;
-            padding: 14px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid #222;
-            border-radius: 8px;
-            color: white;
-            font-size: 15px;
-            box-sizing: border-box;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .input-group input:focus {
-            border-color: var(--cs-neon);
-            box-shadow: 0 0 8px rgba(0, 255, 136, 0.2);
+            width: 100%; padding: 14px; background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #222; border-radius: 8px; color: white; outline: none; box-sizing: border-box;
         }
 
         .btn-login {
-            width: 100%;
-            padding: 14px;
-            margin-top: 10px;
-            background: var(--cs-neon);
-            color: #070a0b;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%; padding: 14px; background: var(--cs-neon); color: #070a0b;
+            border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;
         }
 
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
-        }
-
-        .footer-text {
-            margin-top: 25px;
-            font-size: 12px;
-            color: #555;
-        }
+        #message { margin-top: 15px; font-size: 13px; color: #ff4444; min-height: 20px; }
     </style>
 </head>
 <body>
@@ -122,38 +58,58 @@
         
         <form id="loginForm">
             <div class="input-group">
-                <label for="username">Usuário</label>
-                <input type="text" id="username" required placeholder="Seu acesso" autocomplete="off">
+                <label>Usuário</label>
+                <input type="text" id="username" required placeholder="Seu acesso">
             </div>
             
             <div class="input-group">
-                <label for="password">Senha</label>
+                <label>Senha</label>
                 <input type="password" id="password" required placeholder="Sua senha">
             </div>
             
-            <button type="submit" class="btn-login">Entrar</button>
+            <button type="submit" class="btn-login" id="loginBtn">Entrar</button>
+            <div id="message"></div>
         </form>
 
-        <div class="footer-text">Ambiente Seguro • v1.0</div>
+        <div class="footer-text" style="margin-top:20px; font-size:10px; color:#444;">Play Consysencia Pro • v1.1</div>
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault(); 
-            
-            const btn = document.querySelector('.btn-login');
-            const originalText = btn.textContent;
-            
-            btn.textContent = 'Autenticando...';
-            btn.style.opacity = '0.8';
-            
-            setTimeout(() => {
-                alert('Layout Play Consysencia pronto! O próximo passo é ligar este botão ao nosso motor.');
-                btn.textContent = originalText;
-                btn.style.opacity = '1';
-            }, 1000);
+        const API_URL = 'https://api.consysencia.com'; // Seu servidor no Render
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const btn = document.getElementById('loginBtn');
+            const msg = document.getElementById('message');
+
+            btn.textContent = 'Verificando...';
+            btn.disabled = true;
+            msg.textContent = '';
+
+            try {
+                // Testa o login direto pelo seu proxy seguro
+                const response = await fetch(`${API_URL}/catalog?action=get_live_categories`, {
+                    headers: { 'Authorization': `Basic ${btoa(user + ':' + pass)}` }
+                });
+
+                if (response.ok) {
+                    btn.style.background = '#ffffff';
+                    btn.textContent = 'Sucesso!';
+                    msg.style.color = '#00ff88';
+                    msg.textContent = 'Acesso liberado. Montando catálogo...';
+                    // Próxima fase: Redirecionar para o Player
+                } else {
+                    throw new Error('Usuário ou senha incorretos');
+                }
+            } catch (error) {
+                msg.style.color = '#ff4444';
+                msg.textContent = error.message;
+                btn.textContent = 'Entrar';
+                btn.disabled = false;
+            }
         });
     </script>
-
 </body>
 </html>
