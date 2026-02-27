@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Consysencia | Login</title>
+    <style>
+        :root {
+            --cs-bg: #070a0b;
+            --cs-neon: #00ff88;
+            --cs-panel: rgba(255, 255, 255, 0.03);
+            --cs-border: rgba(0, 255, 136, 0.2);
+            --cs-text: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--cs-bg);
+            color: var(--cs-text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: radial-gradient(circle at top right, #0a1a14 0%, var(--cs-bg) 60%);
+        }
+
+        .login-container {
+            background: var(--cs-panel);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 40px 30px;
+            border-radius: 16px;
+            border: 1px solid var(--cs-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            width: 85%;
+            max-width: 340px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 34px;
+            font-weight: 800;
+            color: var(--cs-neon);
+            margin-bottom: 35px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1.1;
+        }
+
+        .logo span {
+            color: var(--cs-text);
+            font-weight: 300;
+            font-size: 18px;
+            letter-spacing: 3px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #222;
+            border-radius: 8px;
+            color: white;
+            font-size: 15px;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: var(--cs-neon);
+            box-shadow: 0 0 8px rgba(0, 255, 136, 0.2);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            background: var(--cs-neon);
+            color: #070a0b;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .footer-text {
+            margin-top: 25px;
+            font-size: 12px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="logo">Play<br><span>Consysencia</span></div>
+        
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="username">Usuário</label>
+                <input type="text" id="username" required placeholder="Seu acesso" autocomplete="off">
+            </div>
+            
+            <div class="input-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" required placeholder="Sua senha">
+            </div>
+            
+            <button type="submit" class="btn-login">Entrar</button>
+        </form>
+
+        <div class="footer-text">Ambiente Seguro • v1.0</div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); 
+            
+            const btn = document.querySelector('.btn-login');
+            const originalText = btn.textContent;
+            
+            btn.textContent = 'Autenticando...';
+            btn.style.opacity = '0.8';
+            
+            setTimeout(() => {
+                alert('Layout Play Consysencia pronto! O próximo passo é ligar este botão ao nosso motor.');
+                btn.textContent = originalText;
+                btn.style.opacity = '1';
+            }, 1000);
+        });
+    </script>
+
+</body>
+</html>
