@@ -2,164 +2,166 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Consysencia | WebPlayer</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consysencia - Streaming Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-        :root {
-            --theme-color: #00ff88;
-            --bg-main: #070a0b;
-            --bg-card: #111518;
-        }
         body {
-            background-color: var(--bg-main);
-            color: #fff;
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
+            background-color: #0b0c10;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
-        .form-control {
-            background-color: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #fff;
-            padding: 15px;
+        .navbar-brand {
+            font-weight: 700;
+            color: #66fcf1 !important;
+            letter-spacing: 1px;
         }
-        .form-control:focus {
-            background-color: rgba(255,255,255,0.1);
-            color: #fff;
-            box-shadow: 0 0 0 0.25rem rgba(0, 255, 136, 0.25);
-            border-color: var(--theme-color);
+        .hero-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
         }
-        .btn-theme {
-            background-color: var(--theme-color);
-            color: #000;
-            font-weight: 800;
-            padding: 14px;
+        .btn-google {
+            background-color: #ffffff;
+            color: #000000;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 12px 24px;
             transition: 0.3s;
         }
-        .btn-theme:hover {
-            background-color: #00cc6a;
-            color: #000;
+        .btn-google:hover {
+            background-color: #f1f1f1;
             transform: translateY(-2px);
         }
-        .hub-card {
-            background-color: var(--bg-card);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 40px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
-            display: block;
-            text-decoration: none;
-            color: #fff;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        .alert-box {
+            display: none;
+            margin-top: 20px;
         }
-        .hub-card:hover {
-            border-color: var(--theme-color);
-            transform: translateY(-5px);
-            color: #fff;
-            background-color: rgba(255,255,255,0.05);
+        .player-container {
+            display: none;
+            background: #1f2833;
+            border-radius: 12px;
+            padding: 40px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .hub-card i {
-            font-size: 3.5rem;
-            margin-bottom: 15px;
-            transition: 0.3s;
-        }
-        .hc-live:hover i { color: var(--theme-color); }
-        .hc-movie:hover i { color: #00A8E1; }
-        .hc-series:hover i { color: #E50914; }
     </style>
 </head>
 <body>
 
-    <div id="loginView" class="container min-vh-100 d-flex align-items-center justify-content-center">
-        <div class="col-12 col-md-8 col-lg-5">
-            <div class="card bg-transparent border-0">
-                <div class="card-body p-4 p-md-5" style="background-color: var(--bg-card); border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05);">
-                    <div class="text-center mb-5">
-                        <h2 class="fw-black mb-1" style="font-weight: 900; letter-spacing: 1px;"><span style="color: var(--theme-color);">●</span> CONSYSENCIA</h2>
-                        <p class="text-secondary">Acesso ao WebPlayer Premium</p>
-                    </div>
-                    <form onsubmit="event.preventDefault(); doLogin();">
-                        <div class="mb-4">
-                            <label class="form-label text-secondary fw-bold">Usuário</label>
-                            <input type="text" id="userInp" class="form-control rounded-3" placeholder="Seu usuário" autocomplete="off" required>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label text-secondary fw-bold">Senha</label>
-                            <input type="password" id="passInp" class="form-control rounded-3" placeholder="Sua senha" required>
-                        </div>
-                        <div class="d-grid mt-5">
-                            <button type="submit" class="btn btn-theme rounded-3 fs-5">Entrar</button>
-                        </div>
-                    </form>
-                </div>
+    <nav class="navbar navbar-dark bg-dark pt-3 pb-3">
+        <div class="container">
+            <a class="navbar-brand" href="#">CONSYSENCIA</a>
+            <div id="user-info" class="d-none">
+                <span id="user-name" class="me-3"></span>
+                <button onclick="logout()" class="btn btn-sm btn-outline-danger">Sair</button>
             </div>
         </div>
-    </div>
+    </nav>
 
-    <div id="hubView" class="container min-vh-100 py-5" style="display: none;">
-        <div class="text-center mb-5 mt-4">
-            <h2 class="fw-black" style="font-weight: 900;"><span style="color: var(--theme-color);">●</span> CONSYSENCIA</h2>
-            <p class="text-secondary fs-5">O que você deseja assistir?</p>
-        </div>
+    <div class="container hero-section flex-column">
         
-        <div class="row g-4 justify-content-center mx-auto" style="max-width: 900px;">
-            <div class="col-6 col-md-4">
-                <a href="#" onclick="goTo('canais.html')" class="hub-card hc-live">
-                    <i class="fa-solid fa-tv"></i>
-                    <h5 class="fw-bold mb-0">TV ao Vivo</h5>
-                </a>
+        <div id="alert-container" class="w-100 max-w-md alert-box">
             </div>
-            <div class="col-6 col-md-4">
-                <a href="#" onclick="goTo('filmes.html')" class="hub-card hc-movie">
-                    <i class="fa-solid fa-film"></i>
-                    <h5 class="fw-bold mb-0">Filmes</h5>
-                </a>
-            </div>
-            <div class="col-6 col-md-4">
-                <a href="#" onclick="goTo('series.html')" class="hub-card hc-series">
-                    <i class="fa-solid fa-layer-group"></i>
-                    <h5 class="fw-bold mb-0">Séries</h5>
-                </a>
-            </div>
+
+        <div id="login-section">
+            <h1 class="mb-4 fw-bold">Seu Cinema Particular.</h1>
+            <p class="text-muted mb-4">Acesse agora e ganhe 4 horas de pacote completo grátis.</p>
+            <button onclick="loginComGoogle()" class="btn btn-google shadow-lg">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" width="20" class="me-2">
+                Entrar com Google
+            </button>
         </div>
-        
-        <div class="text-center mt-5 pt-4">
-            <button onclick="doLogout()" class="btn btn-outline-danger px-4 py-2 rounded-3 fw-bold"><i class="fa-solid fa-power-off me-2"></i>Sair da Conta</button>
-        </div>
+
+        <div id="player-section" class="player-container w-100">
+            <h3 class="fw-bold mb-3 text-info">Bem-vindo de volta!</h3>
+            <p>Carregando seu catálogo...</p>
+            <p class="text-muted small">Suas credenciais IPTV estão sendo processadas pelo sistema Consysencia.</p>
+            </div>
     </div>
 
     <script>
-        let u = localStorage.getItem('cs_user');
-        let p = localStorage.getItem('cs_pass');
+        // 1. COLOQUE SUAS CHAVES DO SUPABASE AQUI
+        // Você pega isso no painel do Supabase em: Settings -> API
+        const SUPABASE_URL = 'SUA_URL_DO_SUPABASE_AQUI';
+        const SUPABASE_ANON_KEY = 'SUA_ANON_KEY_DO_SUPABASE_AQUI';
 
-        if (u && p) {
-            document.getElementById('loginView').style.display = 'none';
-            document.getElementById('hubView').style.display = 'block';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // 2. Verifica se o usuário já está logado ao abrir a página
+        async function checarSessao() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                mostrarPlayer(session.user);
+                buscarAlertas(session.user.id);
+            }
         }
 
-        function doLogin() {
-            u = document.getElementById('userInp').value.trim();
-            p = document.getElementById('passInp').value.trim();
-            localStorage.setItem('cs_user', u);
-            localStorage.setItem('cs_pass', p);
-            document.getElementById('loginView').style.display = 'none';
-            document.getElementById('hubView').style.display = 'block';
+        // 3. Função de Login Mágico com Google
+        async function loginComGoogle() {
+            const { data, error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+            });
+            if (error) alert("Erro ao fazer login: " + error.message);
         }
 
-        function doLogout() {
-            localStorage.clear();
+        // 4. Função para sair (Logout)
+        async function logout() {
+            await supabase.auth.signOut();
             window.location.reload();
         }
 
-        function goTo(page) {
-            window.location.href = page + '?u=' + encodeURIComponent(u) + '&p=' + encodeURIComponent(p);
+        // 5. Troca a tela de Login pela tela do Player
+        function mostrarPlayer(user) {
+            document.getElementById('login-section').classList.add('d-none');
+            document.getElementById('player-section').style.display = 'block';
+            document.getElementById('user-info').classList.remove('d-none');
+            document.getElementById('user-name').innerText = "Olá, " + (user.user_metadata.full_name || 'Cliente');
         }
+
+        // 6. O "Caçador de Alertas" (Substitui o Zap)
+        async function buscarAlertas(userId) {
+            const { data, error } = await supabase
+                .from('alertas_player')
+                .select('*')
+                .eq('user_id', userId)
+                .eq('exibida', false);
+
+            if (data && data.length > 0) {
+                const container = document.getElementById('alert-container');
+                container.style.display = 'block';
+                
+                data.forEach(alerta => {
+                    // Monta o banner do alerta na tela
+                    let cor = alerta.tipo === 'sucesso' ? 'success' : (alerta.tipo === 'vencimento' ? 'warning' : 'info');
+                    container.innerHTML += `
+                        <div class="alert alert-${cor} alert-dismissible fade show text-start" role="alert">
+                            <strong>${alerta.titulo}</strong><br>
+                            ${alerta.mensagem}
+                            ${alerta.link_acao ? `<br><a href="${alerta.link_acao}" class="btn btn-sm btn-dark mt-2">Renovar Agora</a>` : ''}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="marcarAlertaLido('${alerta.id}')"></button>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        // Marca que o cliente já viu o aviso para não encher a tela dele de novo
+        async function marcarAlertaLido(alertaId) {
+            await supabase.from('alertas_player').update({ exibida: true }).eq('id', alertaId);
+        }
+
+        // Roda a checagem de sessão assim que o site carrega
+        checarSessao();
     </script>
 </body>
 </html>
