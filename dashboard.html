@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Play Consysencia | V16 Studio</title>
+  <title>Play Consysencia | V17 Hub</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -18,104 +18,156 @@
     body[data-theme="netflix"]{ --bg:#141414; --accent:#E50914; }
     body[data-theme="prime"]{ --bg:#0f171e; --accent:#00A8E1; }
     body[data-theme="disney"]{ --bg:#1a1d29; --accent:#0063e5; }
+    body[data-theme="hbomax"]{ --bg:#0b0616; --accent:#8b5cf6; }
+    body[data-theme="globoplay"]{ --bg:#0b0b0f; --accent:#ff3d00; }
 
     * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow: hidden; transition: background 0.4s ease; }
 
-    /* LAYOUT BASE */
-    #app { display: flex; height: 100vh; width: 100vw; overflow: hidden; position: relative; }
+    /* =========================================================
+       1. TELA HUB (MENU PRINCIPAL GIGANTE)
+       ========================================================= */
+    #hubView { display: none; height: 100vh; width: 100vw; overflow-y: auto; padding: 40px 20px; background: radial-gradient(circle at top, rgba(0,255,136,0.1), var(--bg)); }
+    .hub-header { text-align: center; margin-bottom: 40px; }
+    .hub-header h1 { font-size: 2.5rem; font-weight: 900; letter-spacing: 2px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+    .hub-header h1 span { color: var(--accent); }
+    .hub-header p { color: rgba(255,255,255,0.6); margin-top: 10px; font-size: 1.1rem; }
+    
+    .hub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; max-width: 900px; margin: 0 auto; }
+    
+    .hub-card { background: #111; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 30px 15px; text-align: center; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .hub-card:hover { transform: translateY(-5px) scale(1.05); border-color: var(--accent); background: rgba(255,255,255,0.05); }
+    .hub-card i { font-size: 3rem; color: var(--accent); }
+    .hub-card span { font-weight: 900; font-size: 1.1rem; }
+
+    /* CORES ESPECÍFICAS DOS CARDS DO HUB */
+    .hc-netflix:hover { border-color: #E50914; } .hc-netflix i { color: #E50914; }
+    .hc-disney:hover { border-color: #0063e5; } .hc-disney i { color: #0063e5; }
+    .hc-prime:hover { border-color: #00A8E1; } .hc-prime i { color: #00A8E1; }
+    .hc-hbo:hover { border-color: #8b5cf6; } .hc-hbo i { color: #8b5cf6; }
+    .hc-globo:hover { border-color: #ff3d00; } .hc-globo i { color: #ff3d00; }
+
+    /* =========================================================
+       2. DASHBOARD (O APP ESPECÍFICO)
+       ========================================================= */
+    #appView { display: none; height: 100vh; width: 100vw; position: relative; }
     
     #sidebar { width: 260px; height: 100vh; background: var(--panelBg); padding: 20px 15px; position: absolute; z-index: 100; left: -100%; transition: left 0.3s ease; backdrop-filter: blur(10px); border-right: 1px solid rgba(255,255,255,0.05); }
     #sidebar.open { left: 0; }
     
-    .brand { display:flex; align-items:center; gap:10px; padding: 10px; margin-bottom: 20px; font-weight: 900; font-size: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .brand span { color: var(--accent); }
-
-    .navItem { padding: 12px 15px; border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: bold; color: rgba(255,255,255,0.6); margin-bottom: 5px; transition: 0.2s; }
-    .navItem.active { background: rgba(255,255,255,0.1); color: var(--accent); }
+    .navItem { padding: 12px 15px; border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: bold; color: rgba(255,255,255,0.8); margin-bottom: 5px; transition: 0.2s; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+    .navItem:hover { background: var(--accent); color: #000; }
+    .nav-back { background: transparent; border: 1px solid var(--accent); color: var(--accent); margin-bottom: 30px; justify-content: center; }
 
     #main { flex: 1; height: 100vh; display: flex; flex-direction: column; width: 100vw; }
-    
-    #topbar { height: 65px; display: flex; align-items: center; padding: 0 15px; gap: 15px; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); z-index: 50; flex-shrink: 0; }
-    #hamb { background: none; border: none; color: white; font-size: 24px; padding: 5px; }
-    #viewTitle { font-weight: 900; font-size: 18px; white-space: nowrap; }
-    #search { flex: 1; max-width: 300px; padding: 8px 15px; border-radius: 20px; border: none; background: rgba(255,255,255,0.1); color: white; margin-left: auto; outline: none; }
+    #topbar { height: 70px; display: flex; align-items: center; padding: 0 15px; gap: 15px; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); z-index: 50; }
+    #hamb { background: rgba(255,255,255,0.1); border: none; color: white; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; }
+    #viewTitle { font-weight: 900; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
+    #search { flex: 1; max-width: 250px; padding: 10px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white; margin-left: auto; outline: none; }
 
-    /* CATALOGO - OTIMIZAÇÃO EXTREMA (LAZY LOAD NATIVO) */
+    /* CATALOGO LAZY LOAD */
     #catalogRoot { flex: 1; overflow-y: auto; padding: 10px 15px 40px; -webkit-overflow-scrolling: touch; }
-    .row { margin-bottom: 25px; content-visibility: auto; contain-intrinsic-size: 250px; }
-    .rowTitle { font-size: 1.1rem; font-weight: 900; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
-    .rowTitle::before { content:''; width:4px; height:16px; background: var(--accent); border-radius: 2px; }
+    .row { margin-bottom: 30px; }
+    .rowTitle { font-size: 1.2rem; font-weight: 900; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; text-shadow: 0 2px 4px black; }
+    .rowTitle::before { content:''; width:5px; height:18px; background: var(--accent); border-radius: 4px; }
     
-    .rail { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; }
+    .rail { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; scroll-snap-type: x mandatory; }
     .rail::-webkit-scrollbar { display: none; }
 
-    .card { flex: 0 0 auto; width: 130px; height: 195px; border-radius: 8px; background: #111; overflow: hidden; position: relative; scroll-snap-align: start; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
-    .card.live { width: 180px; height: 100px; }
+    .card { flex: 0 0 auto; width: 140px; height: 210px; border-radius: 10px; background: #111; overflow: hidden; position: relative; scroll-snap-align: start; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: 0.2s; }
+    .card.live { width: 200px; height: 112px; }
+    .card:active { transform: scale(0.95); }
     .card img { width: 100%; height: 100%; object-fit: cover; background: #222; }
-    .cardName { position: absolute; bottom: 0; width: 100%; padding: 20px 8px 5px; background: linear-gradient(transparent, rgba(0,0,0,0.95)); font-size: 11px; text-align: center; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cardName { position: absolute; bottom: 0; width: 100%; padding: 25px 8px 8px; background: linear-gradient(transparent, rgba(0,0,0,0.95)); font-size: 12px; text-align: center; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 2px 4px black; }
 
     /* =========================================================
-       PÁGINA DE DETALHES (O REDIRECIONAMENTO INTELIGENTE)
+       3. PÁGINA DE DETALHES (FILMES/SÉRIES)
        ========================================================= */
     #detailsView { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 5000; overflow-y: auto; }
-    .det-backdrop { width: 100%; height: 45vh; background-size: cover; background-position: center; position: relative; }
+    .det-backdrop { width: 100%; height: 40vh; background-size: cover; background-position: top; position: relative; }
     .det-backdrop::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, var(--bg)); }
-    .det-back-btn { position: absolute; top: 20px; left: 20px; z-index: 10; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 8px; color: white; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; font-weight: bold; backdrop-filter: blur(5px); }
-    .det-content { padding: 20px; position: relative; top: -60px; z-index: 5; }
-    .det-title { font-size: 2.2rem; font-weight: 900; margin-bottom: 10px; text-shadow: 0 2px 10px black; line-height: 1.1; }
-    .det-meta { color: #aaa; font-size: 0.9rem; margin-bottom: 20px; display: flex; gap: 15px; }
-    .det-play-btn { background: var(--accent); color: black; padding: 12px 30px; font-weight: 900; border-radius: 8px; border: none; font-size: 1.1rem; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .det-back-btn { position: absolute; top: 20px; left: 20px; z-index: 10; background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 8px; color: white; border: 1px solid rgba(255,255,255,0.3); cursor: pointer; font-weight: bold; }
+    .det-content { padding: 20px; position: relative; top: -50px; z-index: 5; }
+    .det-title { font-size: 2rem; font-weight: 900; margin-bottom: 10px; line-height: 1.1; }
+    .det-play-btn { background: var(--accent); color: black; padding: 15px 30px; font-weight: 900; border-radius: 10px; border: none; font-size: 1.1rem; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
     
-    /* SELETOR DE TEMPORADAS E EPISÓDIOS */
-    #seasonSelect { background: #111; color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px 20px; border-radius: 8px; font-size: 1rem; margin-bottom: 20px; outline: none; font-weight: bold; cursor: pointer; display: none; }
-    .ep-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.2s; border-radius: 8px; }
-    .ep-item:hover { background: rgba(255,255,255,0.05); }
-    .ep-img { width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0; }
-    .ep-info { flex: 1; }
-    .ep-title { font-weight: bold; font-size: 1rem; margin-bottom: 4px; }
+    #seasonSelect { background: #111; color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px 20px; border-radius: 8px; font-size: 1rem; margin-bottom: 15px; outline: none; font-weight: bold; width: 100%; max-width: 300px; display: none; }
+    .ep-item { display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(255,255,255,0.03); margin-bottom: 8px; cursor: pointer; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
+    .ep-img { width: 40px; height: 40px; background: rgba(0,0,0,0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent); }
+    .ep-title { font-weight: bold; font-size: 1rem; }
 
-    /* TELAS DE CARREGAMENTO */
-    #loader, #detLoader { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 2000; color: var(--accent); font-weight: bold; gap: 10px; }
-    #detLoader { z-index: 6000; display: none; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
-    .spinner { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    /* TELAS DE CARREGAMENTO & PLAYER */
+    #loader, #detLoader { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 9999; color: var(--accent); font-weight: bold; gap: 10px; }
+    #detLoader { background: rgba(0,0,0,0.9); display: none; }
+    .spinner { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
 
-    /* PLAYER */
     #playerRoot { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; flex-direction: column; }
-    #pControls { position: absolute; top: 0; width: 100%; padding: 15px; display: flex; align-items: center; gap: 15px; background: linear-gradient(rgba(0,0,0,0.9), transparent); z-index: 10; }
-    #btnBack { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    #pControls { position: absolute; top: 0; width: 100%; padding: 20px; display: flex; align-items: center; gap: 15px; background: linear-gradient(rgba(0,0,0,0.9), transparent); z-index: 10; }
+    #btnBackPlayer { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     #video { width: 100%; height: 100%; object-fit: contain; }
 
     @media (min-width: 900px) {
       #sidebar { left: 0; position: relative; }
       #hamb { display: none; }
-      .card { width: 150px; height: 225px; }
-      .card.live { width: 220px; height: 124px; }
     }
   </style>
 </head>
 <body data-theme="consysencia">
 
-<div id="loader"><div class="spinner"></div><div id="lText">Conectando ao Multiverso...</div></div>
-<div id="detLoader"><div class="spinner"></div><div>Abrindo Pasta da Série...</div></div>
+<div id="loader"><div class="spinner"></div><div id="lText">Conectando...</div></div>
+<div id="detLoader"><div class="spinner"></div><div>Abrindo Pasta...</div></div>
 
-<div id="app">
+<div id="hubView">
+    <div class="hub-header">
+        <h1><span>●</span> CONSYSENCIA</h1>
+        <p>O que você quer assistir hoje?</p>
+    </div>
+    <div class="hub-grid">
+        <div class="hub-card" onclick="openDashboard('live', 'consysencia', 'TV ao Vivo')">
+            <i class="fa-solid fa-tv"></i>
+            <span>TV ao Vivo</span>
+        </div>
+        <div class="hub-card hc-netflix" onclick="openDashboard('netflix', 'netflix', 'Netflix')">
+            <i class="fa-brands fa-neos"></i>
+            <span>Netflix</span>
+        </div>
+        <div class="hub-card hc-prime" onclick="openDashboard('prime', 'prime', 'Prime Video')">
+            <i class="fa-brands fa-amazon"></i>
+            <span>Prime Video</span>
+        </div>
+        <div class="hub-card hc-disney" onclick="openDashboard('disney', 'disney', 'Disney+')">
+            <i class="fa-brands fa-play"></i>
+            <span>Disney+</span>
+        </div>
+        <div class="hub-card hc-hbo" onclick="openDashboard('hbo', 'hbomax', 'HBO Max')">
+            <i class="fa-solid fa-m"></i>
+            <span>HBO Max</span>
+        </div>
+        <div class="hub-card hc-globo" onclick="openDashboard('globo', 'globoplay', 'GloboPlay')">
+            <i class="fa-solid fa-g"></i>
+            <span>GloboPlay</span>
+        </div>
+        <div class="hub-card" onclick="openDashboard('movies', 'consysencia', 'Todo o Catálogo')">
+            <i class="fa-solid fa-film"></i>
+            <span>Tudo Misturado</span>
+        </div>
+    </div>
+</div>
+
+<div id="appView">
     <aside id="sidebar">
-        <div class="brand"><span>●</span> CONSYSENCIA</div>
-        <div class="navItem active" data-tab="live" data-theme="consysencia"><i class="fa-solid fa-tv"></i> TV ao Vivo</div>
-        <div class="navItem" data-tab="movies" data-theme="consysencia"><i class="fa-solid fa-film"></i> Catálogo</div>
-        <div class="navItem" data-tab="netflix" data-theme="netflix"><i class="fa-brands fa-neos"></i> Netflix</div>
-        <div class="navItem" data-tab="prime" data-theme="prime"><i class="fa-brands fa-amazon"></i> Prime Video</div>
-        <div class="navItem" data-tab="disney" data-theme="disney"><i class="fa-brands fa-play"></i> Disney+</div>
-        <div class="navItem" onclick="localStorage.clear(); location.href='index.html'" style="color:#ff4444; margin-top:20px;"><i class="fa-solid fa-power-off"></i> Sair</div>
+        <div class="navItem nav-back" onclick="closeDashboard()"><i class="fa-solid fa-house"></i> Início</div>
+        <div class="navItem" onclick="document.getElementById('search').focus()"><i class="fa-solid fa-magnifying-glass"></i> Buscar</div>
+        <div style="flex:1"></div>
+        <div class="navItem" onclick="localStorage.clear(); location.href='index.html'" style="color:#ff4444; border-color:#ff4444;"><i class="fa-solid fa-power-off"></i> Sair da Conta</div>
     </aside>
 
     <main id="main">
         <div id="topbar">
             <button id="hamb"><i class="fa-solid fa-bars"></i></button>
-            <div id="viewTitle">TV ao Vivo</div>
-            <input type="text" id="search" placeholder="Buscar..." autocomplete="off">
+            <div id="viewTitle">Categoria</div>
+            <input type="text" id="search" placeholder="Buscar aqui..." autocomplete="off">
         </div>
         <div id="catalogRoot"></div>
     </main>
@@ -126,22 +178,17 @@
         <button class="det-back-btn" onclick="closeDetails()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
     </div>
     <div class="det-content">
-        <h1 class="det-title" id="detTitle">Nome do Filme/Série</h1>
-        <div class="det-meta" id="detMeta">
-            <span id="detType"><i class="fa-solid fa-film"></i> Filme</span>
-        </div>
-        
+        <h1 class="det-title" id="detTitle">Nome</h1>
         <button class="det-play-btn" id="detPlayBtn"><i class="fa-solid fa-play"></i> Assistir Agora</button>
-        
-        <select id="seasonSelect" class="season-select"></select>
+        <select id="seasonSelect"></select>
         <div id="episodeList"></div>
     </div>
 </div>
 
 <div id="playerRoot">
     <div id="pControls">
-        <button id="btnBack"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
-        <div id="pTitle" style="font-weight: 900; text-shadow: 0 2px 4px black;"></div>
+        <button id="btnBackPlayer"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div id="pTitle"></div>
     </div>
     <video id="video" controls autoplay playsinline></video>
 </div>
@@ -154,46 +201,72 @@
     const API = 'https://api.consysencia.com/catalog';
     const PROXY_BASE = 'https://api.consysencia.com/proxy';
 
-    let STATE = { live_cat: [], vod_cat: [], live: [], vod: [], tab: 'live', scrollPos: 0 };
-    let currentSeriesData = null; // Guarda as temporadas carregadas
+    let STATE = { live_cat: [], vod_cat: [], live: [], vod: [], currentTab: '', scrollPos: 0 };
+    let currentSeriesData = null;
     let hls;
 
+    // BOOT: Baixa tudo escondido e mostra o HUB
     async function fetchData() {
         const h = { 'Authorization': 'Basic ' + btoa(user + ':' + pass) };
         try {
-            document.getElementById('lText').innerText = "Liberando Canais...";
-            const [lcat, lstr] = await Promise.all([
+            document.getElementById('lText').innerText = "Sincronizando Sistema...";
+            const [lcat, lstr, vcat, vstr, scat, sstr] = await Promise.all([
                 fetch(`${API}?action=get_live_categories`, {headers:h}).then(r=>r.json()).catch(()=>[]),
-                fetch(`${API}?action=get_live_streams`, {headers:h}).then(r=>r.json()).catch(()=>[])
-            ]);
-            STATE.live_cat = lcat; STATE.live = lstr;
-            
-            document.getElementById('loader').style.display = 'none';
-            renderTab();
-
-            // Baixa a LISTA de filmes/séries no fundo. O detalhe de cada um só é baixado no clique!
-            const [vcat, vstr, scat, sstr] = await Promise.all([
+                fetch(`${API}?action=get_live_streams`, {headers:h}).then(r=>r.json()).catch(()=>[]),
                 fetch(`${API}?action=get_vod_categories`, {headers:h}).then(r=>r.json()).catch(()=>[]),
                 fetch(`${API}?action=get_vod_streams`, {headers:h}).then(r=>r.json()).catch(()=>[]),
                 fetch(`${API}?action=get_series_categories`, {headers:h}).then(r=>r.json()).catch(()=>[]),
                 fetch(`${API}?action=get_series`, {headers:h}).then(r=>r.json()).catch(()=>[])
             ]);
+            
+            STATE.live_cat = lcat; STATE.live = lstr;
             STATE.vod_cat = [...vcat, ...scat];
             STATE.vod = [...vstr, ...sstr];
-        } catch(e) { alert("Erro de conexão."); }
+            
+            document.getElementById('loader').style.display = 'none';
+            
+            // Inicia mostrando a Tela Principal (HUB)
+            document.getElementById('hubView').style.display = 'block';
+        } catch(e) {
+            alert("Erro de conexão.");
+        }
     }
 
+    // =========================================================
+    // NAVEGAÇÃO: HUB <-> DASHBOARD
+    // =========================================================
+    function openDashboard(tabName, theme, title) {
+        STATE.currentTab = tabName;
+        document.body.dataset.theme = theme;
+        document.getElementById('viewTitle').innerText = title;
+        document.getElementById('search').value = '';
+        
+        document.getElementById('hubView').style.display = 'none';
+        document.getElementById('appView').style.display = 'flex';
+        renderTab();
+    }
+
+    function closeDashboard() {
+        document.getElementById('appView').style.display = 'none';
+        document.getElementById('hubView').style.display = 'block';
+        document.body.dataset.theme = 'consysencia';
+        document.getElementById('sidebar').classList.remove('open');
+    }
+
+    // =========================================================
+    // RENDERIZADOR DO CATÁLOGO ESPECÍFICO
+    // =========================================================
     function renderTab() {
         const root = document.getElementById('catalogRoot');
         root.innerHTML = '';
         
-        const isLive = STATE.tab === 'live';
+        const isLive = STATE.currentTab === 'live';
         const cats = isLive ? STATE.live_cat : STATE.vod_cat;
         const items = isLive ? STATE.live : STATE.vod;
         const query = document.getElementById('search').value.toLowerCase();
 
         cats.forEach(c => {
-            if(!isLive && STATE.tab !== 'movies' && !c.category_name.toLowerCase().includes(STATE.tab)) return;
+            if(!isLive && STATE.currentTab !== 'movies' && !c.category_name.toLowerCase().includes(STATE.currentTab)) return;
 
             let catItems = items.filter(i => i.category_id === c.category_id);
             if(query) catItems = catItems.filter(i => i.name.toLowerCase().includes(query));
@@ -202,7 +275,6 @@
                 const row = document.createElement('div');
                 row.className = 'row';
                 
-                // LAZY LOADING NATIVO (O segredo para colocar TODOS os itens sem travar a RAM)
                 row.innerHTML = `
                     <div class="rowTitle">${c.category_name}</div>
                     <div class="rail">
@@ -211,7 +283,6 @@
                             const img = i.stream_icon || i.cover || '';
                             const safeName = i.name.replace(/'/g, "\\'").replace(/"/g, "&quot;");
                             
-                            // Na TV ao vivo, o clique vai pro player. Em Filme/Série, vai pra Tela de Detalhes!
                             const clickAction = isLive 
                                 ? `play('${i.stream_id}', 'live', 'm3u8', '', '${safeName}')` 
                                 : `openDetails('${i.stream_id}', '${type}', '${i.container_extension || 'mp4'}', '${i.series_id || ''}', '${safeName}', '${img}')`;
@@ -230,37 +301,31 @@
     }
 
     // =========================================================
-    // LÓGICA DA PÁGINA DE DETALHES (FILMES E SÉRIES)
+    // PÁGINA DE DETALHES (FILMES/SÉRIES)
     // =========================================================
     async function openDetails(id, type, ext, series_id, name, cover) {
-        // Salva o scroll do catálogo e esconde a tela inicial
         STATE.scrollPos = document.getElementById('catalogRoot').scrollTop;
-        document.getElementById('app').style.display = 'none';
+        document.getElementById('appView').style.display = 'none';
         
         const detailsView = document.getElementById('detailsView');
         detailsView.style.display = 'block';
-        detailsView.scrollTop = 0; // Volta a página pro topo
+        detailsView.scrollTop = 0;
 
-        // Preenche as informações básicas
         document.getElementById('detTitle').innerText = name;
         document.getElementById('detBackdrop').style.backgroundImage = `url('${cover}')`;
-        document.getElementById('detType').innerHTML = type === 'movie' ? '<i class="fa-solid fa-film"></i> Filme' : '<i class="fa-solid fa-tv"></i> Série';
         
         const playBtn = document.getElementById('detPlayBtn');
         const seasonSelect = document.getElementById('seasonSelect');
         const epList = document.getElementById('episodeList');
 
-        // Limpa os dados anteriores
         epList.innerHTML = '';
         currentSeriesData = null;
 
         if (type === 'movie') {
-            // Se for filme, o botão Assistir fica gigante e pronto pra dar Play
             playBtn.style.display = 'inline-flex';
             seasonSelect.style.display = 'none';
             playBtn.onclick = () => play(id, 'movie', ext, '', name);
         } else if (type === 'series') {
-            // Se for série, esconde o botão play gigante e busca as temporadas no servidor
             playBtn.style.display = 'none';
             document.getElementById('detLoader').style.display = 'flex';
             
@@ -275,18 +340,14 @@
                 if (seasonKeys.length > 0) {
                     seasonSelect.style.display = 'block';
                     seasonSelect.innerHTML = seasonKeys.map(s => `<option value="${s}">Temporada ${s}</option>`).join('');
-                    
-                    // Quando trocar a temporada, renderiza a lista de episódios nova
                     seasonSelect.onchange = (e) => renderEpisodes(e.target.value);
-                    
-                    // Renderiza a temporada 1 por padrão
                     renderEpisodes(seasonKeys[0]);
                 } else {
-                    epList.innerHTML = '<p style="color:#ff4444; padding:20px;">Nenhum episódio encontrado no servidor.</p>';
+                    epList.innerHTML = '<p>Nenhum episódio no servidor.</p>';
                 }
             } catch(e) {
                 document.getElementById('detLoader').style.display = 'none';
-                epList.innerHTML = '<p style="color:#ff4444; padding:20px;">Falha ao carregar temporadas.</p>';
+                epList.innerHTML = '<p>Falha ao carregar temporadas.</p>';
             }
         }
     }
@@ -295,43 +356,35 @@
         const episodes = currentSeriesData[seasonNumber] || [];
         const epList = document.getElementById('episodeList');
         
-        if (episodes.length === 0) {
-            epList.innerHTML = '<p style="color:#aaa;">Temporada vazia.</p>';
-            return;
-        }
-
         epList.innerHTML = episodes.map(ep => {
             const epExt = ep.container_extension || 'mp4';
             const safeEpTitle = ep.title ? ep.title.replace(/'/g, "\\'") : `Episódio ${ep.episode_num}`;
-            const displayName = `T${seasonNumber}:E${ep.episode_num} - ${safeEpTitle}`;
+            const displayName = `${safeEpTitle}`;
             
             return `
-            <div class="ep-item" onclick="play('${ep.id}', 'series', '${epExt}', '', '${displayName}')">
+            <div class="ep-item" onclick="play('${ep.id}', 'series', '${epExt}', '', 'T${seasonNumber}:E${ep.episode_num} - ${safeEpTitle}')">
                 <div class="ep-img"><i class="fa-solid fa-play"></i></div>
-                <div class="ep-info">
-                    <div class="ep-title">${displayName}</div>
-                </div>
+                <div class="ep-title">${ep.episode_num}. ${displayName}</div>
             </div>`;
         }).join('');
     }
 
     function closeDetails() {
         document.getElementById('detailsView').style.display = 'none';
-        document.getElementById('app').style.display = 'flex';
-        // Restaura a rolagem de onde o usuário parou
+        document.getElementById('appView').style.display = 'flex';
         document.getElementById('catalogRoot').scrollTop = STATE.scrollPos;
     }
 
     // =========================================================
-    // O PLAYER BLINDADO (TÚNEL RENDER)
+    // PLAYER DE VÍDEO BLINDADO
     // =========================================================
     function play(id, type, ext, series_id, name) {
         document.getElementById('pTitle').innerText = name;
-        
         const secureUrl = `${PROXY_BASE}/${type}/${user}/${pass}/${id}.${type==='live'?'m3u8':ext}`;
 
         document.getElementById('detailsView').style.display = 'none';
-        document.getElementById('app').style.display = 'none';
+        document.getElementById('appView').style.display = 'none';
+        document.getElementById('hubView').style.display = 'none';
         document.getElementById('playerRoot').style.display = 'flex';
         
         const video = document.getElementById('video');
@@ -353,51 +406,28 @@
             hls.loadSource(secureUrl);
             hls.attachMedia(video);
             hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
-            
-            hls.on(Hls.Events.ERROR, function (event, data) {
-                if (data.fatal && data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-                    hls.startLoad();
-                }
-            });
         } else {
             video.src = secureUrl;
             video.play().catch(()=>{});
         }
     }
 
-    // Botão Voltar do Player (Ele sabe se volta pro Catálogo ou pra Página de Detalhes da Série)
-    document.getElementById('btnBack').onclick = () => {
+    document.getElementById('btnBackPlayer').onclick = () => {
         const video = document.getElementById('video');
         video.pause(); video.src = "";
         if(hls) hls.destroy();
         
         document.getElementById('playerRoot').style.display = 'none';
         
-        // Se a página de detalhes tiver algo na tela (capa), volta pra ela. Senão, volta pro app.
-        if (document.getElementById('detTitle').innerText !== "Nome do Filme/Série" && STATE.tab !== 'live') {
-            document.getElementById('detailsView').style.display = 'block';
+        if (STATE.currentTab === 'live') {
+            document.getElementById('appView').style.display = 'flex';
         } else {
-            document.getElementById('app').style.display = 'flex';
-            document.getElementById('catalogRoot').scrollTop = STATE.scrollPos;
+            document.getElementById('detailsView').style.display = 'block';
         }
     };
 
-    // Navegação Lateral
     document.getElementById('hamb').onclick = () => document.getElementById('sidebar').classList.toggle('open');
     
-    document.querySelectorAll('.navItem[data-tab]').forEach(el => {
-        el.onclick = () => {
-            document.querySelectorAll('.navItem').forEach(n => n.classList.remove('active'));
-            el.classList.add('active');
-            STATE.tab = el.dataset.tab;
-            document.body.dataset.theme = el.dataset.theme;
-            document.getElementById('viewTitle').innerText = el.innerText;
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('search').value = '';
-            renderTab();
-        };
-    });
-
     let tOut;
     document.getElementById('search').oninput = () => {
         clearTimeout(tOut);
