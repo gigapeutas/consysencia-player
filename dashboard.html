@@ -3,19 +3,16 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Play Consysencia | V10 Ultimate</title>
+  <title>Play Consysencia | O Impossível é Opinião</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
   <style>
-    /* ============================
-       FONTS & DESIGN CAMALEÃO
-       ============================ */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
-    :root{
+    :root {
       --bg:#070a0b; --bg2:#0b0f10; --text:#fff;
       --accent:#00ff88; --accent2:rgba(0,255,136,.18);
       --radius:12px; --radius2:16px;
@@ -23,10 +20,10 @@
       --shadow2:0 16px 48px rgba(0,0,0,.62);
       --navGrad:linear-gradient(to bottom, rgba(0,0,0,.92), rgba(0,0,0,.45), transparent);
       --panelBg:rgba(0,0,0,.88);
-      --btnBg:rgba(255,255,255,.06); --btnBd:rgba(255,255,255,.14); --btnHover:rgba(255,255,255,.10);
+      --btnBg:rgba(255,255,255,.06); --btnBd:rgba(255,255,255,.14);
       --cardBd:rgba(255,255,255,.10);
       --focus: 0 0 0 2px rgba(255,255,255,.10), 0 0 22px rgba(0,255,136,.18);
-      --brandFont: "Inter", system-ui, sans-serif;
+      --brandFont: "Inter", sans-serif;
       --rowCardW: 152px; --rowCardH: 228px;
     }
 
@@ -39,34 +36,30 @@
 
     *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
     body{ background: var(--bg); color: var(--text); font-family: "Inter", sans-serif; overflow: hidden; transition: 0.24s ease; }
-    :focus{ outline:none; } :focus-visible{ box-shadow: var(--focus); border-radius: 12px; }
 
-    #app{ height:100vh; width:100vw; display:flex; background: var(--bg); }
+    #app{ height:100vh; width:100vw; display:flex; }
 
-    /* SIDEBAR LUXO */
-    #sidebar{ width: 280px; background: var(--panelBg); border-right: 1px solid rgba(255,255,255,.10); backdrop-filter: blur(14px); box-shadow: 18px 0 40px rgba(0,0,0,.35); padding: 22px 14px; position: relative; transition: 0.3s; z-index: 30; }
+    /* SIDEBAR */
+    #sidebar{ width: 280px; background: var(--panelBg); border-right: 1px solid rgba(255,255,255,.10); backdrop-filter: blur(14px); padding: 22px 14px; position: relative; transition: 0.3s; z-index: 30; }
     #sidebar .brand{ display:flex; align-items:center; gap:10px; padding: 8px 10px 16px; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,.08); }
-    #sidebar .brand .logoDot{ width: 10px; height: 10px; border-radius: 999px; background: var(--accent); box-shadow: 0 0 16px rgba(0,0,0,.35); }
-    #sidebar .brand h1{ font-size: 22px; font-weight: 900; letter-spacing: 1px;}
+    #sidebar .brand h1{ font-size: 22px; font-weight: 900; }
     body[data-theme="netflix"] #sidebar .brand h1{ font-family: var(--brandFont); font-size: 30px; letter-spacing: 1.5px; }
 
     .navItem{ display:flex; align-items:center; gap:12px; padding: 12px; border-radius: var(--radius); cursor:pointer; color: rgba(255,255,255,.70); transition: 0.14s; font-weight: 800; margin-bottom: 6px; border: 1px solid transparent;}
-    .navItem i{ width: 18px; text-align:center; }
     .navItem:hover{ background: rgba(255,255,255,.06); transform: translateX(2px); color: #fff; }
     .navItem.active{ background: rgba(255,255,255,.08); border-color: var(--accent2); color: var(--accent); }
 
     /* MAIN & TOPBAR */
     #main{ flex:1; position: relative; overflow: hidden; }
     #topbar{ position: absolute; top:0; left:0; right:0; height: 74px; display:flex; align-items:center; gap: 14px; padding: 0 18px; background: var(--navGrad); z-index: 20; backdrop-filter: blur(12px); }
-    #hamb{ display:none; width: 44px; height: 44px; border-radius: 12px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); color: #fff; cursor:pointer; }
-    #viewTitle{ font-weight: 900; font-size: 18px; text-shadow: 0 2px 14px rgba(0,0,0,.45); max-width: 42vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+    #hamb{ display:none; width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); color: #fff; cursor:pointer; }
+    #viewTitle{ font-weight: 900; font-size: 18px; text-shadow: 0 2px 14px rgba(0,0,0,.45); }
     body[data-theme="netflix"] #viewTitle{ font-family: var(--brandFont); font-size: 28px; letter-spacing: 1.2px; }
 
-    #searchWrap{ margin-left:auto; display:flex; align-items:center; gap: 10px; width: min(520px, 48vw); height: 44px; padding: 0 12px; border-radius: 14px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.06); transition: 0.14s; }
-    #searchWrap:focus-within{ border-color: var(--accent2); background: rgba(255,255,255,.08); box-shadow: 0 0 22px rgba(0,0,0,.25); }
+    #searchWrap{ margin-left:auto; display:flex; align-items:center; gap: 10px; width: min(520px, 48vw); height: 44px; padding: 0 12px; border-radius: 14px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.06); }
     #search{ flex:1; background: transparent; border: none; color:#fff; font-weight: 800; outline:none; }
 
-    /* CATALOGO EM TRILHAS (ROWS) - ESTILO NETFLIX */
+    /* CATALOGO */
     #catalogRoot{ position:absolute; inset:0; overflow-y: auto; padding-top: 86px; padding-bottom: 30px; scroll-behavior: smooth; }
     .row{ padding: 12px 18px 8px; }
     .rowTitle{ display:flex; align-items:center; gap:10px; margin-bottom: 10px; font-weight: 900; color: rgba(255,255,255,.90); text-shadow: 0 2px 12px rgba(0,0,0,.45); }
@@ -74,53 +67,52 @@
     .rail{ display:flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; scroll-snap-type: x mandatory; }
     .rail::-webkit-scrollbar{ display: none; }
 
-    /* CARDS MICRO-INTERACTIONS */
-    .card{ flex: 0 0 auto; width: var(--rowCardW); height: var(--rowCardH); border-radius: var(--radius); background: #111; border: 1px solid var(--cardBd); box-shadow: 0 10px 18px rgba(0,0,0,.22); overflow:hidden; position: relative; cursor: pointer; scroll-snap-align: start; transition: 0.16s ease; transform: translateZ(0); }
+    .card{ flex: 0 0 auto; width: var(--rowCardW); height: var(--rowCardH); border-radius: var(--radius); background: #111; border: 1px solid var(--cardBd); box-shadow: 0 10px 18px rgba(0,0,0,.22); position: relative; cursor: pointer; scroll-snap-align: start; transition: 0.16s ease; overflow: hidden;}
     .card.live{ width: calc(var(--rowCardW) * 1.35); height: calc(var(--rowCardH) * .62); }
     .card:hover{ transform: translateY(-4px) scale(1.06); border-color: var(--accent); box-shadow: var(--shadow2); z-index: 2; }
-    .poster{ width:100%; height:100%; background-size: cover; background-position: center; transition: 0.3s; }
-    .meta{ position:absolute; left:0; right:0; bottom:0; padding: 25px 10px 8px; background: linear-gradient(to top, rgba(0,0,0,.95), transparent); }
-    .name{ font-size: 11px; font-weight: 900; text-align: center; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; text-shadow: 0 2px 10px black; }
+    .poster{ width:100%; height:100%; background-size: cover; background-position: center; }
+    .meta{ position:absolute; left:0; right:0; bottom:0; padding: 25px 10px 8px; background: linear-gradient(to top, rgba(0,0,0,.95), transparent); text-align: center; font-size: 11px; font-weight: 900; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; }
 
-    /* LOADER E PLAYER (UNMOUNT) */
+    /* LOADER E STATUS DE FUNDO */
     #loader{ position: fixed; inset: 0; display:flex; align-items:center; justify-content:center; flex-direction: column; gap: 14px; background: var(--bg2); z-index: 9999; color: var(--accent); font-weight: 900; }
     .spinner{ width: 38px; height: 38px; border: 4px solid rgba(255,255,255,.10); border-top-color: var(--accent); border-radius: 50%; animation: spin .9s linear infinite; }
     @keyframes spin{ to{ transform: rotate(360deg); } }
 
+    #bgSync{ position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.8); border: 1px solid var(--accent); padding: 10px 20px; border-radius: 20px; font-size: 12px; font-weight: 800; color: var(--accent); z-index: 8000; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+
+    /* PLAYER (UNMOUNT) */
     #playerRoot{ display:none; position: fixed; inset:0; background: #000; z-index: 9000; flex-direction: column;}
     #pControls{ position:absolute; top:0; left:0; right:0; height: 74px; display:flex; align-items:center; gap: 12px; padding: 0 18px; background: linear-gradient(rgba(0,0,0,.92), transparent); z-index: 10; }
     #btnBack{ height: 44px; padding: 0 20px; border-radius: var(--radius); border: 1px solid var(--btnBd); background: var(--btnBg); color:#fff; font-weight: 900; cursor:pointer; transition: 0.14s; }
-    #btnBack:hover{ background: var(--accent); color: #000; border-color: var(--accent); }
-    #pTitle{ font-weight: 900; text-shadow: 0 2px 14px black; }
+    #btnBack:hover{ background: var(--accent); color: #000; }
+    #pTitle{ font-weight: 900; }
     #video{ width:100%; height:100%; object-fit: contain; background:#000; outline: none; }
 
     @media (max-width: 900px){
       #hamb{ display:inline-flex; align-items:center; justify-content:center; }
-      #sidebar{ position: absolute; top:0; bottom:0; left:0; transform: translateX(-102%); }
-      #sidebar.open{ transform: translateX(0); }
+      #sidebar{ position: absolute; left: -102%; height: 100%; }
+      #sidebar.open{ transform: translateX(102%); }
     }
   </style>
 </head>
 
 <body data-theme="consysencia">
-  <div id="loader"><div class="spinner"></div><div id="loaderText">Sincronizando Multiverso...</div></div>
+  <div id="loader"><div class="spinner"></div><div id="loaderText">Ligando Motores...</div></div>
+  <div id="bgSync"><i class="fa-solid fa-cloud-arrow-down"></i> Baixando Filmes em 2º Plano...</div>
 
   <div id="app">
     <aside id="sidebar">
       <div class="brand"><div class="logoDot"></div><h1>CONSYSENCIA</h1></div>
-      
       <div class="navItem active" data-tab="live" data-theme="consysencia"><i class="fa-solid fa-tv"></i> TV ao Vivo</div>
       <div class="navItem" data-tab="movies" data-theme="consysencia"><i class="fa-solid fa-film"></i> Todo o Catálogo</div>
       <div style="height:10px"></div>
-      
       <div class="navItem" data-tab="netflix" data-theme="netflix"><i class="fa-brands fa-neos"></i> Netflix</div>
       <div class="navItem" data-tab="disney" data-theme="disney"><i class="fa-brands fa-play"></i> Disney+</div>
       <div class="navItem" data-tab="prime" data-theme="prime"><i class="fa-brands fa-amazon"></i> Prime Video</div>
       <div class="navItem" data-tab="hbomax" data-theme="hbomax"><i class="fa-solid fa-m"></i> HBO Max</div>
       <div class="navItem" data-tab="globoplay" data-theme="globoplay"><i class="fa-solid fa-g"></i> GloboPlay</div>
-      
       <div style="height:16px"></div>
-      <div class="navItem" id="btnClear" style="color:#ff4444" onclick="clearData()"><i class="fa-solid fa-power-off"></i> Reparar Erros (Limpar)</div>
+      <div class="navItem" id="btnClear" style="color:#ff4444" onclick="clearData()"><i class="fa-solid fa-power-off"></i> Reparo Profundo (Sair)</div>
     </aside>
 
     <main id="main">
@@ -128,7 +120,7 @@
         <button id="hamb"><i class="fa-solid fa-bars"></i></button>
         <div id="viewTitle">TV ao Vivo</div>
         <div id="searchWrap">
-          <i class="fa-solid fa-magnifying-glass" id="searchIcon"></i>
+          <i class="fa-solid fa-magnifying-glass"></i>
           <input id="search" placeholder="Buscar filmes e canais..." autocomplete="off" />
         </div>
       </div>
@@ -148,15 +140,12 @@
     (function(){
       'use strict';
 
-      // 1. CREDENCIAIS E LINKS BLINDADOS
       const user = localStorage.getItem('cs_user');
       const pass = localStorage.getItem('cs_pass');
       if(!user || !pass) window.location.href = 'index.html';
 
       const apiBase = 'https://api.consysencia.com/catalog';
-      // O NOSSO TÚNEL VENCEDOR (Resolve a tela preta)
-      const proxyBase = 'https://api.consysencia.com/stream?url='; 
-      const rawStreamServer = 'http://playtvstreaming.shop';
+      const proxyBase = 'https://api.consysencia.com/stream_tunnel'; // O proxy reverso supremo
 
       const STATE = {
         tab: 'live', query: '', mounted: true, scrollTop: 0, io: null, hls: null, tSearch: 0,
@@ -166,16 +155,16 @@
 
       const raf = (fn) => requestAnimationFrame(fn);
 
-      // FILTRO FUZZY: Ignora emojis "🍿", espaços e pontuações do servidor
+      // Normaliza strings para a busca/filtro fuzzy
       function normKey(s){
         if(!s) return '';
         return (''+s).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'');
       }
 
-      // BANCO DE DADOS (Velocidade)
+      // IndexedDB para não bater na API toda hora
       function idbOpen(){
         return new Promise((res, rej)=>{
-          const req = indexedDB.open('consysencia_v10', 1);
+          const req = indexedDB.open('consysencia_v12', 1);
           req.onupgradeneeded = e => { if(!req.result.objectStoreNames.contains('cache')) req.result.createObjectStore('cache'); };
           req.onsuccess = ()=> res(req.result);
           req.onerror = ()=> rej(req.error);
@@ -185,31 +174,43 @@
       function idbSet(db, key, val){ return new Promise(res => { db.transaction('cache', 'readwrite').objectStore('cache').put(val, key).oncomplete = ()=> res(true); }); }
 
       window.clearData = async function() {
-          indexedDB.deleteDatabase('consysencia_v10');
+          indexedDB.deleteDatabase('consysencia_v12');
           localStorage.clear(); window.location.href = 'index.html';
       };
 
-      // O GRANDE DOWNLOADER (Filmes + Séries juntos)
-      async function fetchData(){
-        document.getElementById('loaderText').innerText = "Montando o Catálogo (Pode levar 20s)...";
-        const h = { 'Authorization': 'Basic ' + btoa(user + ':' + pass) };
-        
-        try {
-            const [lc, ls, vc, vs, sc, ss] = await Promise.all([
-              fetch(`${apiBase}?action=get_live_categories`, {headers:h}).then(r=>r.json()).catch(()=>[]),
-              fetch(`${apiBase}?action=get_live_streams`, {headers:h}).then(r=>r.json()).catch(()=>[]),
-              fetch(`${apiBase}?action=get_vod_categories`, {headers:h}).then(r=>r.json()).catch(()=>[]),
-              fetch(`${apiBase}?action=get_vod_streams`, {headers:h}).then(r=>r.json()).catch(()=>[]),
-              fetch(`${apiBase}?action=get_series_categories`, {headers:h}).then(r=>r.json()).catch(()=>[]),
-              fetch(`${apiBase}?action=get_series`, {headers:h}).then(r=>r.json()).catch(()=>[])
-            ]);
+      // Carrega RÁPIDO a TV ao Vivo
+      async function loadLiveFirst(db) {
+          document.getElementById('loaderText').innerText = "Liberando a TV...";
+          const h = { 'Authorization': 'Basic ' + btoa(user + ':' + pass) };
+          try {
+              const [lc, ls] = await Promise.all([
+                  fetch(`${apiBase}?action=get_live_categories`, {headers:h}).then(r=>r.json()).catch(()=>[]),
+                  fetch(`${apiBase}?action=get_live_streams`, {headers:h}).then(r=>r.json()).catch(()=>[])
+              ]);
+              STATE.live_cat = lc || [];
+              STATE.live_streams = ls || [];
+              buildIndexes();
+              await idbSet(db, 'data', STATE);
+          } catch(e) {}
+      }
 
-            return {
-              live_cat: lc || [], live_streams: ls || [],
-              vod_cat: [...(vc||[]), ...(sc||[])],
-              vod_streams: [...(vs||[]), ...(ss||[])]
-            };
-        } catch(e) { clearData(); }
+      // Carrega os dados pesados SILENCIOSAMENTE no fundo
+      async function loadBackgroundVOD(db) {
+          document.getElementById('bgSync').style.display = 'block';
+          const h = { 'Authorization': 'Basic ' + btoa(user + ':' + pass) };
+          try {
+              const [vc, vs, sc, ss] = await Promise.all([
+                  fetch(`${apiBase}?action=get_vod_categories`, {headers:h}).then(r=>r.json()).catch(()=>[]),
+                  fetch(`${apiBase}?action=get_vod_streams`, {headers:h}).then(r=>r.json()).catch(()=>[]),
+                  fetch(`${apiBase}?action=get_series_categories`, {headers:h}).then(r=>r.json()).catch(()=>[]),
+                  fetch(`${apiBase}?action=get_series`, {headers:h}).then(r=>r.json()).catch(()=>[])
+              ]);
+              STATE.vod_cat = [...(vc||[]), ...(sc||[])];
+              STATE.vod_streams = [...(vs||[]), ...(ss||[])];
+              buildIndexes();
+              await idbSet(db, 'data', STATE);
+              document.getElementById('bgSync').style.display = 'none';
+          } catch(e) { document.getElementById('bgSync').style.display = 'none'; }
       }
 
       function buildIndexes(){
@@ -218,7 +219,6 @@
         STATE.vod_streams.forEach(it => { const k=''+it.category_id; STATE.vodByCat.set(k, (STATE.vodByCat.get(k)||[]).concat(it)); });
       }
 
-      // LAZY LOAD DE IMAGENS (Poupa memória)
       function observePoster(el){
         if (!STATE.io) {
           STATE.io = new IntersectionObserver((entries)=>{
@@ -233,17 +233,6 @@
         STATE.io.observe(el);
       }
 
-      // RENDERIZADOR DE TRILHAS (ROWS) IGUAL A NETFLIX
-      const TAB_META = {
-        live: { title: 'TV ao Vivo', theme: 'consysencia' },
-        movies: { title: 'Todo o Catálogo', theme: 'consysencia' },
-        netflix: { title: 'Netflix', theme: 'netflix' },
-        disney: { title: 'Disney+', theme: 'disney' },
-        prime: { title: 'Prime Video', theme: 'prime' },
-        hbomax: { title: 'HBO Max', theme: 'hbomax' },
-        globoplay:{ title: 'GloboPlay', theme: 'globoplay' }
-      };
-
       function renderTab(){
         const root = document.getElementById('catalogRoot');
         root.innerHTML = '';
@@ -254,7 +243,6 @@
         const q = normKey(STATE.query);
 
         cats.forEach(c => {
-          // Filtro por Plataforma (Ignora emojis das pastas)
           if(!isLive && STATE.tab !== 'movies'){
             const t = STATE.tab === 'hbomax' ? 'hbo' : (STATE.tab === 'globoplay' ? 'globo' : STATE.tab);
             if(normKey(c.category_name).indexOf(t) === -1) return;
@@ -268,21 +256,14 @@
             row.innerHTML = `<div class="rowTitle"><span class="pill"></span><span>${c.category_name}</span></div><div class="rail"></div>`;
             const rail = row.querySelector('.rail');
             
-            // Renderiza 100 por trilha (Segurança de RAM)
             items.slice(0, 100).forEach(it => {
               const card = document.createElement('div');
               card.className = `card ${isLive ? 'live' : 'vod'}`;
-              
               const poster = document.createElement('div');
               poster.className = 'poster';
-              if (it.stream_icon || it.cover) {
-                  poster.dataset.src = it.stream_icon || it.cover;
-                  observePoster(poster);
-              }
-
+              if (it.stream_icon || it.cover) { poster.dataset.src = it.stream_icon || it.cover; observePoster(poster); }
               card.innerHTML = `<div class="meta"><div class="name">${it.name}</div></div>`;
               card.prepend(poster);
-              
               card.onclick = () => handlePlayClick(it, isLive ? 'live' : (it.series_id ? 'series' : 'movie'));
               rail.appendChild(card);
             });
@@ -292,24 +273,24 @@
         raf(() => root.scrollTop = 0);
       }
 
-      // 2. A CORREÇÃO DAS SÉRIES (Extrai S01E01)
+      // ==========================================
+      // LÓGICA DE PLAY COM RASTREADOR HTTPS ABSOLUTO
+      // ==========================================
       async function handlePlayClick(item, type) {
         if(type === 'series') {
             document.getElementById('loader').style.display = 'flex';
-            document.getElementById('loaderText').innerText = "Abrindo Episódio...";
+            document.getElementById('loaderText').innerText = "Processando Série...";
             try {
                 const h = { 'Authorization': 'Basic ' + btoa(user + ':' + pass) };
                 const res = await fetch(`${apiBase}?action=get_series_info&series_id=${item.series_id}`, {headers:h});
                 const data = await res.json();
                 document.getElementById('loader').style.display = 'none';
                 
-                // Vassoura de Dados: Acha o primeiro episódio independente do formato do provedor
                 let epObj = data.episodes;
                 let seasons = Array.isArray(epObj) ? epObj : Object.values(epObj);
-                
                 if(seasons.length > 0 && seasons[0].length > 0) {
                     const ep = seasons[0][0]; 
-                    startSecurePlayback(ep.id, `S01E01 - ${ep.title}`, 'movie', ep.container_extension || 'mp4');
+                    startSecurePlayback(ep.id, `S01E01 - ${ep.title}`, 'series', ep.container_extension || 'mp4');
                 } else { alert("A série está vazia no servidor."); }
             } catch(e) { document.getElementById('loader').style.display = 'none'; alert("Falha ao ler série."); }
         } else {
@@ -317,32 +298,52 @@
         }
       }
 
-      // 3. O MOTOR BLINDADO (Túnel + Unmount)
       function startSecurePlayback(id, name, type, ext) {
           const root = document.getElementById('catalogRoot');
           STATE.scrollTop = root.scrollTop || 0;
-          if (root.parentNode) root.parentNode.removeChild(root); // MODO PENA: Remove DOM
+          if (root.parentNode) root.parentNode.removeChild(root); 
           STATE.mounted = false;
           
           document.getElementById('pTitle').innerText = name;
           document.getElementById('playerRoot').style.display = 'flex';
-          
           const video = document.getElementById('video');
           
-          // O Segredo: O link cru entra dentro do seu link protegido
-          const rawUrl = type === 'live' 
-            ? `${rawStreamServer}/live/${user}/${pass}/${id}.m3u8`
-            : `${rawStreamServer}/movie/${user}/${pass}/${id}.${ext}`;
-          const secureUrl = `${proxyBase}${encodeURIComponent(rawUrl)}`;
+          // Montamos a URL passando direto para o nosso Proxy Reverso no Render
+          let secureUrl = '';
+          if (type === 'live') {
+              secureUrl = `${proxyBase}/live/${user}/${pass}/${id}.m3u8`;
+          } else if (type === 'series') {
+              secureUrl = `${proxyBase}/series/${user}/${pass}/${id}.${ext}`;
+          } else {
+              secureUrl = `${proxyBase}/movie/${user}/${pass}/${id}.${ext}`;
+          }
 
           if(STATE.hls) { STATE.hls.destroy(); STATE.hls = null; }
 
           if (type === 'live' && Hls.isSupported()) {
-              STATE.hls = new Hls({ backBufferLength: 30, maxBufferLength: 30 });
+              // ==========================================
+              // O RASTREADOR (Intercepta blocos .ts inseguros)
+              // ==========================================
+              STATE.hls = new Hls({ 
+                  backBufferLength: 30, 
+                  maxBufferLength: 30,
+                  xhrSetup: function(xhr, url) {
+                      // Se o Xtream tentar enviar você de volta pro HTTP puro do Wolverine, nós hackeamos o link:
+                      if (url.includes('playtvstreaming.shop') || url.startsWith('http://')) {
+                          // Extrai o caminho da URL original e injeta na API Consysencia
+                          try {
+                              const urlObj = new URL(url);
+                              url = `https://api.consysencia.com/stream_tunnel${urlObj.pathname}${urlObj.search}`;
+                          } catch(e) {}
+                      }
+                      xhr.open('GET', url, true);
+                  }
+              });
               STATE.hls.loadSource(secureUrl);
               STATE.hls.attachMedia(video);
               STATE.hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
           } else {
+              // Para Filmes e Séries (VOD), o Proxy Reverso dá conta sozinho
               video.src = secureUrl;
               video.play().catch(()=>{});
           }
@@ -353,13 +354,11 @@
           video.pause(); video.src = "";
           if(STATE.hls) { STATE.hls.destroy(); STATE.hls = null; }
           document.getElementById('playerRoot').style.display = 'none';
-          
           document.getElementById('main').appendChild(document.getElementById('catalogRoot'));
           STATE.mounted = true;
           raf(() => document.getElementById('catalogRoot').scrollTop = STATE.scrollTop || 0);
       };
 
-      // EVENTOS DE NAVEGAÇÃO
       document.getElementById('hamb').onclick = ()=> document.getElementById('sidebar').classList.toggle('open');
       document.querySelectorAll('.navItem[data-tab]').forEach(el => {
         el.onclick = () => {
@@ -378,21 +377,21 @@
           STATE.tSearch = setTimeout(renderTab, 300);
       };
 
-      // BOOT DE INICIALIZAÇÃO
       async function boot(){
         let db = await idbOpen();
         const cached = await idbGet(db, 'data');
         if(cached && cached.live_cat && cached.live_cat.length > 0){
             Object.assign(STATE, cached);
+            buildIndexes();
+            document.getElementById('loader').style.display = 'none';
+            renderTab();
+            loadBackgroundVOD(db);
         } else {
-            const fresh = await fetchData();
-            Object.assign(STATE, fresh);
-            await idbSet(db, 'data', fresh);
+            await loadLiveFirst(db);
+            document.getElementById('loader').style.display = 'none';
+            renderTab();
+            loadBackgroundVOD(db);
         }
-        db.close();
-        buildIndexes();
-        document.getElementById('loader').style.display = 'none';
-        renderTab();
       }
       boot();
     })();
