@@ -3,69 +3,38 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Consysencia | Portal Principal</title>
-
+  <title>Consysencia | Portal</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
-    
-    :root {
-      --bg: #070a0b; --text: #fff; --accent: #00ff88;
-    }
-
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+    :root { --bg: #070a0b; --text: #fff; --accent: #00ff88; }
     * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
     body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
-    /* TELA DE LOGIN */
-    #loginView { display: flex; min-height: 100vh; width: 100vw; align-items: center; justify-content: center; background: radial-gradient(circle at center, rgba(0,255,136,0.08), var(--bg)); padding: 20px; }
+    #loginView { display: flex; min-height: 100vh; width: 100vw; align-items: center; justify-content: center; padding: 20px; background: radial-gradient(circle at center, rgba(0,255,136,0.08), var(--bg)); }
     .login-box { background: #111; padding: 40px; border-radius: 16px; width: 100%; max-width: 400px; text-align: center; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-    .login-box h1 { font-weight: 900; margin-bottom: 10px; font-size: 2rem; letter-spacing: 1px; }
+    .login-box h1 { font-weight: 900; margin-bottom: 10px; font-size: 2rem; }
     .login-box h1 span { color: var(--accent); }
     .login-box p { color: #888; margin-bottom: 30px; font-size: 0.95rem; }
     
     .input-group { margin-bottom: 20px; text-align: left; }
-    .input-group label { display: block; margin-bottom: 8px; font-weight: bold; color: rgba(255,255,255,0.7); font-size: 0.9rem; }
+    .input-group label { display: block; margin-bottom: 8px; font-weight: bold; color: rgba(255,255,255,0.7); }
     .input-group input { width: 100%; padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); color: white; font-size: 1rem; outline: none; transition: 0.3s; }
-    .input-group input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0,255,136,0.2); }
-    
-    .btn-login { width: 100%; padding: 15px; background: var(--accent); color: black; font-weight: 900; font-size: 1.1rem; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,255,136,0.3); }
+    .input-group input:focus { border-color: var(--accent); }
+    .btn-login { width: 100%; padding: 15px; background: var(--accent); color: black; font-weight: 900; font-size: 1.1rem; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; }
 
-    /* TELA HUB (SELEÇÃO DE PLATAFORMA) */
-    #hubView { display: none; min-height: 100vh; width: 100vw; padding: 50px 20px; background: radial-gradient(circle at top, rgba(0,255,136,0.05), var(--bg)); }
-    .hub-header { text-align: center; margin-bottom: 50px; }
-    .hub-header h1 { font-size: 2.5rem; font-weight: 900; letter-spacing: 1px; }
+    #hubView { display: none; min-height: 100vh; padding: 40px 20px; }
+    .hub-header { text-align: center; margin-bottom: 40px; }
+    .hub-header h1 { font-size: 2.2rem; font-weight: 900; }
     .hub-header h1 span { color: var(--accent); }
-    .hub-header p { color: rgba(255,255,255,0.6); margin-top: 10px; font-size: 1.1rem; }
     
-    .hub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 20px; max-width: 900px; margin: 0 auto; }
-    
-    .hub-card { background: linear-gradient(145deg, #1a1a1a, #0d0d0d); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 40px 15px; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
-    .hub-card::before { content: ''; position: absolute; inset: 0; background: inherit; filter: blur(20px); opacity: 0; transition: 0.3s; z-index: 0; }
-    .hub-card:hover { transform: translateY(-8px); border-color: rgba(255,255,255,0.2); box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
-    .hub-card > * { z-index: 1; position: relative; }
-    .hub-card i { font-size: 3.5rem; transition: 0.3s; }
-    .hub-card span { font-weight: 900; font-size: 1.1rem; }
+    .hub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; max-width: 800px; margin: 0 auto; }
+    .hub-card { background: #111; border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 30px 15px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+    .hub-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); }
+    .hub-card i { font-size: 3rem; }
+    .hub-card span { font-weight: 800; }
 
-    /* CORES E EFEITOS DAS PLATAFORMAS */
-    .hc-live:hover { border-color: var(--accent); } .hc-live:hover i { color: var(--accent); transform: scale(1.1); }
-    .hc-netflix:hover { border-color: #E50914; } .hc-netflix:hover i { color: #E50914; transform: scale(1.1); }
-    .hc-disney:hover { border-color: #0063e5; } .hc-disney:hover i { color: #0063e5; transform: scale(1.1); }
-    .hc-prime:hover { border-color: #00A8E1; } .hc-prime:hover i { color: #00A8E1; transform: scale(1.1); }
-    .hc-hbo:hover { border-color: #8b5cf6; } .hc-hbo:hover i { color: #8b5cf6; transform: scale(1.1); }
-    .hc-globo:hover { border-color: #ff3d00; } .hc-globo:hover i { color: #ff3d00; transform: scale(1.1); }
-
-    .logout-wrap { text-align: center; margin-top: 60px; }
-    .btn-logout { background: transparent; color: rgba(255,68,68,0.8); border: 1px solid rgba(255,68,68,0.3); padding: 12px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 1rem; }
-    .btn-logout:hover { background: rgba(255,68,68,0.1); color: #ff4444; border-color: #ff4444; }
-
-    @media (max-width: 600px) {
-      .hub-grid { grid-template-columns: repeat(2, 1fr); }
-      .hub-card { padding: 30px 10px; }
-      .hub-card i { font-size: 2.8rem; }
-      .hub-card span { font-size: 1rem; }
-    }
+    .hc-live { color: var(--accent); } .hc-movie { color: #00A8E1; } .hc-series { color: #E50914; }
   </style>
 </head>
 <body>
@@ -73,15 +42,14 @@
 <div id="loginView">
     <div class="login-box">
         <h1><span>●</span> CONSYSENCIA</h1>
-        <p>Acesso ao Multiverso</p>
-        
+        <p>Acesso ao Sistema</p>
         <div class="input-group">
-            <label>Utilizador</label>
-            <input type="text" id="userInp" placeholder="O seu utilizador" autocomplete="off">
+            <label>Usuário</label>
+            <input type="text" id="userInp" autocomplete="off">
         </div>
         <div class="input-group">
-            <label>Palavra-passe</label>
-            <input type="password" id="passInp" placeholder="A sua palavra-passe">
+            <label>Senha</label>
+            <input type="password" id="passInp">
         </div>
         <button class="btn-login" onclick="doLogin()">Entrar</button>
     </div>
@@ -90,83 +58,46 @@
 <div id="hubView">
     <div class="hub-header">
         <h1><span>●</span> CONSYSENCIA</h1>
-        <p>O que pretende assistir hoje?</p>
+        <p style="color:#aaa; margin-top:5px;">O que você quer assistir?</p>
     </div>
-    
     <div class="hub-grid">
-        <div class="hub-card hc-live" onclick="goToApp('canais.html')">
-            <i class="fa-solid fa-tv"></i>
-            <span>TV ao Vivo</span>
+        <div class="hub-card hc-live" onclick="goTo('canais.html')">
+            <i class="fa-solid fa-tv"></i><span>TV ao Vivo</span>
         </div>
-        <div class="hub-card hc-netflix" onclick="goToApp('netflix.html')">
-            <i class="fa-brands fa-neos"></i>
-            <span>Netflix</span>
+        <div class="hub-card hc-movie" onclick="goTo('filmes.html')">
+            <i class="fa-solid fa-film"></i><span>Filmes</span>
         </div>
-        <div class="hub-card hc-disney" onclick="goToApp('disney.html')">
-            <i class="fa-brands fa-play"></i>
-            <span>Disney+</span>
+        <div class="hub-card hc-series" onclick="goTo('series.html')">
+            <i class="fa-solid fa-layer-group"></i><span>Séries</span>
         </div>
-        <div class="hub-card hc-prime" onclick="goToApp('prime.html')">
-            <i class="fa-brands fa-amazon"></i>
-            <span>Prime Video</span>
         </div>
-        <div class="hub-card hc-hbo" onclick="goToApp('hbo.html')">
-            <i class="fa-solid fa-m"></i>
-            <span>HBO Max</span>
-        </div>
-        <div class="hub-card hc-globo" onclick="goToApp('globo.html')">
-            <i class="fa-solid fa-g"></i>
-            <span>GloboPlay</span>
-        </div>
-    </div>
-
-    <div class="logout-wrap">
-        <button class="btn-logout" onclick="doLogout()"><i class="fa-solid fa-power-off"></i> Terminar Sessão</button>
+    <div style="text-align:center; margin-top:40px;">
+        <button onclick="localStorage.clear(); location.reload();" style="background:transparent; color:#ff4444; border:1px solid #ff4444; padding:10px 20px; border-radius:8px; font-weight:bold;">Sair da Conta</button>
     </div>
 </div>
 
 <script>
-    // Verifica se o utilizador já iniciou sessão
-    let savedUser = localStorage.getItem('cs_user');
-    let savedPass = localStorage.getItem('cs_pass');
+    let u = localStorage.getItem('cs_user');
+    let p = localStorage.getItem('cs_pass');
 
-    if (savedUser && savedPass) {
+    if (u && p) {
         document.getElementById('loginView').style.display = 'none';
         document.getElementById('hubView').style.display = 'block';
     }
 
     function doLogin() {
-        const u = document.getElementById('userInp').value.trim();
-        const p = document.getElementById('passInp').value.trim();
-        
-        if(!u || !p) {
-            alert("Por favor, preencha todos os campos.");
-            return;
-        }
-        
-        // Guarda no telemóvel
+        u = document.getElementById('userInp').value.trim();
+        p = document.getElementById('passInp').value.trim();
+        if(!u || !p) return alert("Preencha tudo.");
         localStorage.setItem('cs_user', u);
         localStorage.setItem('cs_pass', p);
-        
-        savedUser = u;
-        savedPass = p;
-        
-        // Transita para o Hub sem recarregar a página
         document.getElementById('loginView').style.display = 'none';
         document.getElementById('hubView').style.display = 'block';
     }
 
-    function doLogout() {
-        localStorage.clear();
-        window.location.reload();
-    }
-
-    // A MÁGICA DA NAVEGAÇÃO ENTRE FICHEIROS
-    function goToApp(fileName) {
-        // Redireciona para o ficheiro específico levando as credenciais
-        window.location.href = fileName + "?u=" + encodeURIComponent(savedUser) + "&p=" + encodeURIComponent(savedPass);
+    function goTo(page) {
+        window.location.href = `${page}?u=${encodeURIComponent(u)}&p=${encodeURIComponent(p)}`;
     }
 </script>
-
 </body>
 </html>
