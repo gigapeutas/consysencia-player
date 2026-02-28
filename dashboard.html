@@ -1,192 +1,817 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Play Consysencia | V5 Ultra</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <style>
-        /* ============================ CSS MICRO-DETALHISTA (PLUS) ============================ */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Play Consysencia | Ultra Performance</title>
 
-        :root {
-            --bg: #070a0b; --bg-2: #0b0f10; --text: #ffffff; --muted: rgba(255,255,255,.72);
-            --accent: #00ff88; --accent-2: rgba(0,255,136,.15); --radius: 10px; --radius-2: 14px;
-            --shadow-1: 0 8px 24px rgba(0,0,0,.35); --shadow-2: 0 12px 36px rgba(0,0,0,.55);
-            --nav-grad: linear-gradient(to bottom, rgba(0,0,0,0.85), transparent);
-            --btn-bg: rgba(255,255,255,.06); --btn-bd: rgba(255,255,255,.14);
-            --card-bg: rgba(255,255,255,.04); --card-bd: rgba(255,255,255,.08);
-            --menu-bg: rgba(0,0,0,.90);
-        }
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
-        /* TEMA NETFLIX: Vermelho Original + Bebas */
-        body[data-theme="netflix"] {
-            --bg: #141414; --bg-2: #0f0f0f; --accent: #E50914; --accent-2: rgba(229,9,20,.18);
-            --brand-font: "Bebas Neue", sans-serif;
-            --nav-grad: linear-gradient(to bottom, rgba(20,20,20,.92), transparent);
-        }
+  <style>
+    /* ============================
+       FONTS (Netflix/Prime)
+       ============================ */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
-        /* TEMA PRIME: Azul Amazon + Radius 12px */
-        body[data-theme="prime"] {
-            --bg: #0f171e; --bg-2: #0b1116; --accent: #00A8E1; --accent-2: rgba(0,168,225,.18);
-            --radius: 12px; --radius-2: 16px;
-            --nav-grad: linear-gradient(to bottom, rgba(15,23,30,.92), transparent);
-        }
+    /* ============================
+       TOKENS BASE + TEMAS
+       ============================ */
+    :root{
+      --bg: #070a0b;
+      --bg-2: #0b0f10;
+      --text: #ffffff;
+      --muted: rgba(255,255,255,.72);
 
-        /* TEMA DISNEY: Azul Royal */
-        body[data-theme="disney"] {
-            --bg: #1a1d29; --bg-2: #121422; --accent: #0063e5; --accent-2: rgba(0,99,229,.18);
-        }
+      --accent: #00ff88;
+      --accent-2: rgba(0,255,136,.15);
 
-        /* RESET E ESTRUTURA BASE */
-        *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); font-family: "Inter", sans-serif; overflow: hidden; transition: 0.35s; }
-        
-        /* NAVBAR E SIDEBAR */
-        .navbar { position: fixed; top: 0; width: 100%; height: 70px; display:flex; align-items:center; padding: 0 4%; gap: 16px; background: var(--nav-grad); z-index: 1000; backdrop-filter: blur(10px); }
-        .sidebar { position: fixed; left: -280px; top: 0; width: 280px; height: 100vh; background: var(--menu-bg); z-index: 2000; transition: left .26s cubic-bezier(.2,.8,.2,1); padding: 36px 18px; backdrop-filter: blur(14px); border-right: 1px solid rgba(255,255,255,0.1); }
-        .sidebar.open { left: 0; }
-        .sidebar h2 { color: var(--accent); margin-bottom: 26px; letter-spacing: 2px; font-weight: 900; transition: 0.3s; }
-        body[data-theme="netflix"] .sidebar h2 { font-family: var(--brand-font); font-size: 34px; letter-spacing: 2.2px; }
+      --radius: 10px;
+      --radius-2: 14px;
 
-        .menu-item { padding: 13px 12px; margin-bottom: 6px; border-radius: var(--radius); cursor: pointer; display:flex; align-items:center; gap: 12px; color: rgba(255,255,255,.62); transition: 0.2s; font-weight: 800; }
-        .menu-item.active { background: rgba(255,255,255,0.08); border-color: var(--accent-2); color: var(--accent); }
-        body[data-theme="netflix"] .menu-item:hover { background: rgba(229,9,20,.10); color: #fff; }
+      --shadow-1: 0 8px 24px rgba(0,0,0,.35);
+      --shadow-2: 0 12px 36px rgba(0,0,0,.55);
 
-        /* GRID E CARDS MILENARES */
-        #catalog-root { width: 100vw; height: 100vh; overflow-y: auto; padding-top: 80px; scroll-behavior: smooth; }
-        .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 18px; padding: 18px 4%; }
-        .card { background: var(--card-bg); border-radius: var(--radius); overflow: hidden; position: relative; aspect-ratio: 2/3; cursor: pointer; border: 1px solid var(--card-bd); transition: 0.2s; box-shadow: var(--shadow-1); }
-        .card.live { aspect-ratio: 16/9; }
-        .card:hover { border-color: var(--accent); transform: translateY(-4px) scale(1.04); z-index: 10; box-shadow: var(--shadow-2); }
-        .card img { width: 100%; height: 100%; object-fit: cover; }
-        .card-name { position: absolute; bottom: 0; width: 100%; padding: 16px 10px 8px; background: linear-gradient(to top, rgba(0,0,0,0.88), transparent); font-size: 11px; text-align: center; font-weight: 900; text-shadow: 0 2px 10px black; }
+      --focus: 0 0 0 2px rgba(0,255,136,.35), 0 0 22px rgba(0,255,136,.20);
 
-        /* PLAYER UNMOUNT */
-        #player-root { display:none; position: fixed; inset: 0; background: #000; z-index: 5000; }
-        .p-controls { position:absolute; top:0; width:100%; padding: 22px; display:flex; justify-content: space-between; align-items:center; z-index: 10; background: linear-gradient(rgba(0,0,0,0.92), transparent); }
-        video { width:100%; height:100%; object-fit: contain; }
-        .btn-back { background: var(--btn-bg); color: #fff; padding: 12px 16px; border-radius: var(--radius); font-weight: 900; border: 1px solid var(--btn-bd); cursor: pointer; transition: 0.2s; }
-        .btn-back:hover { background: var(--accent); color: black; }
+      --nav-grad: linear-gradient(to bottom, rgba(0,0,0,.85), rgba(0,0,0,.35), transparent);
 
-        /* LOADER */
-        .loader { position: fixed; inset: 0; background: var(--bg-2); display:flex; align-items:center; justify-content:center; z-index: 9000; color: var(--accent); font-weight: 900; flex-direction: column; gap: 14px; }
-        .spinner { width: 38px; height: 38px; border: 4px solid rgba(255,255,255,.10); border-top-color: var(--accent); border-radius: 50%; animation: spin .9s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-    </style>
+      --btn-bg: rgba(255,255,255,.06);
+      --btn-bd: rgba(255,255,255,.14);
+      --btn-hover: rgba(255,255,255,.10);
+
+      --card-bg: rgba(255,255,255,.04);
+      --card-bd: rgba(255,255,255,.08);
+
+      --menu-bg: rgba(0,0,0,.90);
+
+      --card-w: 160px;
+      --card-h: 240px;
+
+      --brand-font: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    /* Netflix */
+    body[data-theme="netflix"]{
+      --bg: #141414;
+      --bg-2: #0f0f0f;
+      --accent: #E50914;
+      --accent-2: rgba(229,9,20,.18);
+      --nav-grad: linear-gradient(to bottom, rgba(20,20,20,.92), rgba(20,20,20,.55), rgba(20,20,20,0));
+      --btn-bg: rgba(255,255,255,.06);
+      --btn-bd: rgba(255,255,255,.14);
+      --btn-hover: rgba(229,9,20,.12);
+      --card-bg: rgba(255,255,255,.035);
+      --card-bd: rgba(255,255,255,.09);
+      --menu-bg: rgba(10,10,10,.94);
+      --brand-font: "Bebas Neue", Impact, "Arial Black", system-ui, sans-serif;
+    }
+
+    /* Prime Video */
+    body[data-theme="prime"]{
+      --bg: #0f171e;
+      --bg-2: #0b1116;
+      --accent: #00A8E1;
+      --accent-2: rgba(0,168,225,.18);
+      --radius: 12px;
+      --radius-2: 16px;
+      --nav-grad: linear-gradient(to bottom, rgba(15,23,30,.92), rgba(15,23,30,.55), rgba(15,23,30,0));
+      --btn-bg: rgba(255,255,255,.05);
+      --btn-bd: rgba(255,255,255,.12);
+      --btn-hover: rgba(0,168,225,.12);
+      --card-bg: rgba(255,255,255,.035);
+      --card-bd: rgba(255,255,255,.085);
+      --menu-bg: rgba(7,12,16,.92);
+      --brand-font: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    /* Disney+ */
+    body[data-theme="disney"]{
+      --bg: #1a1d29;
+      --bg-2: #121422;
+      --accent: #0063e5;
+      --accent-2: rgba(0,99,229,.18);
+      --nav-grad: linear-gradient(to bottom, rgba(26,29,41,.92), rgba(26,29,41,.55), rgba(26,29,41,0));
+      --menu-bg: rgba(10,12,18,.92);
+      --brand-font: "Inter", system-ui, sans-serif;
+    }
+
+    /* ============================
+       RESET + BODY
+       ============================ */
+    *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+    html, body{ height:100%; }
+    body{
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      overflow: hidden;
+      transition: background-color .35s ease, color .35s ease;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+    :focus{ outline: none; }
+    :focus-visible{
+      box-shadow: var(--focus);
+      border-radius: 10px;
+    }
+
+    /* ============================
+       SIDEBAR
+       ============================ */
+    .sidebar{
+      position: fixed;
+      left: -280px;
+      top: 0;
+      width: 280px;
+      height: 100vh;
+      background: var(--menu-bg);
+      z-index: 2000;
+      transition: left .26s cubic-bezier(.2,.8,.2,1);
+      padding: 36px 18px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-right: 1px solid rgba(255,255,255,0.10);
+      box-shadow: 18px 0 40px rgba(0,0,0,.35);
+    }
+    .sidebar.open{ left: 0; }
+
+    .sidebar h2{
+      color: var(--accent);
+      margin-bottom: 26px;
+      letter-spacing: 2px;
+      font-weight: 900;
+    }
+    body[data-theme="netflix"] .sidebar h2{
+      font-family: var(--brand-font);
+      font-size: 34px;
+      letter-spacing: 2.2px;
+    }
+
+    .menu-item{
+      padding: 13px 12px;
+      margin-bottom: 6px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      display:flex;
+      align-items:center;
+      gap: 12px;
+      color: rgba(255,255,255,.62);
+      transition: background-color .16s ease, color .16s ease, transform .12s ease, border-color .16s ease;
+      font-weight: 800;
+      border: 1px solid transparent;
+      user-select: none;
+    }
+    .menu-item i{ opacity: .92; }
+    .menu-item:hover{
+      background: rgba(255,255,255,.06);
+      color: #fff;
+      transform: translateX(2px);
+    }
+    .menu-item.active{
+      background: rgba(255,255,255,.08);
+      border-color: var(--accent-2);
+      color: var(--accent);
+    }
+    body[data-theme="netflix"] .menu-item:hover{
+      background: rgba(229,9,20,.10);
+      border-color: rgba(229,9,20,.18);
+      color: #fff;
+    }
+    body[data-theme="netflix"] .menu-item.active{
+      background: rgba(229,9,20,.12);
+      border-color: rgba(229,9,20,.28);
+      color: #fff;
+    }
+    body[data-theme="prime"] .menu-item{ border-radius: 12px; }
+    body[data-theme="prime"] .menu-item:hover{
+      background: rgba(0,168,225,.10);
+      border-color: rgba(0,168,225,.18);
+      color: #fff;
+    }
+
+    /* ============================
+       CATALOGO
+       ============================ */
+    #catalog-root{
+      width: 100vw;
+      height: 100vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-top: 80px;
+      scroll-behavior: smooth;
+      overscroll-behavior: contain;
+    }
+
+    .navbar{
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 70px;
+      display:flex;
+      align-items:center;
+      padding: 0 4%;
+      gap: 16px;
+      background: var(--nav-grad);
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .btn-menu{
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--accent);
+      padding: 10px 12px;
+      border-radius: 12px;
+      transition: transform .12s ease, background-color .18s ease, color .18s ease;
+      background: transparent;
+    }
+    .btn-menu:hover{
+      background: var(--btn-hover);
+      transform: translateY(-1px);
+    }
+
+    #view-title{
+      font-weight: 900;
+      letter-spacing: .3px;
+      text-shadow: 0 2px 14px rgba(0,0,0,.45);
+    }
+    body[data-theme="netflix"] #view-title{
+      font-family: var(--brand-font);
+      font-size: 28px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+    body[data-theme="prime"] #view-title{
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
+
+    .grid{
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 18px;
+      padding: 18px 4%;
+    }
+
+    .card{
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      aspect-ratio: 2/3;
+      cursor: pointer;
+      border: 1px solid var(--card-bd);
+      transition: transform .16s ease, box-shadow .18s ease, border-color .18s ease, filter .18s ease;
+      will-change: transform;
+      box-shadow: 0 8px 18px rgba(0,0,0,.22);
+    }
+    .card.live{ aspect-ratio: 16/9; }
+
+    .card img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+
+    .card-name{
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 16px 10px 8px;
+      background: linear-gradient(to top, rgba(0,0,0,.88), rgba(0,0,0,.15), transparent);
+      font-size: 11px;
+      text-align: center;
+      font-weight: 900;
+      letter-spacing: .2px;
+      text-shadow: 0 2px 10px rgba(0,0,0,.55);
+    }
+
+    .card:hover{
+      border-color: var(--accent);
+      box-shadow: var(--shadow-2);
+      transform: translateY(-4px) scale(1.04);
+      z-index: 10;
+      filter: saturate(1.05);
+    }
+
+    body[data-theme="netflix"] .card:hover{
+      border-color: rgba(229,9,20,.90);
+      box-shadow: 0 14px 40px rgba(0,0,0,.62), 0 0 0 1px rgba(229,9,20,.20);
+    }
+    body[data-theme="prime"] .card{ border-radius: 12px; }
+    body[data-theme="prime"] .card:hover{
+      border-color: rgba(0,168,225,.85);
+      box-shadow: 0 14px 40px rgba(0,0,0,.62), 0 0 0 1px rgba(0,168,225,.18);
+    }
+
+    /* ============================
+       PLAYER (UNMOUNT MODE)
+       ============================ */
+    #player-root{
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 5000;
+    }
+    .p-controls{
+      position: absolute;
+      top: 0;
+      width: 100%;
+      padding: 22px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      background: linear-gradient(rgba(0,0,0,.92), rgba(0,0,0,.35), transparent);
+    }
+    video{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      outline: none;
+      background: #000;
+    }
+    .btn-back{
+      background: var(--btn-bg);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-weight: 900;
+      border: 1px solid var(--btn-bd);
+      cursor: pointer;
+      transition: transform .12s ease, background-color .16s ease, border-color .16s ease, box-shadow .16s ease;
+      box-shadow: 0 10px 22px rgba(0,0,0,.35);
+    }
+    .btn-back:hover{
+      background: var(--btn-hover);
+      border-color: var(--accent-2);
+      transform: translateY(-1px);
+    }
+    .btn-back:active{ transform: translateY(0px) scale(.99); }
+
+    body[data-theme="netflix"] .btn-back:hover{
+      background: rgba(229,9,20,.14);
+      border-color: rgba(229,9,20,.30);
+      box-shadow: 0 12px 28px rgba(0,0,0,.45), 0 0 0 1px rgba(229,9,20,.12);
+    }
+    body[data-theme="prime"] .btn-back{ border-radius: 12px; }
+
+    /* ============================
+       LOADER
+       ============================ */
+    .loader{
+      position: fixed;
+      inset: 0;
+      background: var(--bg-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9000;
+      color: var(--accent);
+      font-weight: 900;
+      flex-direction: column;
+      gap: 14px;
+      letter-spacing: .2px;
+    }
+    .spinner{
+      width: 38px;
+      height: 38px;
+      border: 4px solid rgba(255,255,255,.10);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .9s linear infinite;
+    }
+    @keyframes spin{ to{ transform: rotate(360deg); } }
+
+    @media (max-width: 520px){
+      .grid{ gap: 14px; padding: 16px 4%; }
+      body[data-theme="netflix"] #view-title{ font-size: 24px; }
+    }
+    @media (hover: none){
+      .card:hover{ transform: none; }
+      .btn-menu:hover{ transform:none; }
+      .btn-back:hover{ transform:none; }
+    }
+  </style>
 </head>
-<body>
 
-<div id="loader" class="loader"><div class="spinner"></div>Sincronizando Multiverso...</div>
+<body data-theme="netflix">
 
-<div id="sidebar" class="sidebar">
-    <h2 id="brand-name">CONSYSENCIA</h2>
-    <div class="menu-item active" onclick="loadTab('live', 'consysencia')"><i class="fa-solid fa-tv"></i> TV AO VIVO</div>
-    <div class="menu-item" onclick="loadTab('netflix', 'netflix')"><i class="fa-brands fa-neos"></i> NETFLIX</div>
-    <div class="menu-item" onclick="loadTab('prime', 'prime')"><i class="fa-brands fa-amazon"></i> PRIME VIDEO</div>
-    <div class="menu-item" onclick="loadTab('disney', 'disney')"><i class="fa-brands fa-play"></i> DISNEY+</div>
-    <div class="menu-item" style="margin-top:20px; color:#ff4444;" onclick="localStorage.clear(); location.href='index.html'"><i class="fa-solid fa-power-off"></i> SAIR</div>
-</div>
+  <div id="loader" class="loader">
+    <div class="spinner"></div>
+    Abrindo o Multiverso...
+  </div>
 
-<div id="catalog-root">
+  <div id="sidebar" class="sidebar">
+    <h2>CONSYSENCIA</h2>
+
+    <div class="menu-item active" onclick="loadTab('live','consysencia', this)">
+      <i class="fa-solid fa-tv"></i> TV AO VIVO
+    </div>
+
+    <div class="menu-item" onclick="loadTab('netflix','netflix', this)">
+      <i class="fa-brands fa-neos"></i> NETFLIX
+    </div>
+
+    <div class="menu-item" onclick="loadTab('prime','prime', this)">
+      <i class="fa-brands fa-amazon"></i> PRIME VIDEO
+    </div>
+
+    <div class="menu-item" onclick="loadTab('disney','disney', this)">
+      <i class="fa-brands fa-play"></i> DISNEY+
+    </div>
+
+    <div class="menu-item" style="margin-top:20px; color:#ff4444;" onclick="localStorage.clear(); location.href='index.html'">
+      <i class="fa-solid fa-power-off"></i> SAIR
+    </div>
+  </div>
+
+  <!-- CATALOGO ROOT (será UNMOUNTADO ao tocar vídeo) -->
+  <div id="catalog-root">
     <div class="navbar">
-        <div onclick="document.getElementById('sidebar').classList.toggle('open')" style="cursor:pointer; font-size: 22px; color: var(--accent);"><i class="fa-solid fa-bars"></i></div>
-        <h2 id="view-title">Canais ao Vivo</h2>
+      <div class="btn-menu" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+      <h2 id="view-title">Canais ao Vivo</h2>
     </div>
     <div class="grid" id="grid-content"></div>
-</div>
+  </div>
 
-<div id="player-root">
+  <!-- PLAYER ROOT -->
+  <div id="player-root">
     <div class="p-controls">
-        <button class="btn-back" onclick="closeVideo()"><i class="fa-solid fa-arrow-left"></i> VOLTAR</button>
-        <div id="v-title" style="font-weight: 900;"></div>
+      <button class="btn-back" onclick="closeVideo()">
+        <i class="fa-solid fa-arrow-left"></i> VOLTAR
+      </button>
+      <div id="v-title" style="font-weight:900; font-size: 1.1rem; letter-spacing:.2px;"></div>
     </div>
-    <video id="main-video" controls autoplay playsinline></video>
-</div>
+    <video id="main-video" controls autoplay playsinline webkit-playsinline></video>
+  </div>
 
 <script>
-    const user = localStorage.getItem('cs_user');
-    const pass = localStorage.getItem('cs_pass');
-    const api = 'https://api.consysencia.com/catalog';
-    const rawServer = 'http://ph1233.uk';
+/* ============================================================
+   PLAY CONSYSENCIA - DASHBOARD (Ultra-lean)
+   Fixes:
+   - Streaming base URL: PRIORIDADE playtvstreaming.shop
+   - Fuzzy category mapper: ignora emoji, espaços, símbolos; case-insensitive
+   - UNMOUNT real do catalog-root durante playback (RAM/CPU)
+   - Voltar remonta catálogo e restaura scroll instantâneo
+   - Failover automático (se o primário falhar, tenta secundário)
+   ============================================================ */
 
-    let DB = { live: [], vod: [], live_cat: [], vod_cat: [] };
+(function(){
+  'use strict';
 
-    async function init() {
-        if(!user) return location.href = 'index.html';
-        try {
-            const h = { 'Authorization': 'Basic ' + btoa(user + ':' + pass) };
-            const [lcat, lstr, vcat, vstr] = await Promise.all([
-                fetch(`${api}?action=get_live_categories`, {headers:h}).then(r=>r.json()),
-                fetch(`${api}?action=get_live_streams`, {headers:h}).then(r=>r.json()),
-                fetch(`${api}?action=get_vod_categories`, {headers:h}).then(r=>r.json()),
-                fetch(`${api}?action=get_vod_streams`, {headers:h}).then(r=>r.json())
-            ]);
-            DB = { live: lstr, vod: vstr, live_cat: lcat, vod_cat: vcat };
-            document.getElementById('loader').style.display = 'none';
-            loadTab('live', 'consysencia');
-        } catch(e) { alert("Erro de conexão."); }
+  const user = localStorage.getItem('cs_user');
+  const pass = localStorage.getItem('cs_pass');
+  const api  = 'https://api.consysencia.com/catalog';
+
+  // PRIORIDADE: primário primeiro (confirmado pelo usuário)
+  const STREAM_SERVERS = [
+    'http://playtvstreaming.shop', // primário (PRIORIDADE)
+    'http://ph1233.uk',            // secundário
+    'https://playtvstreaming.shop',
+    'https://ph1233.uk'
+  ];
+
+  // DB em memória (se quiser IDB, plugue aqui)
+  let DB = { live: [], vod: [], live_cat: [], vod_cat: [] };
+
+  // Estado SPA p/ restore instantâneo
+  const SPA = {
+    theme: 'consysencia',
+    type: 'live',
+    scrollTop: 0,
+    lastMenuEl: null,
+    lastItems: [],
+    catalogMounted: true,
+    catalogEl: null,
+    catalogParent: null,
+    gridEl: null,
+    viewTitleEl: null,
+    sidebarEl: null,
+  };
+
+  // Player state
+  let hls = null;
+  let failover = { idx: 0, urlParts: null };
+
+  // --------- Helpers (ultra-lean) ----------
+
+  function authHeaders(){
+    return { 'Authorization': 'Basic ' + btoa(user + ':' + pass) };
+  }
+
+  // remove diacritics + symbols + emojis, keep [a-z0-9]
+  function normKey(s){
+    if (!s) return '';
+    // NFKD breaks accent + many symbol forms; then strip non-alnum
+    return (''+s)
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')        // diacritics
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '');            // drop emojis, spaces, punctuation, etc
+  }
+
+  // fuzzy "contains" with aggressive normalization
+  function fuzzyIncludes(hay, needle){
+    const h = normKey(hay);
+    const n = normKey(needle);
+    return n && h.indexOf(n) !== -1;
+  }
+
+  // platform matcher: handles "🍿 NETFLIX - F2", "NETFLIX VOD", etc
+  function platformMatch(categoryName, platform){
+    const c = normKey(categoryName);
+
+    // compact synonyms (keep tiny for performance)
+    const p = platform.toLowerCase();
+    if (p === 'netflix') return c.indexOf('netflix') !== -1 || c.indexOf('nf') !== -1;
+    if (p === 'disney')  return c.indexOf('disney')  !== -1 || c.indexOf('disneyplus') !== -1 || c.indexOf('dplus') !== -1;
+    if (p === 'prime')   return c.indexOf('prime')   !== -1 || c.indexOf('primevideo') !== -1 || c.indexOf('amazon') !== -1;
+    return c.indexOf(normKey(platform)) !== -1;
+  }
+
+  function setActiveMenu(el){
+    document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+    if (el) el.classList.add('active');
+    SPA.lastMenuEl = el || null;
+  }
+
+  // requestAnimationFrame "micro-smooth" to avoid jank on old CPUs
+  function raf(fn){ requestAnimationFrame(fn); }
+
+  // --------- UNMOUNT / REMOUNT ----------
+
+  function unmountCatalog(){
+    if (!SPA.catalogMounted) return;
+    SPA.scrollTop = SPA.catalogEl ? SPA.catalogEl.scrollTop : 0;
+
+    // Remove do DOM (unmount físico)
+    if (SPA.catalogEl && SPA.catalogEl.parentNode) {
+      SPA.catalogEl.parentNode.removeChild(SPA.catalogEl);
+    }
+    SPA.catalogMounted = false;
+
+    // Opcional: libera imagens do grid para reduzir decoders em background
+    // (mantém o DOM fora, mas corta referências pesadas)
+    if (SPA.gridEl) SPA.gridEl.innerHTML = '';
+  }
+
+  function remountCatalog(){
+    if (SPA.catalogMounted) return;
+
+    if (SPA.catalogParent && SPA.catalogEl) {
+      SPA.catalogParent.appendChild(SPA.catalogEl);
+    }
+    SPA.catalogMounted = true;
+
+    // Re-render do último estado (instantâneo o suficiente)
+    renderTab(SPA.type, SPA.theme);
+
+    // Restore scroll após layout estar pronto
+    raf(() => {
+      if (SPA.catalogEl) SPA.catalogEl.scrollTop = SPA.scrollTop || 0;
+    });
+  }
+
+  // --------- Render Tab ----------
+
+  function renderTab(type, theme){
+    // tema (camaleão)
+    document.body.dataset.theme = theme;
+
+    SPA.type = type;
+    SPA.theme = theme;
+
+    const grid = SPA.gridEl;
+    const title = SPA.viewTitleEl;
+
+    // placeholder ultra leve
+    grid.innerHTML = '<div style="opacity:.75; padding:10px; font-weight:800; color: var(--muted);">Carregando trilha...</div>';
+
+    let items = [];
+
+    if (type === 'live') {
+      title.innerText = "Canais ao Vivo";
+      items = DB.live.slice(0, 400);
+    } else {
+      title.innerText = type.toUpperCase();
+
+      // fuzzy cat ids: ignora emojis/espaços/símbolos; case-insensitive
+      // pega todas as categorias VOD que "batem" com a plataforma
+      const validCatIds = [];
+      const cats = DB.vod_cat || [];
+      for (let i = 0; i < cats.length; i++) {
+        const c = cats[i];
+        if (platformMatch(c.category_name, type)) validCatIds.push(c.category_id);
+      }
+
+      // filtra streams VOD por category_id
+      const vod = DB.vod || [];
+      // Otimização: transformar validCatIds em Set (mas custo: alocação). Aqui vale:
+      const set = new Set(validCatIds);
+      const out = [];
+      for (let i = 0; i < vod.length; i++) {
+        const v = vod[i];
+        if (set.has(v.category_id)) out.push(v);
+      }
+      items = out;
     }
 
-    function loadTab(type, theme) {
-        document.getElementById('sidebar').classList.remove('open');
-        document.body.dataset.theme = theme;
-        
-        const grid = document.getElementById('grid-content');
-        const title = document.getElementById('view-title');
-        grid.innerHTML = '<p>Carregando...</p>';
-        
-        let items = [];
-        if(type === 'live') {
-            title.innerText = "Canais ao Vivo";
-            items = DB.live.slice(0, 400);
-        } else {
-            title.innerText = type.toUpperCase();
-            // FILTRO CASE-INSENSITIVE PARA PASTAS
-            const validCats = DB.vod_cat.filter(c => c.category_name.toLowerCase().includes(type.toLowerCase())).map(c => c.category_id);
-            items = DB.vod.filter(v => validCats.includes(v.category_id));
+    SPA.lastItems = items;
+
+    // render leve (string join)
+    grid.innerHTML = items.map(item => {
+      const safeName = (item.name || '').replace(/'/g, "");
+      const icon = item.stream_icon || '';
+      const ext = item.container_extension || 'mp4';
+      const sid = item.stream_id;
+      return `
+        <div class="card ${type === 'live' ? 'live' : 'vod'}"
+             onclick="openVideo('${sid}', '${safeName}', '${type}', '${ext}')">
+          <img src="${icon}" loading="lazy" decoding="async"
+               onerror="this.src='https://placehold.co/400x600/111/fff?text=Play'">
+          <div class="card-name">${safeName}</div>
+        </div>
+      `;
+    }).join('');
+
+    // restore scroll if needed (when tab re-rendered during remount)
+    raf(() => {
+      if (SPA.catalogEl) SPA.catalogEl.scrollTop = SPA.scrollTop || 0;
+    });
+  }
+
+  // public API (called by inline onclick)
+  window.loadTab = function(type, theme, menuEl){
+    SPA.sidebarEl.classList.remove('open');
+    setActiveMenu(menuEl || null);
+
+    // ensure catalog is mounted (if user changes tab after back)
+    if (!SPA.catalogMounted) remountCatalog();
+
+    // snap scroll reset when switching tabs
+    SPA.scrollTop = 0;
+    if (SPA.catalogEl) SPA.catalogEl.scrollTop = 0;
+
+    renderTab(type, theme);
+  };
+
+  // --------- Streaming URL Builder + Failover ----------
+
+  function buildStreamUrl(serverBase, type, id, ext){
+    // XTREAM endpoints: live => /live/u/p/id.m3u8 ; vod => /movie/u/p/id.ext
+    if (type === 'live') return serverBase + '/live/' + encodeURIComponent(user) + '/' + encodeURIComponent(pass) + '/' + id + '.m3u8';
+    return serverBase + '/movie/' + encodeURIComponent(user) + '/' + encodeURIComponent(pass) + '/' + id + '.' + (ext || 'mp4');
+  }
+
+  function destroyPlayerHard(){
+    const video = document.getElementById('main-video');
+    try { video.pause(); } catch(e){}
+    try { video.removeAttribute('src'); } catch(e){}
+    try { video.load(); } catch(e){}
+    if (hls) {
+      try { hls.destroy(); } catch(e){}
+      hls = null;
+    }
+  }
+
+  function tryPlayWithFailover(){
+    const video = document.getElementById('main-video');
+    const parts = failover.urlParts;
+    if (!parts) return;
+
+    // reached end?
+    if (failover.idx >= STREAM_SERVERS.length) {
+      alert('Falha ao reproduzir. Nenhum servidor respondeu.');
+      return;
+    }
+
+    const serverBase = STREAM_SERVERS[failover.idx++];
+    const url = buildStreamUrl(serverBase, parts.type, parts.id, parts.ext);
+
+    // clean previous
+    destroyPlayerHard();
+
+    // Attempt playback
+    if (parts.type === 'live' && window.Hls && Hls.isSupported()) {
+      hls = new Hls({
+        enableWorker: true,
+        lowLatencyMode: false,
+        backBufferLength: 30,
+        maxBufferLength: 30,
+        maxMaxBufferLength: 60
+      });
+
+      hls.loadSource(url);
+      hls.attachMedia(video);
+
+      const onHlsError = (evt, data) => {
+        // retry on fatal (typical "black screen" scenarios)
+        if (data && data.fatal) {
+          try { hls.destroy(); } catch(e){}
+          hls = null;
+          // next server
+          tryPlayWithFailover();
         }
+      };
 
-        grid.innerHTML = items.map(item => `
-            <div class="card ${type === 'live' ? 'live' : 'vod'}" onclick="openVideo('${item.stream_id}', '${item.name.replace(/'/g, "")}', '${type}', '${item.container_extension || 'mp4'}')">
-                <img src="${item.stream_icon}" loading="lazy" onerror="this.src='https://placehold.co/400x600/111/fff?text=Play'">
-                <div class="card-name">${item.name}</div>
-            </div>
-        `).join('');
+      hls.on(Hls.Events.ERROR, onHlsError);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        video.play().catch(() => {});
+      });
 
-        document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-        if(event && event.currentTarget) event.currentTarget.classList.add('active');
+    } else {
+      // Native playback path
+      video.src = url;
+      const p = video.play();
+      if (p && p.catch) p.catch(() => {});
+
+      // onerror => fallback server
+      video.onerror = () => {
+        // next server
+        tryPlayWithFailover();
+      };
     }
+  }
 
-    let hls;
-    function openVideo(id, name, type, ext) {
-        document.getElementById('catalog-root').style.display = 'none'; // Unmount visual
-        document.getElementById('player-root').style.display = 'flex';
-        document.getElementById('v-title').innerText = name;
-        
-        const video = document.getElementById('main-video');
-        const url = type === 'live' ? `${rawServer}/live/${user}/${pass}/${id}.m3u8` : `${rawServer}/movie/${user}/${pass}/${id}.${ext}`;
+  // --------- OPEN / CLOSE VIDEO (UNMOUNT) ----------
 
-        if(type === 'live' && Hls.isSupported()) {
-            if(hls) hls.destroy();
-            hls = new Hls();
-            hls.loadSource(url);
-            hls.attachMedia(video);
-            hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-        } else { video.src = url; video.play(); }
+  window.openVideo = function(id, name, type, ext){
+    // UNMOUNT catálogo -> player único na CPU
+    unmountCatalog();
+
+    // show player
+    const playerRoot = document.getElementById('player-root');
+    playerRoot.style.display = 'block';
+
+    document.getElementById('v-title').innerText = name || '';
+
+    // store parts and start failover (primário primeiro)
+    failover.idx = 0;
+    failover.urlParts = { id, name, type, ext };
+
+    // micro-smooth: start play on next frame (helps some TVs avoid black flash)
+    raf(() => {
+      tryPlayWithFailover();
+    });
+  };
+
+  window.closeVideo = function(){
+    // hard stop player
+    destroyPlayerHard();
+
+    // hide player
+    document.getElementById('player-root').style.display = 'none';
+
+    // REMOUNT catálogo + restore scroll instantâneo
+    remountCatalog();
+  };
+
+  // --------- INIT ----------
+
+  async function init(){
+    if (!user || !pass) return location.href = 'index.html';
+
+    // cache DOM refs
+    SPA.catalogEl = document.getElementById('catalog-root');
+    SPA.catalogParent = SPA.catalogEl.parentNode;
+    SPA.gridEl = document.getElementById('grid-content');
+    SPA.viewTitleEl = document.getElementById('view-title');
+    SPA.sidebarEl = document.getElementById('sidebar');
+
+    try{
+      const h = authHeaders();
+      const [lcat, lstr, vcat, vstr] = await Promise.all([
+        fetch(api + '?action=get_live_categories', { headers: h }).then(r => r.json()),
+        fetch(api + '?action=get_live_streams',    { headers: h }).then(r => r.json()),
+        fetch(api + '?action=get_vod_categories',  { headers: h }).then(r => r.json()),
+        fetch(api + '?action=get_vod_streams',     { headers: h }).then(r => r.json())
+      ]);
+
+      DB = { live: lstr || [], vod: vstr || [], live_cat: lcat || [], vod_cat: vcat || [] };
+
+      document.getElementById('loader').style.display = 'none';
+
+      // default
+      window.loadTab('live', 'consysencia', document.querySelector('.menu-item.active'));
+
+    }catch(e){
+      alert('Erro ao carregar catálogo. Verifique sua conexão.');
     }
+  }
 
-    function closeVideo() {
-        const video = document.getElementById('main-video');
-        video.pause(); video.src = "";
-        if(hls) hls.destroy();
-        document.getElementById('player-root').style.display = 'none';
-        document.getElementById('catalog-root').style.display = 'block';
-    }
-
-    init();
+  init();
+})();
 </script>
+
 </body>
 </html>
