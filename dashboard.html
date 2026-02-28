@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Play Consysencia | O Multiverso</title>
+    <title>Play Consysencia | Ultra</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
@@ -14,17 +14,20 @@
         body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; overflow-x: hidden; transition: background-color 0.5s ease; }
         ::-webkit-scrollbar { display: none; } 
 
-        /* ESTADOS DE TELA (A SUA IDEIA DE LEVEZA) */
+        /* OTIMIZAÇÃO EXTREMA DE RENDERIZAÇÃO */
+        .carousel { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0 20px 0; scroll-behavior: smooth; content-visibility: auto; contain-intrinsic-size: 250px; }
+        .card img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; will-change: transform, opacity; }
+
+        /* ESTADOS DE TELA (SPA) */
         .view-state { display: none; width: 100%; transition: opacity 0.3s ease; }
         .view-state.active { display: block; animation: fadeIn 0.4s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* MODO CINEMA (TELA PRETA) */
+        /* MODO CINEMA */
         #cinema-mode { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 999999; flex-direction: column; display: none;}
         .cinema-header { position: absolute; top: 0; left: 0; width: 100%; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); z-index: 10; transition: opacity 0.3s; }
         .cinema-header.hidden { opacity: 0; pointer-events: none; }
         .cinema-title { font-size: 18px; font-weight: bold; text-shadow: 1px 1px 3px black; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60vw; }
-        .cinema-controls { display: flex; gap: 15px; }
         .btn-cinema { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; backdrop-filter: blur(5px); display: flex; align-items: center; gap: 8px;}
         .btn-cinema:hover { background: var(--accent-color); color: black; border-color: var(--accent-color); }
         #video-element { width: 100%; height: 100%; object-fit: contain; outline: none; }
@@ -44,30 +47,26 @@
         .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, var(--bg-color) 0%, rgba(11,15,18,0.2) 100%);}
         .hero-content { position: relative; z-index: 10; width: 100%; }
         
-        /* BARRA DE PESQUISA SUPREMA */
+        /* BARRA DE PESQUISA */
         .search-box { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); padding: 15px 25px; border-radius: 30px; display: flex; align-items: center; gap: 15px; width: 100%; max-width: 600px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: -25px; position: relative; z-index: 30; }
         .search-box i { color: var(--accent-color); font-size: 20px; }
         .search-box input { background: transparent; border: none; outline: none; color: white; font-size: 16px; width: 100%; font-family: 'Inter', sans-serif;}
-        .search-box input::placeholder { color: #888; }
-
-        /* TRILHAS ESTILO NETFLIX (LEVES) */
+        
         .content-section { padding: 0 4%; margin-top: 40px; position: relative; z-index: 20; }
         .row-container { margin-bottom: 40px; }
         .row-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; }
         .row-title { font-size: 20px; font-weight: 700; color: #fff; text-shadow: 1px 1px 5px black; }
-        .carousel { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0 20px 0; scroll-behavior: smooth; }
         
-        /* A GRADE ISOLADA (O Redirecionamento Invisível) */
+        /* A GRADE ISOLADA */
         .grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; padding-top: 20px; }
-        .grid-header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; margin-top: 20px; grid-column: 1 / -1;}
+        .grid-header { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 30px; margin-top: 20px; grid-column: 1 / -1;}
         .btn-back-grid { background: rgba(255,255,255,0.1); padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; border: 1px solid rgba(255,255,255,0.2); color: white; display:flex; gap:10px; align-items:center; transition:0.2s;}
         .btn-back-grid:hover { background: var(--accent-color); color: black; border-color: var(--accent-color);}
 
-        /* OS CARDS UNIVERSAIS */
+        /* OS CARDS */
         .card { flex: 0 0 auto; background: #111; border-radius: 10px; overflow: hidden; position: relative; cursor: pointer; display:flex; align-items:center; justify-content:center; border: 2px solid transparent; transition: transform 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
         .card.live { width: 220px; aspect-ratio: 16/9; } 
         .card.vod { width: 140px; aspect-ratio: 2/3; } 
-        .card img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; }
         .card-name { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%); padding: 30px 10px 12px 10px; font-size: 12px; font-weight: 700; text-align: center; color: white; z-index: 2; }
         .card:hover { transform: scale(1.05); border-color: var(--accent-color); z-index: 10; box-shadow: 0 15px 30px rgba(0,0,0,0.8);}
         
@@ -75,18 +74,13 @@
         .card-more i { font-size: 24px; }
         .card-more:hover { background: var(--accent-color); color: #000; }
 
-        /* MODAL DE SÉRIES */
-        #series-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px);}
-        .series-box { background: #0f1115; width: 100%; max-width: 900px; height: 85vh; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; overflow: hidden;}
-        .series-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .episodes-list { padding: 20px; overflow-y: auto; flex-grow: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-        .ep-card { background: #1a1d24; padding: 15px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
-        .ep-card:hover { border-color: var(--accent-color); transform: translateY(-3px);}
-
-        /* LOADER */
-        .loader { position: fixed; top:0; left:0; width:100%; height:100%; background:#070a0b; z-index:100000; display:flex; justify-content:center; align-items:center; flex-direction: column; gap: 20px; }
+        /* LOADER SILENCIOSO NO TOPO */
+        .loader-bar { position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: var(--accent-color); z-index: 999999; transform-origin: left; animation: loadingBar 2s infinite alternate; display: none; }
+        @keyframes loadingBar { 0% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
+        
+        /* TELA DE INÍCIO GIGANTE (Só aparece na 1ª vez na vida) */
+        .loader-fullscreen { position: fixed; top:0; left:0; width:100%; height:100%; background:#070a0b; z-index:100000; display:flex; justify-content:center; align-items:center; flex-direction: column; gap: 20px; }
         .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.1); border-top-color: var(--accent-color); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
 
         @media (max-width: 900px) {
             .sidebar { transform: translateX(-100%); width: 280px; }
@@ -101,14 +95,12 @@
 </head>
 <body>
 
-    <div id="mobile-overlay" onclick="toggleMenu()"></div>
-    <div class="mobile-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></div>
-
-    <div class="loader" id="loader">
+    <div class="loader-bar" id="silent-loader"></div>
+    <div class="loader-fullscreen" id="loader-fullscreen">
         <div class="spinner"></div>
         <div style="color: white; font-weight: bold; text-align: center;" id="loader-text">
-            Conectando Servidores...<br>
-            <span style="font-size:12px; color:#888;">Preparando o Motor de Busca Universal</span>
+            Construindo o Cofre Físico...<br>
+            <span style="font-size:12px; color:#888;">Isso só acontece na sua primeira visita.</span>
         </div>
     </div>
 
@@ -117,46 +109,30 @@
             <div class="cinema-title" id="cinema-title">Carregando...</div>
             <div class="cinema-controls">
                 <button class="btn-cinema" onclick="toggleFullscreen()"><i class="fa-solid fa-expand"></i> <span>Tela Cheia</span></button>
-                <button class="btn-cinema" style="background: rgba(255,0,0,0.2); border-color: rgba(255,0,0,0.5);" onclick="closeCinema()">
-                    <i class="fa-solid fa-arrow-left"></i> <span>Voltar</span>
-                </button>
+                <button class="btn-cinema" style="background: rgba(255,0,0,0.2); border-color: rgba(255,0,0,0.5);" onclick="closeCinema()"><i class="fa-solid fa-arrow-left"></i> <span>Voltar</span></button>
             </div>
         </div>
         <video id="video-element" controls autoplay></video>
     </div>
 
-    <div id="series-modal">
-        <div class="series-box">
-            <div class="series-header">
-                <h2 id="series-title">Episódios</h2>
-                <button class="btn-back-grid" onclick="document.getElementById('series-modal').style.display = 'none';"><i class="fa-solid fa-xmark"></i> FECHAR</button>
-            </div>
-            <div class="episodes-list" id="episodes-container"></div>
-        </div>
-    </div>
-
+    <div id="mobile-overlay" onclick="toggleMenu()"></div>
+    <div class="mobile-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></div>
     <div class="sidebar" id="sidebar">
         <div class="brand">Play<br><span>Consysencia</span></div>
         <div class="menu-item active" onclick="changeTheme('consysencia', 'TV ao Vivo', 'live')"><i class="fa-solid fa-tv"></i> TV ao Vivo</div>
         <div class="menu-item" onclick="changeTheme('consysencia', 'Filmes e Séries', 'vod_all')"><i class="fa-solid fa-film"></i> Todo o Catálogo</div>
-        
         <div style="padding: 25px 25px 10px 25px; font-size: 11px; color: #666; font-weight: 800; letter-spacing: 2px;">PLATAFORMAS</div>
         <div class="menu-item" onclick="changeTheme('netflix', 'Netflix', 'netflix')"><i class="fa-brands fa-neos"></i> Netflix</div>
         <div class="menu-item" onclick="changeTheme('prime', 'Prime Video', 'prime')"><i class="fa-brands fa-amazon"></i> Prime Video</div>
         <div class="menu-item" onclick="changeTheme('disney', 'Disney+', 'disney')"><i class="fa-brands fa-disney"></i> Disney+</div>
-        <div class="menu-item" onclick="changeTheme('max', 'HBO Max', 'hbo')"><i class="fa-solid fa-m"></i> HBO Max</div>
-        <div class="menu-item" onclick="changeTheme('globo', 'Globoplay', 'globo')"><i class="fa-solid fa-g"></i> Globoplay</div>
-        <div style="flex-grow: 1;"></div>
-        <div class="menu-item" style="color: #ff4444;" onclick="localStorage.clear(); window.location.href='index.html';"><i class="fa-solid fa-power-off"></i> Sair</div>
+        <div class="menu-item" style="color: #ff4444; margin-top:auto;" onclick="localStorage.clear(); window.location.href='index.html';"><i class="fa-solid fa-power-off"></i> Sair</div>
     </div>
 
     <div class="main-content" id="main-content">
-        
         <header class="hero" id="hero-banner">
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <h1 class="hero-title" id="hero-title" style="color:white; text-shadow: 2px 4px 15px rgba(0,0,0,0.9);">Carregando...</h1>
-                
                 <div class="search-box">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text" id="search-input" placeholder="Buscar filmes, séries, canais..." onkeyup="handleSearch(this.value)">
@@ -168,12 +144,11 @@
         
         <section class="content-section view-state" id="view-grid">
             <div class="grid-header">
-                <button class="btn-back-grid" onclick="showHome()"><i class="fa-solid fa-arrow-left"></i> Voltar ao Início</button>
+                <button class="btn-back-grid" onclick="showHome()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
                 <h2 class="row-title" id="grid-title">Resultados</h2>
             </div>
             <div class="grid-view" id="grid-content"></div>
         </section>
-
     </div>
 
     <script>
@@ -184,54 +159,141 @@
 
         if(!user) window.location.href = 'index.html';
 
-        // O MOTOR DE DADOS NA MEMÓRIA
-        const DB = { live_cat: [], live_streams: [], vod_cat: [], vod_streams: [], series_cat: [], series: [] };
-        
+        // O MOTOR DE DADOS GLOBAIS
+        let DB = { live_cat: [], live_streams: [], vod_cat: [], vod_streams: [] };
+        let worker; // Nosso Cérebro Paralelo
+
         const THEMES = {
             'consysencia': { bg: '#070a0b', accent: '#00ff88', hero: 'https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80' },
             'netflix': { bg: '#0a0a0a', accent: '#E50914', hero: 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?q=80' },
             'prime': { bg: '#0b1319', accent: '#00A8E1', hero: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80' },
-            'disney': { bg: '#040714', accent: '#0063e5', hero: 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80' },
-            'max': { bg: '#050014', accent: '#9900FF', hero: 'https://images.unsplash.com/photo-1505686994434-e3cc5abf1330?q=80' },
-            'globo': { bg: '#101010', accent: '#FF0054', hero: 'https://images.unsplash.com/photo-1601042879364-f3947d3f9c16?q=80' }
+            'disney': { bg: '#040714', accent: '#0063e5', hero: 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80' }
         };
+
+        // ==========================================
+        // PODER 1: O COFRE FÍSICO (IndexedDB Nativo)
+        // ==========================================
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open("ConsysenciaVault", 1);
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains("catalog")) {
+                        db.createObjectStore("catalog");
+                    }
+                };
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject("Erro no Cofre");
+            });
+        }
+
+        async function saveToVault(data) {
+            const db = await initDB();
+            const tx = db.transaction("catalog", "readwrite");
+            tx.objectStore("catalog").put(data, "full_db");
+        }
+
+        async function loadFromVault() {
+            const db = await initDB();
+            return new Promise((resolve) => {
+                const tx = db.transaction("catalog", "readonly");
+                const request = tx.objectStore("catalog").get("full_db");
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => resolve(null);
+            });
+        }
 
         async function fetchAPI(action) {
             const res = await fetch(`${apiBase}?action=${action}`, { headers: { 'Authorization': 'Basic ' + btoa(user + ':' + pass) } });
             return res.json();
         }
 
-        async function loadEverything() {
-            try {
-                [DB.live_cat, DB.live_streams, DB.vod_cat, DB.vod_streams, DB.series_cat, DB.series] = await Promise.all([
-                    fetchAPI('get_live_categories'), fetchAPI('get_live_streams'),
-                    fetchAPI('get_vod_categories'), fetchAPI('get_vod_streams'),
-                    fetchAPI('get_series_categories'), fetchAPI('get_series')
-                ]);
-                document.getElementById('loader').style.display = 'none';
+        // A MÁGICA DA SINCRONIZAÇÃO INVISÍVEL
+        async function loadAppEngine() {
+            const localData = await loadFromVault();
+            
+            if (localData && localData.live_cat.length > 0) {
+                // SE JÁ TEM NO COFRE: Carrega na velocidade da luz!
+                DB = localData;
+                document.getElementById('loader-fullscreen').style.display = 'none';
                 changeTheme('consysencia', 'TV ao Vivo', 'live');
-            } catch(e) { document.getElementById('loader-text').innerHTML = "<span style='color:red;'>Erro ao baixar banco de dados.</span>"; }
-        }
-
-        function toggleMenu(forceClose = false) {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('mobile-overlay');
-            if(forceClose || sidebar.classList.contains('open')) {
-                sidebar.classList.remove('open'); overlay.style.opacity = '0'; setTimeout(() => overlay.style.display = 'none', 300);
+                initWebWorker();
+                
+                // Vai na internet escondido só pra ver se tem filme novo
+                document.getElementById('silent-loader').style.display = 'block';
+                await syncSilently();
             } else {
-                sidebar.classList.add('open'); overlay.style.display = 'block'; setTimeout(() => overlay.style.opacity = '1', 10);
+                // PRIMEIRA VEZ NA VIDA: Baixa tudo e guarda no cofre.
+                await syncSilently();
+                document.getElementById('loader-fullscreen').style.display = 'none';
+                changeTheme('consysencia', 'TV ao Vivo', 'live');
+                initWebWorker();
             }
         }
 
+        async function syncSilently() {
+            try {
+                const [lc, ls, vc, vs] = await Promise.all([
+                    fetchAPI('get_live_categories'), fetchAPI('get_live_streams'),
+                    fetchAPI('get_vod_categories'), fetchAPI('get_vod_streams')
+                ]);
+                DB = { live_cat: lc, live_streams: ls, vod_cat: vc, vod_streams: vs };
+                await saveToVault(DB); // Tranca no cofre
+                document.getElementById('silent-loader').style.display = 'none';
+            } catch (e) { console.log("Erro na sync silenciosa."); }
+        }
+
         // ==========================================
-        // O GERENCIADOR DE ESTADOS (Sua Ideia Mestra)
+        // PODER 2: O CÉREBRO PARALELO (Web Worker Inline)
+        // ==========================================
+        function initWebWorker() {
+            // Escrevemos o código de um robô trabalhador e injetamos na memória do navegador
+            const workerCode = `
+                self.onmessage = function(e) {
+                    const { query, db } = e.data;
+                    const q = query.toLowerCase();
+                    let htmlStr = '';
+                    let count = 0;
+
+                    const buildCard = (stream, typeClass, extDefault) => {
+                        const id = stream.stream_id;
+                        const name = (stream.name || 'Desconhecido').replace(/'/g, "\\\\'");
+                        const icon = stream.stream_icon || '';
+                        const ext = stream.container_extension || extDefault;
+                        const action = \`openCinema(\${id}, '\${name}', '\${typeClass}', '\${ext}')\`;
+                        return \`<div class="card \${typeClass}" onclick="\${action}" style="width:100%; aspect-ratio: \${typeClass==='live'?'16/9':'2/3'};"><img src="\${icon}" loading="lazy" onerror="this.style.display='none'"><div class="card-name">\${name}</div></div>\`;
+                    };
+
+                    db.live_streams.forEach(s => { if(count < 80 && s.name.toLowerCase().includes(q)) { htmlStr += buildCard(s, 'live', ''); count++; } });
+                    db.vod_streams.forEach(s => { if(count < 80 && (s.name||'').toLowerCase().includes(q)) { htmlStr += buildCard(s, 'vod', 'mp4'); count++; } });
+
+                    self.postMessage(htmlStr || "<h3 style='grid-column: 1/-1;'>Nenhum resultado.</h3>");
+                };
+            `;
+            const blob = new Blob([workerCode], { type: 'application/javascript' });
+            worker = new Worker(URL.createObjectURL(blob));
+            
+            // Quando o robô termina a pesquisa, ele devolve o HTML pronto pra tela
+            worker.onmessage = function(e) {
+                showGrid("Resultados da Busca", e.data);
+                document.getElementById('silent-loader').style.display = 'none';
+            };
+        }
+
+        function handleSearch(query) {
+            if (query.length < 3) { if(query.length === 0) showHome(); return; }
+            document.getElementById('silent-loader').style.display = 'block'; // Mostra que o robô tá pensando
+            // Manda a missão pro robô paralelo
+            worker.postMessage({ query: query, db: DB });
+        }
+
+
+        // ==========================================
+        // ESTADOS DA SPA (A Navegação Invisível)
         // ==========================================
         function showHome() {
             document.getElementById('view-grid').classList.remove('active');
-            setTimeout(() => {
-                document.getElementById('view-home').classList.add('active');
-                document.getElementById('search-input').value = ''; // Limpa a busca ao voltar
-            }, 50);
+            setTimeout(() => { document.getElementById('view-home').classList.add('active'); }, 50);
         }
 
         function showGrid(title, htmlContent) {
@@ -244,39 +306,20 @@
             }, 50);
         }
 
-        // ==========================================
-        // O MOTOR DE BUSCA UNIVERSAL
-        // ==========================================
-        function handleSearch(query) {
-            if (query.length < 3) { if(query.length === 0) showHome(); return; } // Só busca se tiver 3+ letras
-            
-            const q = query.toLowerCase();
-            let htmlStr = '';
-            let count = 0;
-
-            const buildCard = (stream, typeClass, extDefault) => {
-                const id = stream.stream_id || stream.series_id;
-                const name = (stream.name || stream.title).replace(/'/g, "\\'");
-                const icon = stream.stream_icon || stream.cover || '';
-                const ext = stream.container_extension || extDefault;
-                const action = typeClass === 'series' ? `openSeries(${id}, '${name}')` : `openCinema(${id}, '${name}', '${typeClass}', '${ext}')`;
-                return `<div class="card ${typeClass}" onclick="${action}" style="width:100%; aspect-ratio: ${typeClass==='live'?'16/9':'2/3'};"><img src="${icon}" loading="lazy" onerror="this.style.display='none'"><div class="card-name">${name}</div></div>`;
-            };
-
-            // Varrer o Cofre Inteiro! (Limite de 100 resultados para não travar a busca)
-            DB.live_streams.forEach(s => { if(count < 100 && s.name.toLowerCase().includes(q)) { htmlStr += buildCard(s, 'live', ''); count++; } });
-            DB.vod_streams.forEach(s => { if(count < 100 && (s.name||'').toLowerCase().includes(q)) { htmlStr += buildCard(s, 'vod', 'mp4'); count++; } });
-            DB.series.forEach(s => { if(count < 100 && (s.title||s.name||'').toLowerCase().includes(q)) { htmlStr += buildCard(s, 'series', ''); count++; } });
-
-            showGrid(`Resultados para: "${query}"`, htmlStr || "<h3 style='grid-column: 1/-1;'>Nenhum resultado encontrado.</h3>");
+        function toggleMenu(forceClose = false) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+            if(forceClose || sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open'); overlay.style.opacity = '0'; setTimeout(() => overlay.style.display = 'none', 300);
+            } else { sidebar.classList.add('open'); overlay.style.display = 'block'; setTimeout(() => overlay.style.opacity = '1', 10); }
         }
 
         // ==========================================
-        // RENDERIZAÇÃO DAS TRILHAS (LEVE E RÁPIDO)
+        // RENDERIZAÇÃO INTELIGENTE DA VITRINE
         // ==========================================
         function changeTheme(themeKey, title, filterKey) {
             if(window.innerWidth <= 900) toggleMenu(true); 
-            showHome(); // Sempre volta pro início ao trocar de aba
+            showHome();
             
             const t = THEMES[themeKey] || THEMES['consysencia'];
             document.documentElement.style.setProperty('--bg-color', t.bg);
@@ -295,18 +338,16 @@
                 if(streams.length > 0) {
                     htmlStr += `<div class="row-container"><div class="row-header"><h2 class="row-title">${iconPrefix} ${cat.category_name}</h2></div><div class="carousel">`;
                     
-                    // Mostra só os 15 Destaques na Tela Inicial
                     streams.slice(0, 15).forEach((stream) => {
-                        const id = stream.stream_id || stream.series_id;
-                        const name = (stream.name || stream.title || 'Desconhecido').replace(/'/g, "\\'");
-                        const icon = stream.stream_icon || stream.cover || '';
+                        const id = stream.stream_id;
+                        const name = (stream.name || 'Desconhecido').replace(/'/g, "\\'");
+                        const icon = stream.stream_icon || '';
                         const ext = stream.container_extension || extDefault;
-                        const action = typeClass === 'series' ? `openSeries(${id}, '${name}')` : `openCinema(${id}, '${name}', '${typeClass}', '${ext}')`;
+                        const action = `openCinema(${id}, '${name}', '${typeClass}', '${ext}')`;
                         
                         htmlStr += `<div class="card ${typeClass}" onclick="${action}"><img src="${icon}" loading="lazy" onerror="this.style.display='none'"><div class="card-name">${name}</div></div>`;
                     });
 
-                    // O Botão de Abrir a Pasta Inteira!
                     if (streams.length > 15) {
                         htmlStr += `<div class="card card-more ${typeClass}" onclick="openCategoryGrid('${cat.category_id}', '${cat.category_name.replace(/'/g, "\\'")}', '${typeClass}')">
                             <i class="fa-solid fa-folder-open"></i><div>Ver os ${streams.length}</div>
@@ -317,28 +358,23 @@
             };
 
             if (filterKey === 'live') { DB.live_cat.forEach(cat => processCategory(cat, DB.live_streams, 'live', '', '')); } 
-            else { 
-                DB.vod_cat.forEach(cat => { if (filterKey === 'vod_all' || cat.category_name.toLowerCase().includes(filterKey)) processCategory(cat, DB.vod_streams, 'vod', '🎬', 'mp4'); });
-                DB.series_cat.forEach(cat => { if (filterKey === 'vod_all' || cat.category_name.toLowerCase().includes(filterKey)) processCategory(cat, DB.series, 'series', '📺', ''); });
-            }
+            else { DB.vod_cat.forEach(cat => { if (filterKey === 'vod_all' || cat.category_name.toLowerCase().includes(filterKey)) processCategory(cat, DB.vod_streams, 'vod', '🎬', 'mp4'); }); }
+            
             container.innerHTML = htmlStr || "<h3 style='text-align:center; padding:50px;'>Nenhum conteúdo.</h3>";
         }
 
-        // ==========================================
-        // GERA A GRADE DE UMA CATEGORIA ESPECÍFICA
-        // ==========================================
         function openCategoryGrid(catId, catName, typeClass) {
-            let streamList = typeClass === 'live' ? DB.live_streams : (typeClass === 'vod' ? DB.vod_streams : DB.series);
+            let streamList = typeClass === 'live' ? DB.live_streams : DB.vod_streams;
             const extDefault = typeClass === 'vod' ? 'mp4' : '';
             const streams = streamList.filter(s => String(s.category_id) === String(catId));
             
             let htmlStr = '';
             streams.forEach((stream) => {
-                const id = stream.stream_id || stream.series_id;
-                const name = (stream.name || stream.title).replace(/'/g, "\\'");
-                const icon = stream.stream_icon || stream.cover || '';
+                const id = stream.stream_id;
+                const name = (stream.name || 'Desconhecido').replace(/'/g, "\\'");
+                const icon = stream.stream_icon || '';
                 const ext = stream.container_extension || extDefault;
-                const action = typeClass === 'series' ? `openSeries(${id}, '${name}')` : `openCinema(${id}, '${name}', '${typeClass}', '${ext}')`;
+                const action = `openCinema(${id}, '${name}', '${typeClass}', '${ext}')`;
                 
                 htmlStr += `<div class="card ${typeClass}" onclick="${action}" style="width:100%; aspect-ratio: ${typeClass==='live'?'16/9':'2/3'};"><img src="${icon}" loading="lazy" onerror="this.style.display='none'"><div class="card-name">${name}</div></div>`;
             });
@@ -346,15 +382,15 @@
         }
 
         // ==========================================
-        // MODO CINEMA (APAGÃO TOTAL)
+        // MODO CINEMA (A ISOLAÇÃO DO PLAYER)
         // ==========================================
         let hls;
         const videoElement = document.getElementById('video-element');
         const cinemaHeader = document.getElementById('cinema-header');
 
         function openCinema(id, name, type, extension) {
-            document.getElementById('app-interface').style.display = 'none'; // Desliga o site!
-            document.getElementById('cinema-mode').style.display = 'flex'; // Liga o Cinema
+            document.getElementById('app-interface').style.display = 'none'; 
+            document.getElementById('cinema-mode').style.display = 'flex';
             document.getElementById('cinema-title').innerText = name;
             
             let videoUrl = type === 'live' ? `${rawApiBase}/live/${user}/${pass}/${id}.m3u8` : `${rawApiBase}/movie/${user}/${pass}/${id}.${extension}`;
@@ -369,9 +405,8 @@
             videoElement.pause(); videoElement.src = "";
             if(hls) hls.destroy();
             if(document.fullscreenElement) document.exitFullscreen();
-            
             document.getElementById('cinema-mode').style.display = 'none';
-            document.getElementById('app-interface').style.display = 'block'; // Religou o site!
+            document.getElementById('app-interface').style.display = 'block'; 
         }
 
         function toggleFullscreen() {
@@ -385,32 +420,8 @@
             timeout = setTimeout(() => cinemaHeader.classList.add('hidden'), 3000);
         });
 
-        // ==========================================
-        // MODAL DE SÉRIES
-        // ==========================================
-        async function openSeries(seriesId, title) {
-            document.getElementById('series-title').innerText = "Série: " + title;
-            document.getElementById('series-modal').style.display = 'flex';
-            document.getElementById('episodes-container').innerHTML = "<h3 style='color:var(--accent-color);'>Buscando episódios...</h3>";
-            try {
-                const res = await fetch(`${apiBase}?action=get_series_info&series_id=${seriesId}`, { headers: { 'Authorization': 'Basic ' + btoa(user + ':' + pass) } });
-                const data = await res.json();
-                let epHtml = '';
-                for (const season in data.episodes) {
-                    data.episodes[season].forEach(ep => {
-                        const epName = (ep.title || `S${season} E${ep.episode_num}`).replace(/'/g, "\\'");
-                        const ext = ep.container_extension || 'mp4';
-                        epHtml += `<div class="ep-card" onclick="openCinema('${ep.id}', '${epName}', 'vod', '${ext}')">
-                            <div style="font-weight:900; font-size:15px; margin-bottom:8px; color:var(--accent-color);">T${season} - Ep ${ep.episode_num}</div>
-                            <div style="font-size:13px; color:#ddd;">${ep.title || 'Episódio'}</div>
-                        </div>`;
-                    });
-                }
-                document.getElementById('episodes-container').innerHTML = epHtml || "<p>Nenhum episódio.</p>";
-            } catch(e) { document.getElementById('episodes-container').innerHTML = "<h3 style='color:#ff4444;'>Falha na série.</h3>"; }
-        }
-
-        loadEverything();
+        // A IGNIÇÃO DO MOTOR ABSOLUTO
+        loadAppEngine();
     </script>
 </body>
 </html>
