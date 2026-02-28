@@ -259,7 +259,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <script>
-    // Configuração das partículas mantida
     (function () {
       const el = document.getElementById('particles');
       if (!el || typeof window.particlesJS !== 'function') return;
@@ -287,11 +286,12 @@
     const SUPABASE_URL = 'https://zlvxbgxdrmllzmbmhitm.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpsdnhiZ3hkcm1sbHptYm1oaXRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyOTgzMzQsImV4cCI6MjA4Nzg3NDMzNH0.N-zyV1YlxUba7E7mWK5xqmYeCr-KeBj9yiuiOOw62xs';
 
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // CORREÇÃO: O nome da variável agora é 'clienteSupabase' para evitar conflito com a SDK global
+    const clienteSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     async function checarSessao() {
         try {
-            const { data: { session }, error } = await supabase.auth.getSession();
+            const { data: { session }, error } = await clienteSupabase.auth.getSession();
             if (error) throw error;
             
             if (session) {
@@ -312,10 +312,9 @@
         errorMsg.style.display = 'none';
 
         try {
-            const { data, error } = await supabase.auth.signInWithOAuth({ 
+            const { data, error } = await clienteSupabase.auth.signInWithOAuth({ 
                 provider: 'google',
                 options: {
-                    // Força a voltar para o site atual após o login
                     redirectTo: window.location.origin + window.location.pathname
                 }
             });
@@ -325,7 +324,7 @@
             }
         } catch (err) {
             console.error("Falha no login:", err);
-            errorMsg.innerText = "Erro no Google: " + err.message + ". Verifique se o URL do site está liberado no Supabase.";
+            errorMsg.innerText = "Erro no Google: " + err.message;
             errorMsg.style.display = 'block';
             btn.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google" width="20" style="margin-right: 6px;"> Entrar com Google`;
             btn.disabled = false;
@@ -333,7 +332,7 @@
     }
 
     async function logout() {
-        await supabase.auth.signOut();
+        await clienteSupabase.auth.signOut();
         window.location.reload();
     }
 
@@ -350,7 +349,7 @@
 
     async function buscarAlertas(userId) {
         try {
-            const { data, error } = await supabase
+            const { data, error } = await clienteSupabase
                 .from('alertas_player')
                 .select('*')
                 .eq('user_id', userId)
@@ -385,7 +384,7 @@
 
     async function marcarAlertaLido(alertaId) {
         document.getElementById(`alerta-${alertaId}`).style.display = 'none';
-        await supabase.from('alertas_player').update({ exibida: true }).eq('id', alertaId);
+        await clienteSupabase.from('alertas_player').update({ exibida: true }).eq('id', alertaId);
     }
 
     // Inicia a verificação de login assim que a página carrega
