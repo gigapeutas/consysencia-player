@@ -5,90 +5,95 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Consysencia | Séries</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
+  
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
-    :root { --bg:#070a0b; --text:#fff; --accent:#00A8E1; --panelBg:rgba(10,14,15,0.95); --radius:12px; }
-    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    body { background:var(--bg); color:var(--text); font-family:'Inter', sans-serif; overflow:hidden; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+    :root { --bg: #070a0b; --bg2: #111518; --text: #fff; --accent: #E50914; --radius: 12px; }
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden; }
 
-    #app { display:flex; height:100vh; width:100vw; }
+    #sidebar { width: 280px; background: var(--bg2); border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; z-index: 50; transition: 0.3s; }
+    .brand { padding: 20px; font-weight: 900; font-size: 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px; }
+    .brand i { color: var(--accent); cursor: pointer; }
     
-    #sidebar { width:280px; background:var(--panelBg); border-right:1px solid rgba(255,255,255,0.05); display:flex; flex-direction:column; z-index:100; transition:0.3s; }
-    .brand { padding:20px; font-weight:900; font-size:22px; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; align-items:center; gap:10px; }
-    .brand span { color:var(--accent); }
-    .nav-back { margin:15px; padding:12px; border-radius:var(--radius); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:bold; color:var(--text); background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); transition:0.2s; }
-    .nav-back:hover { background:var(--accent); color:#000; border-color:var(--accent); }
+    #catList { flex: 1; overflow-y: auto; padding: 10px; }
+    #catList::-webkit-scrollbar { display: none; }
+    .cat-item { padding: 12px 15px; border-radius: var(--radius); cursor: pointer; font-weight: 600; color: rgba(255,255,255,0.6); margin-bottom: 4px; font-size: 0.9rem; transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cat-item:hover, .cat-item.active { background: rgba(255,255,255,0.08); color: #fff; border-left: 3px solid var(--accent); }
+
+    #main { flex: 1; display: flex; flex-direction: column; position: relative; }
+    #topbar { height: 65px; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid rgba(255,255,255,0.05); gap: 15px; }
+    #btnMenu { background: none; border: none; color: white; font-size: 1.5rem; display: none; }
+    #catTitle { font-weight: 900; font-size: 1.1rem; flex: 1; text-transform: uppercase; color: var(--accent); }
+    #search { max-width: 200px; padding: 8px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); color: white; outline: none; }
+
+    #seriesGrid { flex: 1; overflow-y: auto; padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; align-content: start; }
+    .series-card { background: #111; border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: 0.2s; position: relative; aspect-ratio: 2/3; display: flex; align-items: center; justify-content: center; }
+    .series-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 20px rgba(0,0,0,0.5); z-index: 2; }
+    .series-card img { width: 100%; height: 100%; object-fit: cover; }
+    .series-card .name { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.95)); font-size: 11px; padding: 20px 8px 8px; text-align: center; font-weight: bold; }
+
+    /* PÁGINA DE TEMPORADAS E EPISÓDIOS */
+    #detailsView, #playerRoot { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 5000; overflow-y: auto; }
+    .det-backdrop { width: 100%; height: 40vh; background-size: cover; background-position: top; position: relative; }
+    .det-backdrop::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, var(--bg)); }
+    .det-back-btn { position: absolute; top: 20px; left: 20px; z-index: 10; background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 8px; color: white; border: 1px solid rgba(255,255,255,0.3); cursor: pointer; font-weight: bold; backdrop-filter: blur(5px); transition: 0.2s; }
+    .det-back-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
     
-    #catList { flex:1; overflow-y:auto; padding:10px; }
-    #catList::-webkit-scrollbar { width:5px; }
-    #catList::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:5px; }
-    .cat-item { padding:12px 15px; border-radius:8px; cursor:pointer; font-weight:600; color:rgba(255,255,255,0.6); margin-bottom:5px; transition:0.2s; font-size:0.9rem; }
-    .cat-item:hover, .cat-item.active { background:rgba(255,255,255,0.1); color:#fff; border-left:3px solid var(--accent); }
-
-    #main { flex:1; display:flex; flex-direction:column; position:relative; }
-    #topbar { height:70px; display:flex; align-items:center; padding:0 20px; background:linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); }
-    #hamb { background:rgba(255,255,255,0.1); border:none; color:white; width:40px; height:40px; border-radius:8px; cursor:pointer; display:none; margin-right:15px; }
-    #viewTitle { font-weight:900; font-size:1.2rem; flex:1; text-transform:uppercase; letter-spacing:1px; color:var(--accent); }
-
-    #gridRoot { flex:1; overflow-y:auto; padding:20px; display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:15px; align-content:start; }
-    .card { background:#111; border-radius:10px; overflow:hidden; position:relative; cursor:pointer; border:1px solid rgba(255,255,255,0.05); transition:0.2s; aspect-ratio:2/3; }
-    .card:hover { transform:scale(1.05); border-color:var(--accent); box-shadow:0 10px 20px rgba(0,0,0,0.5); z-index:2; }
-    .card img { width:100%; height:100%; object-fit:cover; background:#222; }
-    .cardName { position:absolute; bottom:0; width:100%; padding:25px 10px 10px; background:linear-gradient(transparent, rgba(0,0,0,0.95)); font-size:11px; text-align:center; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-
-    /* DETALHES DE SÉRIES */
-    #detailsView, #playerRoot { display:none; position:fixed; inset:0; background:var(--bg); z-index:5000; overflow-y:auto; }
-    .det-backdrop { width:100%; height:40vh; background-size:cover; background-position:top; position:relative; }
-    .det-backdrop::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom, transparent, var(--bg)); }
-    .det-back-btn { position:absolute; top:20px; left:20px; z-index:10; background:rgba(0,0,0,0.6); padding:10px 20px; border-radius:8px; color:white; border:1px solid rgba(255,255,255,0.2); cursor:pointer; font-weight:bold; backdrop-filter:blur(5px); }
-    .det-content { padding:20px; position:relative; top:-60px; z-index:5; max-width:900px; margin:0 auto; }
-    .det-title { font-size:2.5rem; font-weight:900; margin-bottom:20px; text-shadow:0 2px 10px black; }
+    .det-content { padding: 20px; position: relative; top: -50px; z-index: 5; max-width: 900px; margin: 0 auto; }
+    .det-title { font-size: 2.2rem; font-weight: 900; margin-bottom: 25px; text-shadow: 0 2px 10px black; line-height: 1.1; }
     
-    #seasonSelect { background:#111; color:white; border:1px solid rgba(255,255,255,0.2); padding:15px; border-radius:8px; font-size:1.1rem; margin-bottom:20px; width:100%; max-width:300px; font-weight:bold; outline:none; }
-    .ep-item { display:flex; align-items:center; gap:15px; padding:15px; background:rgba(255,255,255,0.03); margin-bottom:8px; cursor:pointer; border-radius:10px; border:1px solid rgba(255,255,255,0.05); transition:0.2s; }
-    .ep-item:hover { background:rgba(255,255,255,0.08); border-color:var(--accent); }
-    .ep-img { width:40px; height:40px; background:var(--accent); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#000; font-size:14px; }
-    .ep-title { font-weight:bold; font-size:1rem; flex:1; }
+    #seasonSelect { background: #111; color: white; border: 1px solid rgba(255,255,255,0.2); padding: 15px 20px; border-radius: 8px; font-size: 1.1rem; margin-bottom: 25px; outline: none; font-weight: bold; width: 100%; max-width: 300px; }
+    
+    .ep-item { display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(255,255,255,0.03); margin-bottom: 10px; cursor: pointer; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); transition: 0.2s; }
+    .ep-item:hover { background: rgba(255,255,255,0.08); border-color: var(--accent); transform: translateX(5px); }
+    .ep-img { width: 45px; height: 45px; background: rgba(0,0,0,0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent); border: 2px solid var(--accent); flex-shrink: 0; }
+    .ep-title { font-weight: bold; font-size: 1rem; line-height: 1.3; }
 
-    #playerRoot { z-index:10000; flex-direction:column; background:#000; overflow:hidden; }
-    #pControls { position:absolute; top:0; width:100%; padding:20px; display:flex; align-items:center; gap:15px; background:linear-gradient(rgba(0,0,0,0.9), transparent); z-index:10; }
-    #video { width:100%; height:100%; object-fit:contain; }
+    #playerRoot { z-index: 10000; flex-direction: column; background: #000; overflow: hidden; }
+    #pControls { position: absolute; top: 0; width: 100%; padding: 20px; display: flex; align-items: center; gap: 15px; background: linear-gradient(rgba(0,0,0,0.9), transparent); z-index: 10; }
+    #video { width: 100%; height: 100%; object-fit: contain; }
 
-    #loader { position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; flex-direction:column; z-index:9999; color:var(--accent); font-weight:bold; gap:10px; }
-    .spinner { border:4px solid rgba(255,255,255,0.1); border-top:4px solid var(--accent); border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite; }
-    @keyframes spin { 100% { transform:rotate(360deg); } }
+    #loader, #detLoader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; color: var(--accent); font-weight: 900; }
+    #detLoader { background: rgba(0,0,0,0.9); display: none; z-index: 6000; }
+    .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    @media (max-width:900px) { #sidebar { position:absolute; left:-100%; } #sidebar.open { left:0; } #hamb { display:block; } }
+    @media (max-width: 900px) {
+      #sidebar { position: absolute; left: -100%; height: 100%; }
+      #sidebar.open { left: 0; }
+      #btnMenu { display: block; }
+      #seriesGrid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+    }
   </style>
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><div id="lText">A organizar séries...</div></div>
+<div id="loader"><div class="spinner"></div><div>A preparar as Séries...</div></div>
+<div id="detLoader"><div class="spinner"></div><div>A procurar episódios...</div></div>
 
 <div id="app">
     <aside id="sidebar">
-        <div class="brand"><span>●</span> SÉRIES</div>
-        <div class="nav-back" onclick="window.location.href='index.html'"><i class="fa-solid fa-house"></i> Hub Principal</div>
+        <div class="brand"><i class="fa-solid fa-arrow-left" onclick="window.location.href='index.html'"></i> SÉRIES</div>
         <div id="catList"></div>
     </aside>
 
     <main id="main">
         <div id="topbar">
-            <button id="hamb" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fa-solid fa-bars"></i></button>
-            <div id="viewTitle">Selecione uma Categoria</div>
+            <button id="btnMenu" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fa-solid fa-bars"></i></button>
+            <div id="catTitle">A carregar categorias...</div>
+            <input type="text" id="search" placeholder="Procurar série..." autocomplete="off">
         </div>
-        <div id="gridRoot"></div>
+        <div id="seriesGrid"></div>
     </main>
 </div>
 
 <div id="detailsView">
     <div class="det-backdrop" id="detBackdrop">
-        <button class="det-back-btn" onclick="closeDetails()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <button class="det-back-btn" onclick="closeDetails()"><i class="fa-solid fa-arrow-left"></i> Voltar à Lista</button>
     </div>
     <div class="det-content">
-        <h1 class="det-title" id="detTitle">Série</h1>
+        <h1 class="det-title" id="detTitle">Nome da Série</h1>
         <select id="seasonSelect"></select>
         <div id="episodeList"></div>
     </div>
@@ -97,66 +102,87 @@
 <div id="playerRoot">
     <div id="pControls">
         <button class="det-back-btn" onclick="closePlayer()" style="position:static;"><i class="fa-solid fa-arrow-left"></i> Fechar Player</button>
-        <div id="pTitle" style="font-weight:900; margin-left:15px;"></div>
+        <div id="pTitle" style="font-weight: 900; margin-left: 15px; font-size: 1.1rem; text-shadow: 0 2px 4px black;"></div>
     </div>
     <video id="video" controls autoplay playsinline></video>
 </div>
 
 <script>
-    const u = new URLSearchParams(window.location.search).get('u') || localStorage.getItem('cs_user');
-    const p = new URLSearchParams(window.location.search).get('p') || localStorage.getItem('cs_pass');
+    const u = new URLSearchParams(window.location.search).get('u');
+    const p = new URLSearchParams(window.location.search).get('p');
     if(!u || !p) window.location.href = 'index.html';
 
     const API = 'https://api.consysencia.com/catalog';
     const PROXY_BASE = 'https://api.consysencia.com/proxy';
     const h = { 'Authorization': 'Basic ' + btoa(u + ':' + p) };
-    
-    let currentSeriesData = null;
+
+    let currentSeries = [];
+    let currentSeriesData = null; // Guarda as temporadas carregadas
 
     async function bootSeries() {
         try {
             const cats = await fetch(`${API}?action=get_series_categories`, {headers:h}).then(r=>r.json());
             const catList = document.getElementById('catList');
             
-            cats.forEach(c => {
-                const div = document.createElement('div');
-                div.className = 'cat-item';
-                div.innerText = c.category_name;
-                div.onclick = () => loadCategory(c.category_id, c.category_name, div);
-                catList.appendChild(div);
-            });
-            
+            if (cats && cats.length > 0) {
+                cats.forEach(c => {
+                    const div = document.createElement('div');
+                    div.className = 'cat-item';
+                    div.innerText = c.category_name;
+                    div.onclick = () => loadCategory(c.category_id, c.category_name, div);
+                    catList.appendChild(div);
+                });
+                catList.firstChild.click();
+            } else {
+                document.getElementById('catTitle').innerText = 'Nenhuma categoria encontrada';
+            }
             document.getElementById('loader').style.display = 'none';
-            if(catList.firstChild) catList.firstChild.click();
-        } catch(e) { alert("Erro de ligação."); }
+        } catch(e) {
+            alert("Falha ao ligar ao servidor.");
+            window.location.href = 'index.html';
+        }
     }
 
     async function loadCategory(id, name, el) {
         document.querySelectorAll('.cat-item').forEach(c => c.classList.remove('active'));
         if(el) el.classList.add('active');
-        document.getElementById('viewTitle').innerText = name;
-        document.getElementById('sidebar').classList.remove('open');
         
-        const grid = document.getElementById('gridRoot');
-        grid.innerHTML = '<div style="padding:20px; color:#aaa;">A carregar séries...</div>';
+        document.getElementById('catTitle').innerText = name;
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('search').value = '';
+        
+        const grid = document.getElementById('seriesGrid');
+        grid.innerHTML = '<div style="color:#aaa; font-weight:bold; width:100%; text-align:center; padding:20px;">A procurar séries...</div>';
 
         try {
-            const series = await fetch(`${API}?action=get_series&category_id=${id}`, {headers:h}).then(r=>r.json());
-            if(!series || series.length === 0) {
-                grid.innerHTML = '<div style="padding:20px; color:#aaa;">Pasta vazia.</div>';
-                return;
-            }
+            currentSeries = await fetch(`${API}?action=get_series&category_id=${id}`, {headers:h}).then(r=>r.json()) || [];
+            renderSeries();
+        } catch(e) { 
+            grid.innerHTML = '<div style="color:#ff4444;">Erro ao carregar as séries.</div>'; 
+        }
+    }
 
-            grid.innerHTML = series.map(s => {
-                const img = s.stream_icon || s.cover || '';
-                const safeName = (s.name || '').replace(/'/g, "\\'");
-                return `
-                <div class="card" onclick="openDetails('${s.series_id}', '${safeName}', '${img}')">
-                    <img src="${img}" loading="lazy" onerror="this.style.display='none'">
-                    <div class="cardName">${s.name}</div>
-                </div>`;
-            }).join('');
-        } catch(e) { grid.innerHTML = '<div style="padding:20px; color:#ff4444;">Erro ao carregar séries.</div>'; }
+    function renderSeries() {
+        const grid = document.getElementById('seriesGrid');
+        const q = document.getElementById('search').value.toLowerCase();
+        
+        let filtered = currentSeries;
+        if(q) filtered = filtered.filter(s => s.name.toLowerCase().includes(q));
+
+        if(filtered.length === 0) {
+            grid.innerHTML = '<div style="color:#aaa;">Nenhuma série encontrada.</div>';
+            return;
+        }
+
+        grid.innerHTML = filtered.slice(0, 150).map(s => {
+            const img = s.stream_icon || s.cover || 'https://via.placeholder.com/200x300/111/fff?text=Capa';
+            const safeName = (s.name || '').replace(/'/g, "\\'");
+            return `
+            <div class="series-card" onclick="openDetails('${s.series_id}', '${safeName}', '${img}')">
+                <img src="${img}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300/111/fff?text=Capa'">
+                <div class="name">${s.name}</div>
+            </div>`;
+        }).join('');
     }
 
     async function openDetails(id, name, cover) {
@@ -171,11 +197,15 @@
         
         const seasonSelect = document.getElementById('seasonSelect');
         const epList = document.getElementById('episodeList');
-        epList.innerHTML = '<div style="color:#aaa;">A procurar temporadas...</div>';
+        
+        epList.innerHTML = '';
         seasonSelect.style.display = 'none';
+        document.getElementById('detLoader').style.display = 'flex';
 
         try {
             const data = await fetch(`${API}?action=get_series_info&series_id=${id}`, {headers:h}).then(r=>r.json());
+            document.getElementById('detLoader').style.display = 'none';
+            
             currentSeriesData = data.episodes;
             const seasons = Object.keys(currentSeriesData);
             
@@ -185,9 +215,12 @@
                 seasonSelect.onchange = (e) => renderEpisodes(e.target.value);
                 renderEpisodes(seasons[0]);
             } else {
-                epList.innerHTML = '<p>Nenhum episódio encontrado.</p>';
+                epList.innerHTML = '<p style="color:#aaa;">Nenhum episódio encontrado.</p>';
             }
-        } catch(e) { epList.innerHTML = '<p>Falha ao carregar episódios.</p>'; }
+        } catch(e) { 
+            document.getElementById('detLoader').style.display = 'none';
+            epList.innerHTML = '<p style="color:#ff4444;">Falha ao carregar episódios.</p>'; 
+        }
     }
 
     function renderEpisodes(seasonNumber) {
@@ -228,6 +261,8 @@
         document.getElementById('playerRoot').style.display = 'none';
         document.getElementById('detailsView').style.display = 'block';
     }
+
+    document.getElementById('search').oninput = () => setTimeout(renderSeries, 300);
 
     bootSeries();
 </script>
