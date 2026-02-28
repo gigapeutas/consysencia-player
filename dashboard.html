@@ -18,97 +18,100 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
-            background-color: var(--cs-bg); 
-            color: var(--cs-text); 
-            font-family: 'Inter', sans-serif; 
-            overflow-x: hidden;
+            background-color: var(--cs-bg); color: var(--cs-text); 
+            font-family: 'Inter', sans-serif; overflow-x: hidden;
         }
 
-        /* Navbar estilo Netflix */
+        /* Menu Topo Corrigido para Celular */
         .navbar {
-            position: fixed; top: 0; width: 100%; padding: 20px 4%;
+            position: fixed; top: 0; width: 100%; padding: 15px 4%;
             display: flex; justify-content: space-between; align-items: center;
             background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 100%);
-            z-index: 1000; transition: 0.3s;
+            z-index: 1000;
         }
-        .nav-brand { font-size: 24px; font-weight: 800; color: var(--cs-neon); text-transform: uppercase; letter-spacing: 1px;}
+        .nav-brand { font-size: 20px; font-weight: 800; color: var(--cs-neon); text-transform: uppercase; letter-spacing: 1px;}
         .nav-brand span { color: white; font-weight: 300; }
+        
         .nav-links { display: flex; gap: 20px; }
-        .nav-links a { color: #ccc; text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.3s; cursor: pointer;}
+        .nav-links a { color: #ccc; text-decoration: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.3s;}
         .nav-links a:hover, .nav-links a.active { color: white; }
+        
         .nav-profile { display: flex; align-items: center; gap: 15px; color: white; cursor: pointer;}
+        
+        /* Esconde os links no celular para não espremer o layout */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-brand { font-size: 16px; }
+        }
 
-        /* Hero Banner (Destaque Principal) */
+        /* Hero Banner */
         .hero {
-            height: 70vh; width: 100%; position: relative;
-            background-image: url('https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=2070&auto=format&fit=crop'); /* Imagem de fundo premium provisória */
+            height: 60vh; width: 100%; position: relative;
+            background-image: url('https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=2070&auto=format&fit=crop');
             background-size: cover; background-position: center;
-            display: flex; align-items: flex-end; padding: 50px 4%;
+            display: flex; align-items: flex-end; padding: 40px 4%;
         }
         .hero-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to right, rgba(11,15,18,1) 0%, rgba(11,15,18,0) 70%),
+            background: linear-gradient(to right, rgba(11,15,18,0.8) 0%, rgba(11,15,18,0) 70%),
                         linear-gradient(to top, rgba(11,15,18,1) 0%, rgba(11,15,18,0) 100%);
         }
         .hero-content { position: relative; z-index: 10; max-width: 600px; }
-        .hero-title { font-size: 3rem; font-weight: 800; margin-bottom: 10px; line-height: 1.1; }
-        .hero-desc { font-size: 14px; color: #ccc; margin-bottom: 25px; line-height: 1.5; }
+        .hero-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; line-height: 1.1; }
+        .hero-desc { font-size: 13px; color: #ccc; margin-bottom: 20px; line-height: 1.5; }
+        
         .btn-play { 
-            background: var(--cs-neon); color: #000; padding: 12px 30px; 
-            border: none; border-radius: 8px; font-size: 16px; font-weight: 800; 
-            cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s;
+            background: var(--cs-neon); color: #000; padding: 12px 25px; 
+            border: none; border-radius: 6px; font-size: 15px; font-weight: 800; 
+            cursor: pointer; display: flex; align-items: center; gap: 10px;
         }
-        .btn-play:hover { transform: scale(1.05); background: white; }
 
-        /* Trilhas Horizontais (Carrosséis) */
-        .content-section { padding: 0 4%; margin-top: -30px; position: relative; z-index: 20; padding-bottom: 50px;}
-        .row-container { margin-bottom: 40px; }
-        .row-title { font-size: 20px; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;}
+        /* Trilhas e Cards Corrigidos */
+        .content-section { padding: 0 4%; margin-top: -20px; position: relative; z-index: 20; padding-bottom: 50px;}
+        .row-container { margin-bottom: 35px; }
+        .row-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: #eee;}
         
         .carousel {
-            display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px;
+            display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px;
             scroll-behavior: smooth; scroll-snap-type: x mandatory;
         }
-        .carousel::-webkit-scrollbar { height: 6px; }
-        .carousel::-webkit-scrollbar-track { background: transparent; }
-        .carousel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        .carousel:hover::-webkit-scrollbar-thumb { background: rgba(0,255,136,0.3); }
+        .carousel::-webkit-scrollbar { display: none; } /* Esconde a barra de rolagem feia no celular */
 
-        /* Os Cards (Canais/Filmes) */
         .card {
-            flex: 0 0 auto; width: 220px; aspect-ratio: 16/9; 
-            background: var(--cs-glass); border-radius: 8px; overflow: hidden;
-            position: relative; cursor: pointer; transition: 0.3s; scroll-snap-align: start;
-            border: 1px solid transparent; display:flex; align-items:center; justify-content:center;
-            text-align:center;
+            flex: 0 0 auto; width: 180px; aspect-ratio: 16/9; 
+            background: #111; border-radius: 6px; overflow: hidden;
+            position: relative; cursor: pointer; scroll-snap-align: start;
+            display:flex; align-items:center; justify-content:center;
+            border: 1px solid rgba(255,255,255,0.05);
         }
-        .card img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; opacity: 0.8; transition: 0.3s;}
-        .card-name { position: relative; z-index: 2; font-size: 14px; font-weight: 800; padding: 10px; text-shadow: 0 2px 5px black; }
         
-        .card:hover { transform: translateY(-5px) scale(1.02); border-color: var(--cs-neon); z-index: 5; box-shadow: 0 10px 20px rgba(0,0,0,0.5);}
-        .card:hover img { opacity: 0.3; }
-        .card:hover .card-name { color: var(--cs-neon); }
+        /* O truque do Lazy Loading e Sombra Escura para o Texto brilhar */
+        .card img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; }
+        .card-name { 
+            position: absolute; bottom: 0; left: 0; width: 100%; 
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 100%);
+            padding: 25px 10px 8px 10px; font-size: 12px; font-weight: 700; text-align: center;
+            color: white; z-index: 2; text-shadow: 0 1px 3px black;
+        }
 
-        /* Tela de Carregamento (Igual ao seu Vídeo 2) */
         .loader-screen {
             position: fixed; top:0; left:0; width: 100%; height: 100%;
             background: var(--cs-bg); z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
         .spinner {
-            width: 50px; height: 50px; border: 4px solid var(--cs-glass);
+            width: 40px; height: 40px; border: 4px solid var(--cs-glass);
             border-top-color: var(--cs-neon); border-radius: 50%;
-            animation: spin 1s linear infinite; margin-bottom: 20px;
+            animation: spin 1s linear infinite; margin-bottom: 15px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-
     </style>
 </head>
 <body>
 
     <div class="loader-screen" id="loader">
         <div class="spinner"></div>
-        <div style="color: var(--cs-neon); font-weight: 600; letter-spacing: 1px;">Sincronizando catálogo milenar...</div>
+        <div style="color: var(--cs-neon); font-size: 14px; font-weight: 600;">Carregando Play Consysencia...</div>
     </div>
 
     <nav class="navbar">
@@ -119,23 +122,21 @@
         </div>
         <div class="nav-profile">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <i class="fa-solid fa-circle-user" style="font-size: 24px;"></i>
-            <span style="font-size: 12px; font-weight:bold;" onclick="logout()">SAIR</span>
+            <span style="font-size: 11px; font-weight:bold; background: rgba(255,0,0,0.2); color:#ff4444; padding: 5px 10px; border-radius: 4px;" onclick="logout()">SAIR</span>
         </div>
     </nav>
 
     <header class="hero">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <div style="color: var(--cs-neon); font-weight: 800; font-size: 12px; letter-spacing: 2px; margin-bottom: 5px;">LANÇAMENTO</div>
-            <h1 class="hero-title" id="hero-title">BBB 26 <br>Câmera Exclusiva</h1>
-            <p class="hero-desc">Acompanhe 24 horas por dia, em alta definição, tudo o que rola na casa mais vigiada do Brasil. Sem cortes e sem censura.</p>
+            <div style="color: var(--cs-neon); font-weight: 800; font-size: 11px; letter-spacing: 2px; margin-bottom: 5px;">DESTAQUE</div>
+            <h1 class="hero-title">BBB 26 <br>Ao Vivo</h1>
+            <p class="hero-desc">Acompanhe 24 horas por dia, em alta definição, tudo o que rola na casa mais vigiada do Brasil.</p>
             <button class="btn-play"><i class="fa-solid fa-play"></i> Assistir Agora</button>
         </div>
     </header>
 
-    <section class="content-section" id="catalog-container">
-        </section>
+    <section class="content-section" id="catalog-container"></section>
 
     <script>
         const user = localStorage.getItem('cs_user');
@@ -159,7 +160,6 @@
 
         async function buildMilenarDashboard() {
             try {
-                // 1. Puxa as categorias E os canais ao mesmo tempo!
                 const [categories, streams] = await Promise.all([
                     fetchAPI('get_live_categories'),
                     fetchAPI('get_live_streams')
@@ -168,26 +168,22 @@
                 const container = document.getElementById('catalog-container');
                 let htmlStr = '';
 
-                // 2. Vamos pegar as 10 primeiras categorias (para não travar o celular do cliente de cara)
-                const topCategories = categories.slice(0, 10);
-
-                topCategories.forEach(cat => {
-                    // Filtra os canais que pertencem a esta categoria
+                // REMOVI A TRAVA! Agora vai puxar TODAS as suas categorias.
+                categories.forEach(cat => {
                     const catStreams = streams.filter(s => s.category_id === cat.category_id);
                     
-                    // Só cria a trilha se tiver canal dentro dela
                     if(catStreams.length > 0) {
                         htmlStr += `
                         <div class="row-container">
-                            <h2 class="row-title"><i class="fa-solid fa-circle" style="color:#00ff88; font-size:8px;"></i> ${cat.category_name}</h2>
+                            <h2 class="row-title"><i class="fa-solid fa-circle" style="color:#00ff88; font-size:6px;"></i> ${cat.category_name}</h2>
                             <div class="carousel">
                         `;
 
-                        // Cria as capas dos canais (pegando a logo se existir, senão mostra o nome)
                         catStreams.forEach(stream => {
-                            const icon = stream.stream_icon ? `<img src="${stream.stream_icon}" onerror="this.style.display='none'">` : '';
+                            // loading="lazy" garante que o celular não trave mesmo baixando mil fotos
+                            const icon = stream.stream_icon ? `<img src="${stream.stream_icon}" loading="lazy" onerror="this.style.display='none'">` : '';
                             htmlStr += `
-                                <div class="card" onclick="playStream(${stream.stream_id})">
+                                <div class="card" onclick="playStream(${stream.stream_id}, '${stream.name.replace(/'/g, "\\'")}', '${stream.stream_icon}')">
                                     ${icon}
                                     <div class="card-name">${stream.name}</div>
                                 </div>
@@ -200,23 +196,25 @@
 
                 container.innerHTML = htmlStr;
 
-                // Esconde a tela de carregamento suavemente
                 setTimeout(() => {
                     document.getElementById('loader').style.opacity = '0';
                     setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
                 }, 1000);
 
             } catch (e) {
-                console.error(e);
-                document.getElementById('loader').innerHTML = `<h3 style="color:red;">Falha ao carregar o catálogo. Verifique sua conexão.</h3>`;
+                document.getElementById('loader').innerHTML = `<h3 style="color:red;">Falha ao carregar o catálogo.</h3>`;
             }
         }
 
-        function playStream(streamId) {
-            alert("A mágica do player vai entrar aqui no próximo passo! ID do canal: " + streamId);
+        function playStream(id, name, icon) {
+            // Guardando os dados do canal para o Player usar!
+            localStorage.setItem('cs_play_id', id);
+            localStorage.setItem('cs_play_name', name);
+            localStorage.setItem('cs_play_icon', icon);
+            
+            alert("A mágica do player vai entrar aqui no próximo passo! Canal ID: " + id);
         }
 
-        // Inicia a construção da tela
         buildMilenarDashboard();
     </script>
 </body>
