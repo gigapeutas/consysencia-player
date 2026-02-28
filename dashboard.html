@@ -14,23 +14,25 @@
         body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; overflow-x: hidden; transition: background-color 0.5s ease; }
         ::-webkit-scrollbar { display: none; } 
 
-        /* INTERFACE PRINCIPAL (Catálogo) */
-        #app-interface { display: block; width: 100%; transition: 0.3s; }
+        /* ESTADOS DE TELA (A SUA IDEIA DE LEVEZA) */
+        .view-state { display: none; width: 100%; transition: opacity 0.3s ease; }
+        .view-state.active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* TELA DE VÍDEO ABSOLUTA (Modo Cinema) */
-        #cinema-mode { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 999999; flex-direction: column; }
-        .cinema-header { position: absolute; top: 0; left: 0; width: 100%; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); z-index: 10; opacity: 1; transition: opacity 0.3s; }
+        /* MODO CINEMA (TELA PRETA) */
+        #cinema-mode { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 999999; flex-direction: column; display: none;}
+        .cinema-header { position: absolute; top: 0; left: 0; width: 100%; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); z-index: 10; transition: opacity 0.3s; }
         .cinema-header.hidden { opacity: 0; pointer-events: none; }
         .cinema-title { font-size: 18px; font-weight: bold; text-shadow: 1px 1px 3px black; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60vw; }
         .cinema-controls { display: flex; gap: 15px; }
-        .btn-cinema { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; backdrop-filter: blur(5px); transition: 0.2s; display: flex; align-items: center; gap: 8px;}
+        .btn-cinema { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; backdrop-filter: blur(5px); display: flex; align-items: center; gap: 8px;}
         .btn-cinema:hover { background: var(--accent-color); color: black; border-color: var(--accent-color); }
         #video-element { width: 100%; height: 100%; object-fit: contain; outline: none; }
 
-        /* SIDEBAR / MENU RESPONSIVO */
+        /* SIDEBAR E MOBILE */
         #mobile-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 999; opacity: 0; transition: 0.3s; }
         .sidebar { width: 260px; height: 100vh; background-color: var(--sidebar-bg); position: fixed; left: 0; top: 0; display: flex; flex-direction: column; padding: 30px 0; z-index: 1000; border-right: 1px solid rgba(255,255,255,0.05); transition: transform 0.3s; backdrop-filter: blur(10px); }
-        .brand { font-size: 22px; font-weight: 800; color: var(--accent-color); text-transform: uppercase; letter-spacing: 2px; padding: 0 25px 30px 25px; transition: color 0.5s ease; }
+        .brand { font-size: 22px; font-weight: 800; color: var(--accent-color); text-transform: uppercase; letter-spacing: 2px; padding: 0 25px 30px 25px; }
         .brand span { color: white; font-weight: 300; }
         .menu-item { padding: 15px 25px; color: #aaa; font-weight: 600; font-size: 15px; cursor: pointer; display: flex; align-items: center; gap: 15px; border-left: 4px solid transparent; transition: 0.2s; }
         .menu-item:hover, .menu-item.active { color: white; background: linear-gradient(90deg, rgba(255,255,255,0.08) 0%, transparent 100%); border-left-color: var(--accent-color); }
@@ -38,25 +40,30 @@
 
         /* CONTEÚDO PRINCIPAL (VITRINE) */
         .main-content { margin-left: 260px; min-height: 100vh; padding-bottom: 50px; transition: margin-left 0.3s ease; }
-        .hero { height: 60vh; position: relative; background-size: cover; background-position: center top; display: flex; align-items: flex-end; padding: 50px 4%; transition: background-image 0.5s ease; }
-        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, var(--bg-color) 0%, rgba(11,15,18,0.2) 100%); transition: background 0.5s ease;}
-        .hero-content { position: relative; z-index: 10; max-width: 800px; }
-        .hero-tag { color: var(--accent-color); font-weight: 800; font-size: 14px; letter-spacing: 3px; margin-bottom: 8px;}
-        .hero-title { font-size: 3rem; font-weight: 800; margin-bottom: 15px; text-shadow: 2px 4px 15px rgba(0,0,0,0.9); line-height: 1.1; }
+        .hero { height: 50vh; position: relative; background-size: cover; background-position: center top; display: flex; align-items: flex-end; padding: 50px 4%; transition: background-image 0.5s ease; }
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, var(--bg-color) 0%, rgba(11,15,18,0.2) 100%);}
+        .hero-content { position: relative; z-index: 10; width: 100%; }
+        
+        /* BARRA DE PESQUISA SUPREMA */
+        .search-box { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); padding: 15px 25px; border-radius: 30px; display: flex; align-items: center; gap: 15px; width: 100%; max-width: 600px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: -25px; position: relative; z-index: 30; }
+        .search-box i { color: var(--accent-color); font-size: 20px; }
+        .search-box input { background: transparent; border: none; outline: none; color: white; font-size: 16px; width: 100%; font-family: 'Inter', sans-serif;}
+        .search-box input::placeholder { color: #888; }
 
         /* TRILHAS ESTILO NETFLIX (LEVES) */
-        .content-section { padding: 0 4%; margin-top: -40px; position: relative; z-index: 20; }
-        .row-container { margin-bottom: 45px; }
+        .content-section { padding: 0 4%; margin-top: 40px; position: relative; z-index: 20; }
+        .row-container { margin-bottom: 40px; }
         .row-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; }
         .row-title { font-size: 20px; font-weight: 700; color: #fff; text-shadow: 1px 1px 5px black; }
-        
         .carousel { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0 20px 0; scroll-behavior: smooth; }
         
-        /* A GRADE DE "VER TODOS" (Para abrir pastas com milhares de itens sem travar) */
-        .grid-view { display: none; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; padding-top: 20px; }
-        .grid-header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; margin-top: 20px;}
-        .btn-back-grid { background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; border: 1px solid rgba(255,255,255,0.2); }
+        /* A GRADE ISOLADA (O Redirecionamento Invisível) */
+        .grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; padding-top: 20px; }
+        .grid-header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; margin-top: 20px; grid-column: 1 / -1;}
+        .btn-back-grid { background: rgba(255,255,255,0.1); padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; border: 1px solid rgba(255,255,255,0.2); color: white; display:flex; gap:10px; align-items:center; transition:0.2s;}
+        .btn-back-grid:hover { background: var(--accent-color); color: black; border-color: var(--accent-color);}
 
+        /* OS CARDS UNIVERSAIS */
         .card { flex: 0 0 auto; background: #111; border-radius: 10px; overflow: hidden; position: relative; cursor: pointer; display:flex; align-items:center; justify-content:center; border: 2px solid transparent; transition: transform 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
         .card.live { width: 220px; aspect-ratio: 16/9; } 
         .card.vod { width: 140px; aspect-ratio: 2/3; } 
@@ -64,12 +71,11 @@
         .card-name { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%); padding: 30px 10px 12px 10px; font-size: 12px; font-weight: 700; text-align: center; color: white; z-index: 2; }
         .card:hover { transform: scale(1.05); border-color: var(--accent-color); z-index: 10; box-shadow: 0 15px 30px rgba(0,0,0,0.8);}
         
-        /* BOTÃO DE VER MAIS */
         .card-more { background: linear-gradient(45deg, #111, #222); display: flex; flex-direction: column; color: var(--accent-color); font-weight: bold; font-size: 14px; gap: 10px;}
         .card-more i { font-size: 24px; }
         .card-more:hover { background: var(--accent-color); color: #000; }
 
-        /* MODAL DE SÉRIES OTIMIZADO */
+        /* MODAL DE SÉRIES */
         #series-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px);}
         .series-box { background: #0f1115; width: 100%; max-width: 900px; height: 85vh; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; overflow: hidden;}
         .series-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
@@ -77,7 +83,7 @@
         .ep-card { background: #1a1d24; padding: 15px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
         .ep-card:hover { border-color: var(--accent-color); transform: translateY(-3px);}
 
-        /* LOADER GIGANTE */
+        /* LOADER */
         .loader { position: fixed; top:0; left:0; width:100%; height:100%; background:#070a0b; z-index:100000; display:flex; justify-content:center; align-items:center; flex-direction: column; gap: 20px; }
         .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.1); border-top-color: var(--accent-color); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -87,9 +93,9 @@
             .sidebar.open { transform: translateX(0); }
             .main-content { margin-left: 0; width: 100%; }
             .mobile-btn { display: block; }
-            .hero-title { font-size: 2rem; }
             .cinema-title { max-width: 40vw; font-size: 14px; }
-            .btn-cinema span { display: none; } /* Esconde o texto dos botões no celular */
+            .btn-cinema span { display: none; }
+            .search-box { margin-bottom: -15px; padding: 12px 20px;}
         }
     </style>
 </head>
@@ -101,8 +107,8 @@
     <div class="loader" id="loader">
         <div class="spinner"></div>
         <div style="color: white; font-weight: bold; text-align: center;" id="loader-text">
-            Sincronizando Multiverso...<br>
-            <span style="font-size:12px; color:#888;">Preparando o Modo Cinema para 100% do catálogo</span>
+            Conectando Servidores...<br>
+            <span style="font-size:12px; color:#888;">Preparando o Motor de Busca Universal</span>
         </div>
     </div>
 
@@ -112,7 +118,7 @@
             <div class="cinema-controls">
                 <button class="btn-cinema" onclick="toggleFullscreen()"><i class="fa-solid fa-expand"></i> <span>Tela Cheia</span></button>
                 <button class="btn-cinema" style="background: rgba(255,0,0,0.2); border-color: rgba(255,0,0,0.5);" onclick="closeCinema()">
-                    <i class="fa-solid fa-arrow-left"></i> <span>Voltar ao Catálogo</span>
+                    <i class="fa-solid fa-arrow-left"></i> <span>Voltar</span>
                 </button>
             </div>
         </div>
@@ -123,51 +129,51 @@
         <div class="series-box">
             <div class="series-header">
                 <h2 id="series-title">Episódios</h2>
-                <button class="btn-back-grid" onclick="document.getElementById('series-modal').style.display = 'none';">FECHAR</button>
+                <button class="btn-back-grid" onclick="document.getElementById('series-modal').style.display = 'none';"><i class="fa-solid fa-xmark"></i> FECHAR</button>
             </div>
             <div class="episodes-list" id="episodes-container"></div>
         </div>
     </div>
 
-    <div id="app-interface">
+    <div class="sidebar" id="sidebar">
+        <div class="brand">Play<br><span>Consysencia</span></div>
+        <div class="menu-item active" onclick="changeTheme('consysencia', 'TV ao Vivo', 'live')"><i class="fa-solid fa-tv"></i> TV ao Vivo</div>
+        <div class="menu-item" onclick="changeTheme('consysencia', 'Filmes e Séries', 'vod_all')"><i class="fa-solid fa-film"></i> Todo o Catálogo</div>
         
-        <div class="sidebar" id="sidebar">
-            <div class="brand">Play<br><span>Consysencia</span></div>
-            <div class="menu-item active" onclick="changeTheme('consysencia', 'TV ao Vivo', 'live')"><i class="fa-solid fa-tv"></i> TV ao Vivo</div>
-            <div class="menu-item" onclick="changeTheme('consysencia', 'Filmes e Séries', 'vod_all')"><i class="fa-solid fa-film"></i> Todo o Catálogo</div>
-            
-            <div style="padding: 25px 25px 10px 25px; font-size: 11px; color: #666; font-weight: 800; letter-spacing: 2px;">PLATAFORMAS</div>
-            <div class="menu-item" onclick="changeTheme('netflix', 'Netflix', 'netflix')"><i class="fa-brands fa-neos"></i> Netflix</div>
-            <div class="menu-item" onclick="changeTheme('prime', 'Prime Video', 'prime')"><i class="fa-brands fa-amazon"></i> Prime Video</div>
-            <div class="menu-item" onclick="changeTheme('disney', 'Disney+', 'disney')"><i class="fa-brands fa-disney"></i> Disney+</div>
-            <div class="menu-item" onclick="changeTheme('max', 'HBO Max', 'hbo')"><i class="fa-solid fa-m"></i> HBO Max</div>
-            <div class="menu-item" onclick="changeTheme('globo', 'Globoplay', 'globo')"><i class="fa-solid fa-g"></i> Globoplay</div>
+        <div style="padding: 25px 25px 10px 25px; font-size: 11px; color: #666; font-weight: 800; letter-spacing: 2px;">PLATAFORMAS</div>
+        <div class="menu-item" onclick="changeTheme('netflix', 'Netflix', 'netflix')"><i class="fa-brands fa-neos"></i> Netflix</div>
+        <div class="menu-item" onclick="changeTheme('prime', 'Prime Video', 'prime')"><i class="fa-brands fa-amazon"></i> Prime Video</div>
+        <div class="menu-item" onclick="changeTheme('disney', 'Disney+', 'disney')"><i class="fa-brands fa-disney"></i> Disney+</div>
+        <div class="menu-item" onclick="changeTheme('max', 'HBO Max', 'hbo')"><i class="fa-solid fa-m"></i> HBO Max</div>
+        <div class="menu-item" onclick="changeTheme('globo', 'Globoplay', 'globo')"><i class="fa-solid fa-g"></i> Globoplay</div>
+        <div style="flex-grow: 1;"></div>
+        <div class="menu-item" style="color: #ff4444;" onclick="localStorage.clear(); window.location.href='index.html';"><i class="fa-solid fa-power-off"></i> Sair</div>
+    </div>
 
-            <div style="flex-grow: 1;"></div>
-            <div class="menu-item" style="color: #ff4444;" onclick="localStorage.clear(); window.location.href='index.html';"><i class="fa-solid fa-power-off"></i> Sair</div>
-        </div>
+    <div class="main-content" id="main-content">
+        
+        <header class="hero" id="hero-banner">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1 class="hero-title" id="hero-title" style="color:white; text-shadow: 2px 4px 15px rgba(0,0,0,0.9);">Carregando...</h1>
+                
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="search-input" placeholder="Buscar filmes, séries, canais..." onkeyup="handleSearch(this.value)">
+                </div>
+            </div>
+        </header>
+        
+        <section class="content-section view-state active" id="view-home"></section>
+        
+        <section class="content-section view-state" id="view-grid">
+            <div class="grid-header">
+                <button class="btn-back-grid" onclick="showHome()"><i class="fa-solid fa-arrow-left"></i> Voltar ao Início</button>
+                <h2 class="row-title" id="grid-title">Resultados</h2>
+            </div>
+            <div class="grid-view" id="grid-content"></div>
+        </section>
 
-        <div class="main-content" id="main-content">
-            <header class="hero" id="hero-banner">
-                <div class="hero-overlay"></div>
-                <div class="hero-content">
-                    <div class="hero-tag" id="hero-tag">DESTAQUE PREMIUM</div>
-                    <h1 class="hero-title" id="hero-title">Carregando...</h1>
-                </div>
-            </header>
-            
-            <section class="content-section" id="catalog-container"></section>
-            
-            <section class="content-section grid-view" id="grid-container">
-                <div style="grid-column: 1 / -1;">
-                    <div class="grid-header">
-                        <button class="btn-back-grid" onclick="closeGrid()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
-                        <h2 class="row-title" id="grid-title">Categoria</h2>
-                    </div>
-                </div>
-                <div id="grid-content" style="display: contents;"></div>
-            </section>
-        </div>
     </div>
 
     <script>
@@ -178,15 +184,16 @@
 
         if(!user) window.location.href = 'index.html';
 
+        // O MOTOR DE DADOS NA MEMÓRIA
         const DB = { live_cat: [], live_streams: [], vod_cat: [], vod_streams: [], series_cat: [], series: [] };
         
         const THEMES = {
-            'consysencia': { bg: '#070a0b', accent: '#00ff88', hero: 'https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80', tag: 'PLAY CONSYSENCIA' },
-            'netflix': { bg: '#0a0a0a', accent: '#E50914', hero: 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?q=80', tag: 'NETFLIX ORIGINAL' },
-            'prime': { bg: '#0b1319', accent: '#00A8E1', hero: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80', tag: 'AMAZON EXCLUSIVE' },
-            'disney': { bg: '#040714', accent: '#0063e5', hero: 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80', tag: 'DISNEY+ ORIGINAL' },
-            'max': { bg: '#050014', accent: '#9900FF', hero: 'https://images.unsplash.com/photo-1505686994434-e3cc5abf1330?q=80', tag: 'MAX EXCLUSIVE' },
-            'globo': { bg: '#101010', accent: '#FF0054', hero: 'https://images.unsplash.com/photo-1601042879364-f3947d3f9c16?q=80', tag: 'EXCLUSIVO GLOBOPLAY' }
+            'consysencia': { bg: '#070a0b', accent: '#00ff88', hero: 'https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80' },
+            'netflix': { bg: '#0a0a0a', accent: '#E50914', hero: 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?q=80' },
+            'prime': { bg: '#0b1319', accent: '#00A8E1', hero: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80' },
+            'disney': { bg: '#040714', accent: '#0063e5', hero: 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80' },
+            'max': { bg: '#050014', accent: '#9900FF', hero: 'https://images.unsplash.com/photo-1505686994434-e3cc5abf1330?q=80' },
+            'globo': { bg: '#101010', accent: '#FF0054', hero: 'https://images.unsplash.com/photo-1601042879364-f3947d3f9c16?q=80' }
         };
 
         async function fetchAPI(action) {
@@ -210,53 +217,86 @@
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('mobile-overlay');
             if(forceClose || sidebar.classList.contains('open')) {
-                sidebar.classList.remove('open');
-                overlay.style.opacity = '0';
-                setTimeout(() => overlay.style.display = 'none', 300);
+                sidebar.classList.remove('open'); overlay.style.opacity = '0'; setTimeout(() => overlay.style.display = 'none', 300);
             } else {
-                sidebar.classList.add('open');
-                overlay.style.display = 'block';
-                setTimeout(() => overlay.style.opacity = '1', 10);
+                sidebar.classList.add('open'); overlay.style.display = 'block'; setTimeout(() => overlay.style.opacity = '1', 10);
             }
         }
 
+        // ==========================================
+        // O GERENCIADOR DE ESTADOS (Sua Ideia Mestra)
+        // ==========================================
+        function showHome() {
+            document.getElementById('view-grid').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('view-home').classList.add('active');
+                document.getElementById('search-input').value = ''; // Limpa a busca ao voltar
+            }, 50);
+        }
+
+        function showGrid(title, htmlContent) {
+            document.getElementById('view-home').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('grid-title').innerText = title;
+                document.getElementById('grid-content').innerHTML = htmlContent;
+                document.getElementById('view-grid').classList.add('active');
+                window.scrollTo({ top: document.getElementById('view-grid').offsetTop - 20, behavior: 'smooth' });
+            }, 50);
+        }
+
+        // ==========================================
+        // O MOTOR DE BUSCA UNIVERSAL
+        // ==========================================
+        function handleSearch(query) {
+            if (query.length < 3) { if(query.length === 0) showHome(); return; } // Só busca se tiver 3+ letras
+            
+            const q = query.toLowerCase();
+            let htmlStr = '';
+            let count = 0;
+
+            const buildCard = (stream, typeClass, extDefault) => {
+                const id = stream.stream_id || stream.series_id;
+                const name = (stream.name || stream.title).replace(/'/g, "\\'");
+                const icon = stream.stream_icon || stream.cover || '';
+                const ext = stream.container_extension || extDefault;
+                const action = typeClass === 'series' ? `openSeries(${id}, '${name}')` : `openCinema(${id}, '${name}', '${typeClass}', '${ext}')`;
+                return `<div class="card ${typeClass}" onclick="${action}" style="width:100%; aspect-ratio: ${typeClass==='live'?'16/9':'2/3'};"><img src="${icon}" loading="lazy" onerror="this.style.display='none'"><div class="card-name">${name}</div></div>`;
+            };
+
+            // Varrer o Cofre Inteiro! (Limite de 100 resultados para não travar a busca)
+            DB.live_streams.forEach(s => { if(count < 100 && s.name.toLowerCase().includes(q)) { htmlStr += buildCard(s, 'live', ''); count++; } });
+            DB.vod_streams.forEach(s => { if(count < 100 && (s.name||'').toLowerCase().includes(q)) { htmlStr += buildCard(s, 'vod', 'mp4'); count++; } });
+            DB.series.forEach(s => { if(count < 100 && (s.title||s.name||'').toLowerCase().includes(q)) { htmlStr += buildCard(s, 'series', ''); count++; } });
+
+            showGrid(`Resultados para: "${query}"`, htmlStr || "<h3 style='grid-column: 1/-1;'>Nenhum resultado encontrado.</h3>");
+        }
+
+        // ==========================================
+        // RENDERIZAÇÃO DAS TRILHAS (LEVE E RÁPIDO)
+        // ==========================================
         function changeTheme(themeKey, title, filterKey) {
             if(window.innerWidth <= 900) toggleMenu(true); 
-            closeGrid(); // Volta pro modo trilhas sempre que mudar de aba
+            showHome(); // Sempre volta pro início ao trocar de aba
             
             const t = THEMES[themeKey] || THEMES['consysencia'];
             document.documentElement.style.setProperty('--bg-color', t.bg);
             document.documentElement.style.setProperty('--accent-color', t.accent);
             document.getElementById('hero-banner').style.backgroundImage = `url('${t.hero}')`;
             document.getElementById('hero-title').innerHTML = title;
-            document.getElementById('hero-tag').innerText = t.tag;
             
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             if(event && event.currentTarget) event.currentTarget.classList.add('active');
 
-            renderLightCatalog(filterKey);
-        }
-
-        // ==========================================
-        // O SEGREDO DA LEVEZA: Renderiza só 15 capas por trilha + Botão "Ver Todos"
-        // ==========================================
-        function renderLightCatalog(filterKey) {
-            const container = document.getElementById('catalog-container');
+            const container = document.getElementById('view-home');
             let htmlStr = '';
 
             const processCategory = (cat, streamList, typeClass, iconPrefix, extDefault) => {
                 const streams = streamList.filter(s => String(s.category_id) === String(cat.category_id));
                 if(streams.length > 0) {
-                    htmlStr += `
-                    <div class="row-container">
-                        <div class="row-header">
-                            <h2 class="row-title">${iconPrefix} ${cat.category_name}</h2>
-                        </div>
-                        <div class="carousel">`;
+                    htmlStr += `<div class="row-container"><div class="row-header"><h2 class="row-title">${iconPrefix} ${cat.category_name}</h2></div><div class="carousel">`;
                     
-                    // Pega só os 15 primeiros pra abrir instantâneo!
-                    const top15 = streams.slice(0, 15);
-                    top15.forEach((stream) => {
+                    // Mostra só os 15 Destaques na Tela Inicial
+                    streams.slice(0, 15).forEach((stream) => {
                         const id = stream.stream_id || stream.series_id;
                         const name = (stream.name || stream.title || 'Desconhecido').replace(/'/g, "\\'");
                         const icon = stream.stream_icon || stream.cover || '';
@@ -266,20 +306,18 @@
                         htmlStr += `<div class="card ${typeClass}" onclick="${action}"><img src="${icon}" loading="lazy" onerror="this.style.display='none'"><div class="card-name">${name}</div></div>`;
                     });
 
-                    // Se a pasta tiver mais de 15 filmes, cria a caixa "Ver Todos"
+                    // O Botão de Abrir a Pasta Inteira!
                     if (streams.length > 15) {
-                        htmlStr += `<div class="card card-more ${typeClass}" onclick="openGrid('${cat.category_id}', '${cat.category_name.replace(/'/g, "\\'")}', '${typeClass}')">
-                            <i class="fa-solid fa-plus"></i>
-                            <div>Ver os ${streams.length}</div>
+                        htmlStr += `<div class="card card-more ${typeClass}" onclick="openCategoryGrid('${cat.category_id}', '${cat.category_name.replace(/'/g, "\\'")}', '${typeClass}')">
+                            <i class="fa-solid fa-folder-open"></i><div>Ver os ${streams.length}</div>
                         </div>`;
                     }
                     htmlStr += `</div></div>`;
                 }
             };
 
-            if (filterKey === 'live') {
-                DB.live_cat.forEach(cat => processCategory(cat, DB.live_streams, 'live', '', ''));
-            } else { 
+            if (filterKey === 'live') { DB.live_cat.forEach(cat => processCategory(cat, DB.live_streams, 'live', '', '')); } 
+            else { 
                 DB.vod_cat.forEach(cat => { if (filterKey === 'vod_all' || cat.category_name.toLowerCase().includes(filterKey)) processCategory(cat, DB.vod_streams, 'vod', '🎬', 'mp4'); });
                 DB.series_cat.forEach(cat => { if (filterKey === 'vod_all' || cat.category_name.toLowerCase().includes(filterKey)) processCategory(cat, DB.series, 'series', '📺', ''); });
             }
@@ -287,22 +325,14 @@
         }
 
         // ==========================================
-        // A GRADE PESADA (Abre apenas a pasta selecionada)
+        // GERA A GRADE DE UMA CATEGORIA ESPECÍFICA
         // ==========================================
-        function openGrid(catId, catName, typeClass) {
-            document.getElementById('catalog-container').style.display = 'none'; // Esconde as trilhas
-            document.getElementById('grid-container').style.display = 'grid'; // Mostra a grade
-            document.getElementById('grid-title').innerText = catName;
-            
-            const gridContent = document.getElementById('grid-content');
-            let htmlStr = '';
-            
+        function openCategoryGrid(catId, catName, typeClass) {
             let streamList = typeClass === 'live' ? DB.live_streams : (typeClass === 'vod' ? DB.vod_streams : DB.series);
             const extDefault = typeClass === 'vod' ? 'mp4' : '';
-            
-            // Aqui ele joga TODOS os 500 ou 1000 filmes da pasta na tela
             const streams = streamList.filter(s => String(s.category_id) === String(catId));
             
+            let htmlStr = '';
             streams.forEach((stream) => {
                 const id = stream.stream_id || stream.series_id;
                 const name = (stream.name || stream.title).replace(/'/g, "\\'");
@@ -312,50 +342,36 @@
                 
                 htmlStr += `<div class="card ${typeClass}" onclick="${action}" style="width:100%; aspect-ratio: ${typeClass==='live'?'16/9':'2/3'};"><img src="${icon}" loading="lazy" onerror="this.style.display='none'"><div class="card-name">${name}</div></div>`;
             });
-            
-            gridContent.innerHTML = htmlStr;
-            window.scrollTo({ top: document.getElementById('grid-container').offsetTop - 50, behavior: 'smooth' });
-        }
-
-        function closeGrid() {
-            document.getElementById('grid-container').style.display = 'none';
-            document.getElementById('catalog-container').style.display = 'block';
-            document.getElementById('grid-content').innerHTML = ''; // Limpa a memória!
+            showGrid(`Categoria: ${catName}`, htmlStr);
         }
 
         // ==========================================
-        // MODO CINEMA (Apaga o site inteiro da visão e foca no Player)
+        // MODO CINEMA (APAGÃO TOTAL)
         // ==========================================
         let hls;
         const videoElement = document.getElementById('video-element');
         const cinemaHeader = document.getElementById('cinema-header');
 
         function openCinema(id, name, type, extension) {
-            // A MAGIA: Esconde o catálogo inteiro. O navegador para de processar as fotos!
-            document.getElementById('app-interface').style.display = 'none'; 
-            document.getElementById('cinema-mode').style.display = 'flex';
+            document.getElementById('app-interface').style.display = 'none'; // Desliga o site!
+            document.getElementById('cinema-mode').style.display = 'flex'; // Liga o Cinema
             document.getElementById('cinema-title').innerText = name;
             
             let videoUrl = type === 'live' ? `${rawApiBase}/live/${user}/${pass}/${id}.m3u8` : `${rawApiBase}/movie/${user}/${pass}/${id}.${extension}`;
 
             if (type === 'live' && Hls.isSupported()) {
-                if(hls) hls.destroy(); hls = new Hls(); 
-                hls.loadSource(videoUrl); hls.attachMedia(videoElement);
+                if(hls) hls.destroy(); hls = new Hls(); hls.loadSource(videoUrl); hls.attachMedia(videoElement);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => videoElement.play());
-            } else { 
-                videoElement.src = videoUrl; videoElement.play(); 
-            }
+            } else { videoElement.src = videoUrl; videoElement.play(); }
         }
 
         function closeCinema() {
-            // Destrói o vídeo
             videoElement.pause(); videoElement.src = "";
             if(hls) hls.destroy();
             if(document.fullscreenElement) document.exitFullscreen();
             
-            // Volta com o catálogo exatamente como estava!
             document.getElementById('cinema-mode').style.display = 'none';
-            document.getElementById('app-interface').style.display = 'block'; 
+            document.getElementById('app-interface').style.display = 'block'; // Religou o site!
         }
 
         function toggleFullscreen() {
@@ -363,15 +379,10 @@
             else { document.exitFullscreen(); }
         }
 
-        // Esconde a barra do Modo Cinema quando o mouse fica parado
         let timeout;
         document.getElementById('cinema-mode').addEventListener('mousemove', () => {
-            cinemaHeader.classList.remove('hidden');
-            clearTimeout(timeout);
+            cinemaHeader.classList.remove('hidden'); clearTimeout(timeout);
             timeout = setTimeout(() => cinemaHeader.classList.add('hidden'), 3000);
-        });
-        document.getElementById('cinema-mode').addEventListener('click', () => {
-            cinemaHeader.classList.toggle('hidden');
         });
 
         // ==========================================
