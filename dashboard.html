@@ -3,127 +3,111 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Consysencia Ultra | SPA</title>
+  <title>Play Consysencia | V8 Absoluta</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
   <style>
-    /* ============================
-       FONTS E TOKENS (Camaleão Perfeito)
-       ============================ */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
     :root{
-      --bg:#070a0b; --bg2:#0b0f10;
-      --text:#fff; --muted:rgba(255,255,255,.72);
+      --bg:#070a0b; --bg2:#0b0f10; --text:#fff;
       --accent:#00ff88; --accent2:rgba(0,255,136,.18);
       --radius:12px; --radius2:16px;
       --shadow1:0 10px 22px rgba(0,0,0,.35);
-      --shadow2:0 16px 48px rgba(0,0,0,.62);
       --navGrad:linear-gradient(to bottom, rgba(0,0,0,.92), rgba(0,0,0,.45), transparent);
-      --panelBg:rgba(0,0,0,.88);
-      --btnBg:rgba(255,255,255,.06);
-      --btnBd:rgba(255,255,255,.14);
-      --btnHover:rgba(255,255,255,.10);
+      --panelBg:rgba(0,0,0,.92);
+      --btnBg:rgba(255,255,255,.06); --btnBd:rgba(255,255,255,.14);
       --cardBd:rgba(255,255,255,.10);
-      --focus: 0 0 0 2px rgba(255,255,255,.10), 0 0 22px rgba(0,255,136,.18);
-      --brandFont: "Inter", system-ui, sans-serif;
-      --rowCardW: 152px;
-      --rowCardH: 228px;
+      --brandFont: "Inter", sans-serif;
     }
 
-    body[data-theme="consysencia"]{ --bg:#070a0b; --bg2:#0b0f10; --accent:#00ff88; --accent2:rgba(0,255,136,.18); --panelBg:rgba(0,0,0,.90); }
-    body[data-theme="netflix"]{ --bg:#141414; --bg2:#0f0f0f; --accent:#E50914; --accent2:rgba(229,9,20,.20); --btnHover:rgba(229,9,20,.14); --panelBg:rgba(10,10,10,.94); --navGrad:linear-gradient(to bottom, rgba(20,20,20,.95), transparent); --brandFont:"Bebas Neue", sans-serif; --radius:10px; }
-    body[data-theme="prime"]{ --bg:#0f171e; --bg2:#0b1116; --accent:#00A8E1; --accent2:rgba(0,168,225,.20); --btnHover:rgba(0,168,225,.12); --panelBg:rgba(7,12,16,.92); --navGrad:linear-gradient(to bottom, rgba(15,23,30,.95), transparent); --radius:12px; }
-    body[data-theme="disney"]{ --bg:#1a1d29; --bg2:#121422; --accent:#0063e5; --accent2:rgba(0,99,229,.20); --btnHover:rgba(0,99,229,.12); --panelBg:rgba(10,12,18,.92); --navGrad:linear-gradient(to bottom, rgba(26,29,41,.95), transparent); --radius:12px; }
+    body[data-theme="consysencia"]{ --accent:#00ff88; --bg:#070a0b; }
+    body[data-theme="netflix"]{ --accent:#E50914; --bg:#141414; --brandFont:"Bebas Neue", sans-serif; }
+    body[data-theme="prime"]{ --accent:#00A8E1; --bg:#0f171e; }
+    body[data-theme="disney"]{ --accent:#0063e5; --bg:#1a1d29; }
+    body[data-theme="hbomax"]{ --accent:#8b5cf6; --bg:#0b0616; }
+    body[data-theme="globoplay"]{ --accent:#ff3d00; --bg:#0b0b0f; }
 
     *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-    html, body{ height:100%; }
-    body{ background: var(--bg); color: var(--text); font-family: "Inter", sans-serif; overflow: hidden; transition: 0.24s ease; text-rendering: optimizeLegibility; }
-    :focus{ outline:none; }
-    :focus-visible{ box-shadow: var(--focus); border-radius: 12px; }
-
-    #app{ height:100vh; width:100vw; display:flex; background: var(--bg); }
+    body{ background: var(--bg); color: var(--text); font-family: "Inter", sans-serif; overflow: hidden; transition: 0.3s ease; }
+    
+    #app{ height:100vh; width:100vw; display:flex; }
 
     /* SIDEBAR */
-    #sidebar{ width: 280px; background: var(--panelBg); border-right: 1px solid rgba(255,255,255,.10); backdrop-filter: blur(14px); box-shadow: 18px 0 40px rgba(0,0,0,.35); padding: 22px 14px; position: relative; transition: 0.3s; z-index: 30; }
+    #sidebar{ width: 280px; background: var(--panelBg); border-right: 1px solid rgba(255,255,255,.10); padding: 22px 14px; position: relative; transition: 0.3s; z-index: 30; }
     #sidebar .brand{ display:flex; align-items:center; gap:10px; padding: 8px 10px 16px; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,.08); }
-    #sidebar .brand .logoDot{ width: 10px; height: 10px; border-radius: 999px; background: var(--accent); box-shadow: 0 0 16px rgba(0,0,0,.35); }
-    #sidebar .brand h1{ font-size: 22px; font-weight: 900; letter-spacing: 1px;}
-    body[data-theme="netflix"] #sidebar .brand h1{ font-family: var(--brandFont); font-size: 30px; letter-spacing: 1.5px; }
+    #sidebar .brand h1{ font-size: 24px; font-weight: 900; }
+    body[data-theme="netflix"] #sidebar .brand h1{ font-family: var(--brandFont); font-size: 32px; letter-spacing: 1.5px; }
 
-    .navItem{ display:flex; align-items:center; gap:12px; padding: 12px; border-radius: var(--radius); cursor:pointer; color: rgba(255,255,255,.70); transition: 0.14s; font-weight: 800; margin-bottom: 6px; border: 1px solid transparent;}
-    .navItem i{ width: 18px; text-align:center; }
-    .navItem:hover{ background: rgba(255,255,255,.06); transform: translateX(2px); color: #fff; }
-    .navItem.active{ background: rgba(255,255,255,.08); border-color: var(--accent2); color: var(--accent); }
+    .navItem{ display:flex; align-items:center; gap:12px; padding: 12px; border-radius: var(--radius); cursor:pointer; color: rgba(255,255,255,.70); font-weight: 800; margin-bottom: 6px; transition: 0.2s;}
+    .navItem:hover{ background: rgba(255,255,255,.06); color: #fff; transform: translateX(2px); }
+    .navItem.active{ background: rgba(255,255,255,.08); color: var(--accent); }
 
     /* MAIN & TOPBAR */
-    #main{ flex:1; position: relative; overflow: hidden; }
+    #main{ flex:1; position: relative; }
     #topbar{ position: absolute; top:0; left:0; right:0; height: 74px; display:flex; align-items:center; gap: 14px; padding: 0 18px; background: var(--navGrad); z-index: 20; backdrop-filter: blur(12px); }
-    #hamb{ display:none; width: 44px; height: 44px; border-radius: 12px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); color: #fff; cursor:pointer; }
-    #viewTitle{ font-weight: 900; font-size: 18px; text-shadow: 0 2px 14px rgba(0,0,0,.45); max-width: 42vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+    #hamb{ display:none; width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,.05); border:none; color: #fff; cursor:pointer; }
+    #viewTitle{ font-weight: 900; font-size: 18px; text-shadow: 0 2px 14px rgba(0,0,0,.45); }
     body[data-theme="netflix"] #viewTitle{ font-family: var(--brandFont); font-size: 28px; letter-spacing: 1.2px; }
 
-    /* BUSCA */
-    #searchWrap{ margin-left:auto; display:flex; align-items:center; gap: 10px; width: min(520px, 48vw); height: 44px; padding: 0 12px; border-radius: 14px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.06); transition: 0.14s; }
-    #searchWrap:focus-within{ border-color: var(--accent2); background: rgba(255,255,255,.08); box-shadow: 0 0 22px rgba(0,0,0,.25); }
-    #search{ flex:1; background: transparent; border: none; color:#fff; font-weight: 800; outline:none; }
-    #search::placeholder{ color: rgba(255,255,255,.55); }
+    #searchWrap{ margin-left:auto; display:flex; align-items:center; gap: 10px; width: 50%; max-width: 400px; height: 44px; padding: 0 15px; border-radius: 14px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); }
+    #searchWrap input{ flex:1; background: transparent; border: none; color:#fff; font-weight: 800; outline:none; }
 
-    /* CATALOGO */
-    #catalogRoot{ position:absolute; top:0; left:0; right:0; bottom:0; overflow-y: auto; padding-top: 86px; padding-bottom: 30px; scroll-behavior: smooth; }
+    /* CATALOGO TRILHAS */
+    #catalogRoot{ position:absolute; inset:0; overflow-y: auto; padding-top: 86px; padding-bottom: 30px; scroll-behavior: smooth; }
     .row{ padding: 12px 18px 8px; }
-    .rowTitle{ display:flex; align-items:center; gap:10px; margin-bottom: 10px; font-weight: 900; color: rgba(255,255,255,.90); text-shadow: 0 2px 12px rgba(0,0,0,.45); }
-    .rowTitle .pill{ width: 8px; height: 8px; border-radius: 999px; background: var(--accent); }
-    .rail{ display:flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; scroll-snap-type: x mandatory; }
+    .rowTitle{ font-weight: 900; margin-bottom: 12px; color: #fff; display: flex; align-items: center; gap: 8px; text-shadow: 0 2px 12px rgba(0,0,0,.45); }
+    .rowTitle i { color: var(--accent); font-size: 10px; }
+    .rail{ display:flex; gap: 12px; overflow-x: auto; padding-bottom: 15px; scroll-snap-type: x mandatory; }
     .rail::-webkit-scrollbar{ display: none; }
 
     /* CARDS */
-    .card{ flex: 0 0 auto; width: var(--rowCardW); height: var(--rowCardH); border-radius: var(--radius); background: #111; border: 1px solid var(--cardBd); box-shadow: 0 10px 18px rgba(0,0,0,.22); overflow:hidden; position: relative; cursor: pointer; scroll-snap-align: start; transition: 0.16s; }
-    .card.live{ width: calc(var(--rowCardW) * 1.35); height: calc(var(--rowCardH) * .62); }
-    .card:hover, .card.focused{ transform: translateY(-4px) scale(1.06); border-color: var(--accent); box-shadow: var(--shadow2); z-index: 2; }
-    .poster{ width:100%; height:100%; background-size: cover; background-position: center; }
-    .meta{ position:absolute; left:0; right:0; bottom:0; padding: 25px 10px 8px; background: linear-gradient(to top, rgba(0,0,0,.95), transparent); }
-    .name{ font-size: 11px; font-weight: 900; text-align: center; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; text-shadow: 0 2px 10px black; }
+    .card{ flex: 0 0 auto; width: 140px; aspect-ratio: 2/3; border-radius: var(--radius); background: #111; border: 1px solid var(--cardBd); position: relative; cursor: pointer; transition: 0.2s; overflow: hidden; }
+    .card.live{ width: 220px; aspect-ratio: 16/9; }
+    .card:hover{ transform: translateY(-4px) scale(1.05); border-color: var(--accent); box-shadow: var(--shadow1); z-index: 2; }
+    .card img{ width: 100%; height: 100%; object-fit: cover; }
+    .meta{ position:absolute; bottom:0; width:100%; padding: 25px 10px 10px; background: linear-gradient(to top, rgba(0,0,0,.95), transparent); text-align: center; font-size: 11px; font-weight: 900; }
 
-    /* LOADER E PLAYER */
-    #loader{ position: fixed; inset: 0; display:flex; align-items:center; justify-content:center; flex-direction: column; gap: 14px; background: var(--bg2); z-index: 9999; color: var(--accent); font-weight: 900; }
-    .spinner{ width: 38px; height: 38px; border: 4px solid rgba(255,255,255,.10); border-top-color: var(--accent); border-radius: 999px; animation: spin .9s linear infinite; }
-    @keyframes spin{ to{ transform: rotate(360deg); } }
-
+    /* PLAYER UNMOUNT */
     #playerRoot{ display:none; position: fixed; inset:0; background: #000; z-index: 9000; flex-direction: column;}
-    #pControls{ position:absolute; top:0; left:0; right:0; height: 74px; display:flex; align-items:center; gap: 12px; padding: 0 18px; background: linear-gradient(rgba(0,0,0,.92), transparent); z-index: 10; }
-    #btnBack{ height: 44px; padding: 0 20px; border-radius: var(--radius); border: 1px solid var(--btnBd); background: var(--btnBg); color:#fff; font-weight: 900; cursor:pointer; transition: 0.14s; }
+    #pControls{ position:absolute; top:0; width:100%; height: 74px; display:flex; align-items:center; gap: 15px; padding: 0 18px; background: linear-gradient(rgba(0,0,0,.92), transparent); z-index: 10; }
+    #btnBack{ padding: 10px 20px; border-radius: var(--radius); background: var(--btnBg); color:#fff; font-weight: 900; border: 1px solid var(--btnBd); cursor:pointer; transition: 0.2s;}
     #btnBack:hover{ background: var(--accent); color: #000; border-color: var(--accent); }
-    #pTitle{ font-weight: 900; text-shadow: 0 2px 14px black; }
+    #pTitle{ font-weight: 900; }
     #video{ width:100%; height:100%; object-fit: contain; background:#000; outline: none; }
 
+    /* LOADER */
+    #loader{ position: fixed; inset: 0; display:flex; align-items:center; justify-content:center; flex-direction: column; gap: 14px; background: #070a0b; z-index: 9999; color: var(--accent); font-weight: 900; }
+    .spinner{ width: 40px; height: 40px; border: 4px solid rgba(255,255,255,.10); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin{ to{ transform: rotate(360deg); } }
+
     @media (max-width: 900px){
-      #hamb{ display:inline-flex; align-items:center; justify-content:center; }
-      #sidebar{ position: absolute; top:0; bottom:0; left:0; transform: translateX(-102%); }
-      #sidebar.open{ transform: translateX(0); }
+      #hamb{ display:block; }
+      #sidebar{ position: absolute; left: -100%; height: 100%; }
+      #sidebar.open{ left: 0; }
     }
   </style>
 </head>
 
 <body data-theme="consysencia">
-  <div id="loader"><div class="spinner"></div>Sincronizando Multiverso...</div>
+  <div id="loader"><div class="spinner"></div><div id="loaderText">Sincronizando Multiverso...</div></div>
 
   <div id="app">
     <aside id="sidebar">
-      <div class="brand"><div class="logoDot"></div><h1>CONSYSENCIA</h1></div>
+      <div class="brand"><h1>CONSYSENCIA</h1></div>
       <div class="navItem active" data-tab="live" data-theme="consysencia"><i class="fa-solid fa-tv"></i> TV ao Vivo</div>
-      <div class="navItem" data-tab="movies" data-theme="consysencia"><i class="fa-solid fa-film"></i> Catálogo VOD</div>
-      <div style="height:10px"></div>
+      <div class="navItem" data-tab="movies" data-theme="consysencia"><i class="fa-solid fa-film"></i> Todo o Catálogo</div>
+      <div style="height:15px"></div>
       <div class="navItem" data-tab="netflix" data-theme="netflix"><i class="fa-brands fa-neos"></i> Netflix</div>
       <div class="navItem" data-tab="disney" data-theme="disney"><i class="fa-brands fa-play"></i> Disney+</div>
       <div class="navItem" data-tab="prime" data-theme="prime"><i class="fa-brands fa-amazon"></i> Prime Video</div>
       <div class="navItem" data-tab="hbomax" data-theme="hbomax"><i class="fa-solid fa-m"></i> HBO Max</div>
       <div class="navItem" data-tab="globoplay" data-theme="globoplay"><i class="fa-solid fa-g"></i> GloboPlay</div>
-      <div style="height:16px"></div>
-      <div class="navItem" id="btnClear" style="color:#ff4444" onclick="localStorage.clear(); location.href='index.html'"><i class="fa-solid fa-power-off"></i> Sair do App</div>
+      <div style="height:20px"></div>
+      <div class="navItem" id="btnClear" style="color:#ff4444"><i class="fa-solid fa-power-off"></i> Reparar Erros (Limpar)</div>
     </aside>
 
     <main id="main">
@@ -131,7 +115,7 @@
         <button id="hamb"><i class="fa-solid fa-bars"></i></button>
         <div id="viewTitle">TV ao Vivo</div>
         <div id="searchWrap">
-          <i class="fa-solid fa-magnifying-glass" id="searchIcon"></i>
+          <i class="fa-solid fa-magnifying-glass"></i>
           <input id="search" placeholder="Buscar filmes e canais..." autocomplete="off" />
         </div>
       </div>
@@ -151,235 +135,229 @@
     (function(){
       'use strict';
 
-      // 1. CREDENCIAIS E SERVIDORES (O SEGREDO DESTRAVADO)
+      // CREDENCIAIS
       const user = localStorage.getItem('cs_user');
       const pass = localStorage.getItem('cs_pass');
       if(!user || !pass) window.location.href = 'index.html';
 
       const apiBase = 'https://api.consysencia.com/catalog';
-      const streamServer = 'http://playtvstreaming.shop'; // Servidor Principal (Protegido)
+      
+      // O SEGREDO DO FAILOVER (TENTA HTTPS PRIMEIRO PARA DRIBLAR O BLOQUEIO)
+      const STREAM_SERVERS = [
+        'https://playtvstreaming.shop', // Tenta seguro
+        'https://ph1233.uk',
+        'http://playtvstreaming.shop',  // Tenta inseguro se falhar
+        'http://ph1233.uk'
+      ];
 
-      // ---------- DOM refs ----------
-      const loader = document.getElementById('loader');
-      const sidebar = document.getElementById('sidebar');
-      const hamb = document.getElementById('hamb');
-      const viewTitle = document.getElementById('viewTitle');
-      const catalogRoot = document.getElementById('catalogRoot');
-      const search = document.getElementById('search');
-      const playerRoot = document.getElementById('playerRoot');
-      const btnBack = document.getElementById('btnBack');
-      const pTitle = document.getElementById('pTitle');
-      const video = document.getElementById('video');
-
-      // ---------- App State ----------
       const STATE = {
-        tab: 'live', theme: 'consysencia', query: '', scrollTop: 0, mounted: true,
-        io: null, hls: null, live_cat: [], vod_cat: [], live_streams: [], vod_streams: [],
-        liveByCat: null, vodByCat: null, tSearch: 0,
+        tab: 'live', query: '', mounted: true, hls: null,
+        live_cat: [], vod_cat: [], live_streams: [], vod_streams: [],
+        liveByCat: new Map(), vodByCat: new Map(),
+        failoverIdx: 0, currentPlayData: null
       };
 
-      const raf = (fn) => requestAnimationFrame(fn);
-
-      // FILTRO INTELIGENTE (Ignora Emojis e espaços)
+      // Fura Emojis e Símbolos
       function normKey(s){
-        if (!s) return '';
+        if(!s) return '';
         return (''+s).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'');
       }
-      function includesFuzzy(hay, needle){ return normKey(hay).indexOf(normKey(needle)) !== -1; }
 
-      function setTheme(theme){ document.body.dataset.theme = theme; STATE.theme = theme; }
-      function setActiveNav(tab){
-        document.querySelectorAll('.navItem[data-tab]').forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
-      }
-
-      // ---------- IndexedDB (Performance Gigante) ----------
-      const DB_NAME = 'consysencia_ultra', DB_VER = 1, STORE = 'cache';
+      // INDEXED DB - CACHE DE ALTA VELOCIDADE
       function idbOpen(){
-        return new Promise((resolve, reject)=>{
-          const req = indexedDB.open(DB_NAME, DB_VER);
-          req.onupgradeneeded = (e)=>{ if (!req.result.objectStoreNames.contains(STORE)) req.result.createObjectStore(STORE); };
-          req.onsuccess = ()=> resolve(req.result);
-          req.onerror = ()=> reject(req.error);
+        return new Promise((res, rej)=>{
+          const req = indexedDB.open('consysencia_v8', 1);
+          req.onupgradeneeded = e => { if(!req.result.objectStoreNames.contains('cache')) req.result.createObjectStore('cache'); };
+          req.onsuccess = ()=> res(req.result);
+          req.onerror = ()=> rej(req.error);
         });
       }
       function idbGet(db, key){
-        return new Promise((res, rej)=>{ const req = db.transaction(STORE, 'readonly').objectStore(STORE).get(key); req.onsuccess = ()=> res(req.result); req.onerror = ()=> rej(req.error); });
+        return new Promise(res => { db.transaction('cache', 'readonly').objectStore('cache').get(key).onsuccess = e => res(e.target.result); });
       }
-      function idbSet(db, key, value){
-        return new Promise((res, rej)=>{ const tx = db.transaction(STORE, 'readwrite'); tx.objectStore(STORE).put(value, key); tx.oncomplete = ()=> res(true); tx.onerror = ()=> rej(tx.error); });
+      function idbSet(db, key, val){
+        return new Promise(res => { db.transaction('cache', 'readwrite').objectStore('cache').put(val, key).oncomplete = ()=> res(true); });
       }
 
-      // 2. BUSCA NO SERVIDOR REAL DA CONSYSENCIA
-      async function fetchCatalogFromYourAPI(){
+      // PUXA TUDO (FILMES + SÉRIES UNIDOS)
+      async function fetchData(){
+        document.getElementById('loaderText').innerText = "Baixando Filmes e Séries (Pode levar 20s)...";
         const h = { 'Authorization': 'Basic ' + btoa(user + ':' + pass) };
-        const [lcat, lstr, vcat, vstr] = await Promise.all([
-            fetch(`${apiBase}?action=get_live_categories`, {headers:h}).then(r=>r.json()),
-            fetch(`${apiBase}?action=get_live_streams`, {headers:h}).then(r=>r.json()),
-            fetch(`${apiBase}?action=get_vod_categories`, {headers:h}).then(r=>r.json()),
-            fetch(`${apiBase}?action=get_vod_streams`, {headers:h}).then(r=>r.json())
+        
+        // Puxa as 6 listas do Xtream Codes!
+        const [lc, ls, vc, vs, sc, ss] = await Promise.all([
+          fetch(`${apiBase}?action=get_live_categories`, {headers:h}).then(r=>r.json()).catch(()=>[]),
+          fetch(`${apiBase}?action=get_live_streams`, {headers:h}).then(r=>r.json()).catch(()=>[]),
+          fetch(`${apiBase}?action=get_vod_categories`, {headers:h}).then(r=>r.json()).catch(()=>[]),
+          fetch(`${apiBase}?action=get_vod_streams`, {headers:h}).then(r=>r.json()).catch(()=>[]),
+          fetch(`${apiBase}?action=get_series_categories`, {headers:h}).then(r=>r.json()).catch(()=>[]),
+          fetch(`${apiBase}?action=get_series`, {headers:h}).then(r=>r.json()).catch(()=>[])
         ]);
-        return { live_cat: lcat||[], vod_cat: vcat||[], live_streams: lstr||[], vod_streams: vstr||[] };
+
+        // Funde Filmes e Séries para a aba Netflix funcionar perfeitamente
+        return {
+          live_cat: lc || [], live_streams: ls || [],
+          vod_cat: [...(vc||[]), ...(sc||[])],
+          vod_streams: [...(vs||[]), ...(ss||[])]
+        };
       }
 
       function buildIndexes(){
-        STATE.liveByCat = new Map();
+        STATE.liveByCat = new Map(); STATE.vodByCat = new Map();
         STATE.live_streams.forEach(it => { const k=''+it.category_id; STATE.liveByCat.set(k, (STATE.liveByCat.get(k)||[]).concat(it)); });
-        STATE.vodByCat = new Map();
         STATE.vod_streams.forEach(it => { const k=''+it.category_id; STATE.vodByCat.set(k, (STATE.vodByCat.get(k)||[]).concat(it)); });
       }
 
-      function observePoster(el){
-        if (!STATE.io) {
-          STATE.io = new IntersectionObserver((entries)=>{
-            entries.forEach(e => {
-              if (e.isIntersecting) {
-                e.target.style.backgroundImage = `url("${e.target.dataset.src}")`;
-                STATE.io.unobserve(e.target);
-              }
-            });
-          }, { root: catalogRoot, rootMargin: '300px 0px' });
-        }
-        STATE.io.observe(el);
-      }
-
-      function createCard(item, kind){
-        const card = document.createElement('div');
-        card.className = `card ${kind}`;
-        
-        const poster = document.createElement('div');
-        poster.className = 'poster';
-        if (item.stream_icon){ poster.dataset.src = item.stream_icon; observePoster(poster); }
-
-        const meta = document.createElement('div');
-        meta.className = 'meta';
-        const name = document.createElement('div');
-        name.className = 'name';
-        name.textContent = item.name || 'Desconhecido';
-
-        meta.appendChild(name); card.appendChild(poster); card.appendChild(meta);
-
-        card.addEventListener('click', ()=> openPlayer(item, kind));
-        return card;
-      }
-
-      function addRow(title, items, kind){
-        if (!items || !items.length) return;
-        const row = document.createElement('section'); row.className = 'row';
-        row.innerHTML = `<div class="rowTitle"><span class="pill"></span><span>${title}</span></div>`;
-        const rail = document.createElement('div'); rail.className = 'rail';
-        const frag = document.createDocumentFragment();
-        items.forEach(it => frag.appendChild(createCard(it, kind)));
-        rail.appendChild(frag); row.appendChild(rail); catalogRoot.appendChild(row);
-      }
-
-      const TAB_META = {
-        live: { title: 'TV ao Vivo', theme: 'consysencia' },
-        movies: { title: 'Catálogo VOD', theme: 'consysencia' },
-        netflix: { title: 'Netflix', theme: 'netflix' },
-        disney: { title: 'Disney+', theme: 'disney' },
-        prime: { title: 'Prime Video', theme: 'prime' },
-        hbomax: { title: 'HBO Max', theme: 'hbomax' },
-        globoplay:{ title: 'GloboPlay', theme: 'globoplay' }
-      };
-
-      function filterCategoriesForTab(tab){
-        if (tab === 'live') return STATE.live_cat;
-        if (tab === 'movies') return STATE.vod_cat;
-        return STATE.vod_cat.filter(c => includesFuzzy(c.category_name, tab === 'hbomax' ? 'hbo' : (tab === 'globoplay' ? 'globo' : tab)));
-      }
-
-      function renderTab(tab){
-        STATE.tab = tab;
-        const meta = TAB_META[tab] || TAB_META.live;
-        viewTitle.textContent = meta.title;
-        setTheme(meta.theme); setActiveNav(tab);
-        if(STATE.mounted) STATE.scrollTop = 0;
-        catalogRoot.innerHTML = '';
-
-        const cats = filterCategoriesForTab(tab);
+      function renderTab(){
+        const root = document.getElementById('catalogRoot');
+        root.innerHTML = '';
+        const cats = STATE.tab === 'live' ? STATE.live_cat : STATE.vod_cat;
+        const map = STATE.tab === 'live' ? STATE.liveByCat : STATE.vodByCat;
         const q = normKey(STATE.query);
-        
+
         cats.forEach(c => {
-          let items = (tab === 'live' ? STATE.liveByCat : STATE.vodByCat).get(''+c.category_id) || [];
+          // Filtro Plataforma
+          if(STATE.tab !== 'live' && STATE.tab !== 'movies'){
+            const t = STATE.tab === 'hbomax' ? 'hbo' : (STATE.tab === 'globoplay' ? 'globo' : STATE.tab);
+            if(normKey(c.category_name).indexOf(t) === -1) return;
+          }
+
+          let items = map.get(''+c.category_id) || [];
           if(q) items = items.filter(it => normKey(it.name).includes(q));
-          addRow(c.category_name, items, tab === 'live' ? 'live' : 'vod');
+
+          if(items.length > 0){
+            const row = document.createElement('div'); row.className = 'row';
+            row.innerHTML = `<div class="rowTitle"><i class="fa-solid fa-play"></i> ${c.category_name}</div><div class="rail"></div>`;
+            const rail = row.querySelector('.rail');
+            
+            // Renderiza limitando a 100 por trilha para não travar a TV
+            items.slice(0, 100).forEach(it => {
+              const card = document.createElement('div');
+              card.className = `card ${STATE.tab === 'live' ? 'live' : 'vod'}`;
+              card.innerHTML = `<img src="${it.stream_icon||it.cover||''}" loading="lazy"><div class="meta">${it.name}</div>`;
+              card.onclick = () => handlePlayClick(it, STATE.tab === 'live' ? 'live' : (it.series_id ? 'series' : 'movie'));
+              rail.appendChild(card);
+            });
+            root.appendChild(row);
+          }
         });
-        raf(()=> catalogRoot.scrollTop = 0);
       }
 
-      // ---------- UNMOUNT REAL (Limpa RAM na TV) ----------
-      function unmountCatalog(){
-        if (!STATE.mounted) return;
-        STATE.scrollTop = catalogRoot.scrollTop || 0;
-        if (catalogRoot.parentNode) catalogRoot.parentNode.removeChild(catalogRoot);
-        STATE.mounted = false;
-      }
-      function remountCatalog(){
-        if (STATE.mounted) return;
-        document.getElementById('main').appendChild(catalogRoot);
-        STATE.mounted = true;
-        renderTab(STATE.tab);
-        raf(()=> catalogRoot.scrollTop = STATE.scrollTop || 0);
-      }
-
-      // 3. O CORAÇÃO DO PLAYER (MONTA O LINK XTREAM)
-      function openPlayer(item, kind){
-        unmountCatalog();
-        pTitle.textContent = item.name || '';
-        playerRoot.style.display = 'flex';
-
-        const id = item.stream_id;
-        const ext = item.container_extension || 'mp4';
-        
-        // Mágica do Xtream Codes:
-        const url = kind === 'live' 
-            ? `${streamServer}/live/${user}/${pass}/${id}.m3u8`
-            : `${streamServer}/movie/${user}/${pass}/${id}.${ext}`;
-
-        if (kind === 'live' && Hls.isSupported()){
-          STATE.hls = new Hls(); STATE.hls.loadSource(url); STATE.hls.attachMedia(video);
-          STATE.hls.on(Hls.Events.MANIFEST_PARSED, ()=> video.play());
+      // LIDA COM CLIQUES (SE FOR SÉRIE, PEGA EPISÓDIO 1)
+      async function handlePlayClick(item, type) {
+        if(type === 'series') {
+            document.getElementById('loader').style.display = 'flex';
+            document.getElementById('loaderText').innerText = "Buscando Episódio 1...";
+            try {
+                const res = await fetch(`${apiBase}?action=get_series_info&series_id=${item.series_id}`, {headers:{ 'Authorization': 'Basic ' + btoa(user + ':' + pass) }});
+                const data = await res.json();
+                document.getElementById('loader').style.display = 'none';
+                
+                // Tenta pegar a temporada 1, ep 1
+                const seasons = Object.values(data.episodes);
+                if(seasons.length > 0 && seasons[0].length > 0) {
+                    const ep = seasons[0][0];
+                    startPlayback(ep.id, `S01E01 - ${ep.title}`, 'movie', ep.container_extension || 'mp4');
+                } else { alert("Nenhum episódio encontrado no servidor."); }
+            } catch(e) { document.getElementById('loader').style.display = 'none'; alert("Erro ao carregar episódios."); }
         } else {
-          video.src = url; video.play();
+            startPlayback(item.stream_id, item.name, type, item.container_extension || 'mp4');
         }
       }
 
-      function closePlayer(){
-        try{ video.pause(); video.src = ""; }catch(e){}
-        if (STATE.hls){ STATE.hls.destroy(); STATE.hls = null; }
-        playerRoot.style.display = 'none';
-        remountCatalog();
+      // O MOTOR DE VÍDEO BLINDADO COM FAILOVER
+      function startPlayback(id, name, type, ext) {
+          STATE.failoverIdx = 0;
+          STATE.currentPlayData = { id, name, type, ext };
+          
+          document.getElementById('catalogRoot').style.display = 'none';
+          document.getElementById('playerRoot').style.display = 'flex';
+          document.getElementById('pTitle').innerText = name;
+          
+          tryServer();
       }
 
-      // Eventos UI
-      hamb.onclick = ()=> sidebar.classList.toggle('open');
-      sidebar.onclick = (e)=>{
-        const el = e.target.closest('.navItem');
-        if (!el || el.id === 'btnClear') return;
-        sidebar.classList.remove('open');
-        renderTab(el.dataset.tab);
-      };
-      search.oninput = ()=> {
-        clearTimeout(STATE.tSearch);
-        STATE.tSearch = setTimeout(()=> renderTab(STATE.tab), 150);
-      };
-      btnBack.onclick = closePlayer;
+      function tryServer() {
+          const video = document.getElementById('video');
+          if (STATE.failoverIdx >= STREAM_SERVERS.length) {
+              alert("O Navegador bloqueou o vídeo (Segurança HTTPS) ou o canal está fora do ar.");
+              document.getElementById('btnBack').click();
+              return;
+          }
 
+          const serverBase = STREAM_SERVERS[STATE.failoverIdx++];
+          const { id, type, ext } = STATE.currentPlayData;
+          const url = type === 'live' 
+            ? `${serverBase}/live/${user}/${pass}/${id}.m3u8`
+            : `${serverBase}/movie/${user}/${pass}/${id}.${ext}`;
+
+          if(STATE.hls) { STATE.hls.destroy(); STATE.hls = null; }
+
+          if (type === 'live' && Hls.isSupported()) {
+              STATE.hls = new Hls();
+              STATE.hls.loadSource(url);
+              STATE.hls.attachMedia(video);
+              STATE.hls.on(Hls.Events.ERROR, (e, data) => {
+                  if (data.fatal) tryServer(); // Se der tela preta, tenta o próximo servidor!
+              });
+              STATE.hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
+          } else {
+              video.src = url;
+              video.play().catch(()=>{});
+              video.onerror = () => tryServer(); // Se o MP4 falhar, tenta o próximo!
+          }
+      }
+
+      document.getElementById('btnBack').onclick = () => {
+          const video = document.getElementById('video');
+          video.pause(); video.src = "";
+          if(STATE.hls) { STATE.hls.destroy(); STATE.hls = null; }
+          document.getElementById('playerRoot').style.display = 'none';
+          document.getElementById('catalogRoot').style.display = 'block';
+      };
+
+      // EVENTOS DE MENU
+      document.getElementById('hamb').onclick = ()=> document.getElementById('sidebar').classList.toggle('open');
+      document.querySelectorAll('.navItem[data-tab]').forEach(el => {
+        el.onclick = () => {
+          document.querySelectorAll('.navItem').forEach(n => n.classList.remove('active'));
+          el.classList.add('active');
+          document.body.dataset.theme = el.dataset.theme;
+          STATE.tab = el.dataset.tab;
+          document.getElementById('sidebar').classList.remove('open');
+          renderTab();
+        };
+      });
+      document.getElementById('search').oninput = e => {
+          STATE.query = e.target.value;
+          clearTimeout(STATE.tSearch);
+          STATE.tSearch = setTimeout(renderTab, 300);
+      };
+      document.getElementById('btnClear').onclick = async () => {
+          indexedDB.deleteDatabase('consysencia_v8');
+          localStorage.clear(); location.href = 'index.html';
+      };
+
+      // BOOT DE INICIALIZAÇÃO
       async function boot(){
-        let db = await idbOpen();
-        const cached = await idbGet(db, 'catalog');
-        if (cached && cached.live_cat){
-          STATE.live_cat = cached.live_cat; STATE.vod_cat = cached.vod_cat;
-          STATE.live_streams = cached.live_streams; STATE.vod_streams = cached.vod_streams;
-        } else {
-          const fresh = await fetchCatalogFromYourAPI();
-          Object.assign(STATE, fresh);
-          await idbSet(db, 'catalog', { ...fresh, ts: Date.now() });
+        try {
+            let db = await idbOpen();
+            const cached = await idbGet(db, 'data');
+            if(cached && cached.live_cat && cached.live_cat.length > 0){
+                Object.assign(STATE, cached);
+            } else {
+                const fresh = await fetchData();
+                Object.assign(STATE, fresh);
+                await idbSet(db, 'data', fresh);
+            }
+            db.close();
+            buildIndexes();
+            document.getElementById('loader').style.display = 'none';
+            renderTab();
+        } catch(e) {
+            document.getElementById('loaderText').innerText = "Erro Crítico. Clique em Reparar Erros.";
         }
-        db.close();
-        buildIndexes(); loader.style.display = 'none'; renderTab('live');
       }
-
       boot();
     })();
   </script>
