@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Play Consysencia | V14 Otimizado</title>
+  <title>Play Consysencia | VIP</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -22,7 +22,6 @@
     * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
     body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
-    /* LAYOUT MOBILE FIRST */
     #app { display: flex; height: 100vh; width: 100vw; overflow: hidden; position: relative; }
     
     #sidebar { width: 260px; height: 100vh; background: var(--panelBg); padding: 20px 15px; position: absolute; z-index: 100; left: -100%; transition: left 0.3s ease; backdrop-filter: blur(10px); border-right: 1px solid rgba(255,255,255,0.05); }
@@ -37,17 +36,16 @@
     #main { flex: 1; height: 100vh; display: flex; flex-direction: column; width: 100vw; }
     
     #topbar { height: 65px; display: flex; align-items: center; padding: 0 15px; gap: 15px; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); z-index: 50; flex-shrink: 0; }
-    #hamb { background: none; border: none; color: white; font-size: 24px; padding: 5px; }
+    #hamb { background: none; border: none; color: white; font-size: 24px; padding: 5px; cursor: pointer; }
     #viewTitle { font-weight: 900; font-size: 18px; white-space: nowrap; }
     #search { flex: 1; max-width: 300px; padding: 8px 15px; border-radius: 20px; border: none; background: rgba(255,255,255,0.1); color: white; margin-left: auto; outline: none; }
 
-    /* CATALOGO OTIMIZADO PARA NÃO TRAVAR */
     #catalogRoot { flex: 1; overflow-y: auto; padding: 10px 15px 40px; -webkit-overflow-scrolling: touch; }
     .row { margin-bottom: 25px; }
     .rowTitle { font-size: 1.1rem; font-weight: 900; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
     .rowTitle::before { content:''; width:4px; height:16px; background: var(--accent); border-radius: 2px; }
     
-    .rail { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; }
+    .rail { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scroll-snap-type: x mandatory; }
     .rail::-webkit-scrollbar { display: none; }
 
     .card { flex: 0 0 auto; width: 130px; height: 195px; border-radius: 8px; background: #111; overflow: hidden; position: relative; scroll-snap-align: start; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
@@ -55,12 +53,10 @@
     .card img { width: 100%; height: 100%; object-fit: cover; background: #222; }
     .cardName { position: absolute; bottom: 0; width: 100%; padding: 15px 8px 5px; background: linear-gradient(transparent, rgba(0,0,0,0.95)); font-size: 11px; text-align: center; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* TELAS DE CARREGAMENTO */
     #loader { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 2000; color: var(--accent); font-weight: bold; gap: 10px; }
     .spinner { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* PLAYER OTIMIZADO */
     #playerRoot { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; flex-direction: column; }
     #pControls { position: absolute; top: 0; width: 100%; padding: 15px; display: flex; align-items: center; gap: 15px; background: linear-gradient(rgba(0,0,0,0.9), transparent); z-index: 10; }
     #btnBack { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
@@ -76,7 +72,7 @@
 </head>
 <body data-theme="consysencia">
 
-<div id="loader"><div class="spinner"></div><div id="lText">Conectando...</div></div>
+<div id="loader"><div class="spinner"></div><div id="lText">Sintonizando Rota VIP...</div></div>
 
 <div id="app">
     <aside id="sidebar">
@@ -86,7 +82,7 @@
         <div class="navItem" data-tab="netflix" data-theme="netflix"><i class="fa-brands fa-neos"></i> Netflix</div>
         <div class="navItem" data-tab="prime" data-theme="prime"><i class="fa-brands fa-amazon"></i> Prime Video</div>
         <div class="navItem" data-tab="disney" data-theme="disney"><i class="fa-brands fa-play"></i> Disney+</div>
-        <div class="navItem" onclick="localStorage.clear(); location.href='index.html'" style="color:#ff4444; margin-top:20px;"><i class="fa-solid fa-power-off"></i> Sair</div>
+        <div class="navItem" onclick="localStorage.clear(); location.href='index.html'" style="color:#ff4444; margin-top:20px;"><i class="fa-solid fa-power-off"></i> Reparo Profundo</div>
     </aside>
 
     <main id="main">
@@ -112,7 +108,6 @@
     const pass = localStorage.getItem('cs_pass');
     if(!user || !pass) window.location.href = 'index.html';
 
-    // A MÁGICA DE PERFORMANCE: O Render faz o trabalho pesado de proxy agora
     const API = 'https://api.consysencia.com/catalog';
     const PROXY_BASE = 'https://api.consysencia.com/proxy';
 
@@ -132,7 +127,6 @@
             document.getElementById('loader').style.display = 'none';
             renderTab();
 
-            // Baixa filmes escondido (evita o carregamento infinito)
             const [vcat, vstr, scat, sstr] = await Promise.all([
                 fetch(`${API}?action=get_vod_categories`, {headers:h}).then(r=>r.json()).catch(()=>[]),
                 fetch(`${API}?action=get_vod_streams`, {headers:h}).then(r=>r.json()).catch(()=>[]),
@@ -156,7 +150,6 @@
         const query = document.getElementById('search').value.toLowerCase();
 
         cats.forEach(c => {
-            // Filtro de plataformas simplificado
             if(!isLive && STATE.tab !== 'movies' && !c.category_name.toLowerCase().includes(STATE.tab)) return;
 
             let catItems = items.filter(i => i.category_id === c.category_id);
@@ -166,8 +159,8 @@
                 const row = document.createElement('div');
                 row.className = 'row';
                 
-                // PERFORMANCE: Mostra só os 20 primeiros de cada categoria para não explodir a memória do celular
-                const safeItems = catItems.slice(0, 20);
+                // Limite de segurança de memória para não travar o celular
+                const safeItems = catItems.slice(0, 30);
                 
                 row.innerHTML = `
                     <div class="rowTitle">${c.category_name}</div>
@@ -188,7 +181,6 @@
     async function play(id, type, ext, series_id, name) {
         document.getElementById('pTitle').innerText = name;
         
-        // Tratamento especial para séries (que dava erro no vídeo)
         if (type === 'series') {
             document.getElementById('loader').style.display = 'flex';
             document.getElementById('lText').innerText = "Abrindo Episódio...";
@@ -211,7 +203,7 @@
             }
         }
 
-        // TÚNEL DIRETO: Sem gambiarras de interceptação, o link já nasce seguro
+        // Constrói a URL Segura que passa pelo Render
         const secureUrl = `${PROXY_BASE}/${type}/${user}/${pass}/${id}.${type==='live'?'m3u8':ext}`;
 
         document.getElementById('app').style.display = 'none';
@@ -221,17 +213,42 @@
         if(hls) { hls.destroy(); hls = null; }
 
         if(type === 'live' && Hls.isSupported()) {
-            hls = new Hls();
+            hls = new Hls({
+                // RASTREADOR: Captura os pedacinhos soltos da TV e obriga a passar pelo Render
+                xhrSetup: function(xhr, url) {
+                    if (url.startsWith('http') && !url.includes('api.consysencia.com')) {
+                        try {
+                            const urlObj = new URL(url);
+                            url = PROXY_BASE + urlObj.pathname + urlObj.search;
+                        } catch(e) {}
+                    }
+                    xhr.open('GET', url, true);
+                }
+            });
             hls.loadSource(secureUrl);
             hls.attachMedia(video);
             hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
+            
+            // Tratamento de Erros da TV ao Vivo
+            hls.on(Hls.Events.ERROR, function (event, data) {
+                if (data.fatal) {
+                    switch (data.type) {
+                        case Hls.ErrorTypes.NETWORK_ERROR:
+                            console.log("Tentando reconectar a TV...");
+                            hls.startLoad();
+                            break;
+                        default:
+                            hls.destroy();
+                            break;
+                    }
+                }
+            });
         } else {
             video.src = secureUrl;
             video.play().catch(()=>{});
         }
     }
 
-    // Interações de Interface
     document.getElementById('btnBack').onclick = () => {
         const video = document.getElementById('video');
         video.pause(); video.src = "";
