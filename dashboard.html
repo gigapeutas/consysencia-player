@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Play Consysencia | VIP</title>
+  <title>Play Consysencia | V16 Studio</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -22,6 +22,7 @@
     * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
     body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
+    /* LAYOUT BASE */
     #app { display: flex; height: 100vh; width: 100vw; overflow: hidden; position: relative; }
     
     #sidebar { width: 260px; height: 100vh; background: var(--panelBg); padding: 20px 15px; position: absolute; z-index: 100; left: -100%; transition: left 0.3s ease; backdrop-filter: blur(10px); border-right: 1px solid rgba(255,255,255,0.05); }
@@ -36,27 +37,51 @@
     #main { flex: 1; height: 100vh; display: flex; flex-direction: column; width: 100vw; }
     
     #topbar { height: 65px; display: flex; align-items: center; padding: 0 15px; gap: 15px; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); z-index: 50; flex-shrink: 0; }
-    #hamb { background: none; border: none; color: white; font-size: 24px; padding: 5px; cursor: pointer; }
+    #hamb { background: none; border: none; color: white; font-size: 24px; padding: 5px; }
     #viewTitle { font-weight: 900; font-size: 18px; white-space: nowrap; }
     #search { flex: 1; max-width: 300px; padding: 8px 15px; border-radius: 20px; border: none; background: rgba(255,255,255,0.1); color: white; margin-left: auto; outline: none; }
 
+    /* CATALOGO - OTIMIZAÇÃO EXTREMA (LAZY LOAD NATIVO) */
     #catalogRoot { flex: 1; overflow-y: auto; padding: 10px 15px 40px; -webkit-overflow-scrolling: touch; }
-    .row { margin-bottom: 25px; }
+    .row { margin-bottom: 25px; content-visibility: auto; contain-intrinsic-size: 250px; }
     .rowTitle { font-size: 1.1rem; font-weight: 900; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
     .rowTitle::before { content:''; width:4px; height:16px; background: var(--accent); border-radius: 2px; }
     
-    .rail { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scroll-snap-type: x mandatory; }
+    .rail { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; }
     .rail::-webkit-scrollbar { display: none; }
 
     .card { flex: 0 0 auto; width: 130px; height: 195px; border-radius: 8px; background: #111; overflow: hidden; position: relative; scroll-snap-align: start; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
     .card.live { width: 180px; height: 100px; }
     .card img { width: 100%; height: 100%; object-fit: cover; background: #222; }
-    .cardName { position: absolute; bottom: 0; width: 100%; padding: 15px 8px 5px; background: linear-gradient(transparent, rgba(0,0,0,0.95)); font-size: 11px; text-align: center; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cardName { position: absolute; bottom: 0; width: 100%; padding: 20px 8px 5px; background: linear-gradient(transparent, rgba(0,0,0,0.95)); font-size: 11px; text-align: center; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    #loader { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 2000; color: var(--accent); font-weight: bold; gap: 10px; }
+    /* =========================================================
+       PÁGINA DE DETALHES (O REDIRECIONAMENTO INTELIGENTE)
+       ========================================================= */
+    #detailsView { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 5000; overflow-y: auto; }
+    .det-backdrop { width: 100%; height: 45vh; background-size: cover; background-position: center; position: relative; }
+    .det-backdrop::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, var(--bg)); }
+    .det-back-btn { position: absolute; top: 20px; left: 20px; z-index: 10; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 8px; color: white; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; font-weight: bold; backdrop-filter: blur(5px); }
+    .det-content { padding: 20px; position: relative; top: -60px; z-index: 5; }
+    .det-title { font-size: 2.2rem; font-weight: 900; margin-bottom: 10px; text-shadow: 0 2px 10px black; line-height: 1.1; }
+    .det-meta { color: #aaa; font-size: 0.9rem; margin-bottom: 20px; display: flex; gap: 15px; }
+    .det-play-btn { background: var(--accent); color: black; padding: 12px 30px; font-weight: 900; border-radius: 8px; border: none; font-size: 1.1rem; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    
+    /* SELETOR DE TEMPORADAS E EPISÓDIOS */
+    #seasonSelect { background: #111; color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px 20px; border-radius: 8px; font-size: 1rem; margin-bottom: 20px; outline: none; font-weight: bold; cursor: pointer; display: none; }
+    .ep-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.2s; border-radius: 8px; }
+    .ep-item:hover { background: rgba(255,255,255,0.05); }
+    .ep-img { width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0; }
+    .ep-info { flex: 1; }
+    .ep-title { font-weight: bold; font-size: 1rem; margin-bottom: 4px; }
+
+    /* TELAS DE CARREGAMENTO */
+    #loader, #detLoader { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 2000; color: var(--accent); font-weight: bold; gap: 10px; }
+    #detLoader { z-index: 6000; display: none; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
     .spinner { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+    /* PLAYER */
     #playerRoot { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; flex-direction: column; }
     #pControls { position: absolute; top: 0; width: 100%; padding: 15px; display: flex; align-items: center; gap: 15px; background: linear-gradient(rgba(0,0,0,0.9), transparent); z-index: 10; }
     #btnBack { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
@@ -72,7 +97,8 @@
 </head>
 <body data-theme="consysencia">
 
-<div id="loader"><div class="spinner"></div><div id="lText">Sintonizando Rota VIP...</div></div>
+<div id="loader"><div class="spinner"></div><div id="lText">Conectando ao Multiverso...</div></div>
+<div id="detLoader"><div class="spinner"></div><div>Abrindo Pasta da Série...</div></div>
 
 <div id="app">
     <aside id="sidebar">
@@ -82,7 +108,7 @@
         <div class="navItem" data-tab="netflix" data-theme="netflix"><i class="fa-brands fa-neos"></i> Netflix</div>
         <div class="navItem" data-tab="prime" data-theme="prime"><i class="fa-brands fa-amazon"></i> Prime Video</div>
         <div class="navItem" data-tab="disney" data-theme="disney"><i class="fa-brands fa-play"></i> Disney+</div>
-        <div class="navItem" onclick="localStorage.clear(); location.href='index.html'" style="color:#ff4444; margin-top:20px;"><i class="fa-solid fa-power-off"></i> Reparo Profundo</div>
+        <div class="navItem" onclick="localStorage.clear(); location.href='index.html'" style="color:#ff4444; margin-top:20px;"><i class="fa-solid fa-power-off"></i> Sair</div>
     </aside>
 
     <main id="main">
@@ -93,6 +119,23 @@
         </div>
         <div id="catalogRoot"></div>
     </main>
+</div>
+
+<div id="detailsView">
+    <div class="det-backdrop" id="detBackdrop">
+        <button class="det-back-btn" onclick="closeDetails()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+    </div>
+    <div class="det-content">
+        <h1 class="det-title" id="detTitle">Nome do Filme/Série</h1>
+        <div class="det-meta" id="detMeta">
+            <span id="detType"><i class="fa-solid fa-film"></i> Filme</span>
+        </div>
+        
+        <button class="det-play-btn" id="detPlayBtn"><i class="fa-solid fa-play"></i> Assistir Agora</button>
+        
+        <select id="seasonSelect" class="season-select"></select>
+        <div id="episodeList"></div>
+    </div>
 </div>
 
 <div id="playerRoot">
@@ -111,7 +154,8 @@
     const API = 'https://api.consysencia.com/catalog';
     const PROXY_BASE = 'https://api.consysencia.com/proxy';
 
-    let STATE = { live_cat: [], vod_cat: [], live: [], vod: [], tab: 'live' };
+    let STATE = { live_cat: [], vod_cat: [], live: [], vod: [], tab: 'live', scrollPos: 0 };
+    let currentSeriesData = null; // Guarda as temporadas carregadas
     let hls;
 
     async function fetchData() {
@@ -127,6 +171,7 @@
             document.getElementById('loader').style.display = 'none';
             renderTab();
 
+            // Baixa a LISTA de filmes/séries no fundo. O detalhe de cada um só é baixado no clique!
             const [vcat, vstr, scat, sstr] = await Promise.all([
                 fetch(`${API}?action=get_vod_categories`, {headers:h}).then(r=>r.json()).catch(()=>[]),
                 fetch(`${API}?action=get_vod_streams`, {headers:h}).then(r=>r.json()).catch(()=>[]),
@@ -135,9 +180,7 @@
             ]);
             STATE.vod_cat = [...vcat, ...scat];
             STATE.vod = [...vstr, ...sstr];
-        } catch(e) {
-            alert("Erro de conexão com o servidor central.");
-        }
+        } catch(e) { alert("Erro de conexão."); }
     }
 
     function renderTab() {
@@ -159,18 +202,26 @@
                 const row = document.createElement('div');
                 row.className = 'row';
                 
-                // Limite de segurança de memória para não travar o celular
-                const safeItems = catItems.slice(0, 30);
-                
+                // LAZY LOADING NATIVO (O segredo para colocar TODOS os itens sem travar a RAM)
                 row.innerHTML = `
                     <div class="rowTitle">${c.category_name}</div>
                     <div class="rail">
-                        ${safeItems.map(i => `
-                            <div class="card ${isLive ? 'live' : ''}" onclick="play('${i.stream_id}', '${isLive ? 'live' : (i.series_id ? 'series' : 'movie')}', '${i.container_extension || 'mp4'}', '${i.series_id || ''}', '${i.name.replace(/'/g, "\\'")}')">
-                                <img src="${i.stream_icon || i.cover}" loading="lazy" onerror="this.style.display='none'">
+                        ${catItems.map(i => {
+                            const type = isLive ? 'live' : (i.series_id ? 'series' : 'movie');
+                            const img = i.stream_icon || i.cover || '';
+                            const safeName = i.name.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                            
+                            // Na TV ao vivo, o clique vai pro player. Em Filme/Série, vai pra Tela de Detalhes!
+                            const clickAction = isLive 
+                                ? `play('${i.stream_id}', 'live', 'm3u8', '', '${safeName}')` 
+                                : `openDetails('${i.stream_id}', '${type}', '${i.container_extension || 'mp4'}', '${i.series_id || ''}', '${safeName}', '${img}')`;
+
+                            return `
+                            <div class="card ${isLive ? 'live' : ''}" onclick="${clickAction}">
+                                <img src="${img}" loading="lazy" onerror="this.style.display='none'">
                                 <div class="cardName">${i.name}</div>
-                            </div>
-                        `).join('')}
+                            </div>`;
+                        }).join('')}
                     </div>
                 `;
                 root.appendChild(row);
@@ -178,43 +229,117 @@
         });
     }
 
-    async function play(id, type, ext, series_id, name) {
-        document.getElementById('pTitle').innerText = name;
+    // =========================================================
+    // LÓGICA DA PÁGINA DE DETALHES (FILMES E SÉRIES)
+    // =========================================================
+    async function openDetails(id, type, ext, series_id, name, cover) {
+        // Salva o scroll do catálogo e esconde a tela inicial
+        STATE.scrollPos = document.getElementById('catalogRoot').scrollTop;
+        document.getElementById('app').style.display = 'none';
         
-        if (type === 'series') {
-            document.getElementById('loader').style.display = 'flex';
-            document.getElementById('lText').innerText = "Abrindo Episódio...";
+        const detailsView = document.getElementById('detailsView');
+        detailsView.style.display = 'block';
+        detailsView.scrollTop = 0; // Volta a página pro topo
+
+        // Preenche as informações básicas
+        document.getElementById('detTitle').innerText = name;
+        document.getElementById('detBackdrop').style.backgroundImage = `url('${cover}')`;
+        document.getElementById('detType').innerHTML = type === 'movie' ? '<i class="fa-solid fa-film"></i> Filme' : '<i class="fa-solid fa-tv"></i> Série';
+        
+        const playBtn = document.getElementById('detPlayBtn');
+        const seasonSelect = document.getElementById('seasonSelect');
+        const epList = document.getElementById('episodeList');
+
+        // Limpa os dados anteriores
+        epList.innerHTML = '';
+        currentSeriesData = null;
+
+        if (type === 'movie') {
+            // Se for filme, o botão Assistir fica gigante e pronto pra dar Play
+            playBtn.style.display = 'inline-flex';
+            seasonSelect.style.display = 'none';
+            playBtn.onclick = () => play(id, 'movie', ext, '', name);
+        } else if (type === 'series') {
+            // Se for série, esconde o botão play gigante e busca as temporadas no servidor
+            playBtn.style.display = 'none';
+            document.getElementById('detLoader').style.display = 'flex';
+            
             try {
                 const res = await fetch(`${API}?action=get_series_info&series_id=${series_id}`, { headers: { 'Authorization': 'Basic ' + btoa(user + ':' + pass) } });
                 const data = await res.json();
-                document.getElementById('loader').style.display = 'none';
+                document.getElementById('detLoader').style.display = 'none';
                 
-                let epObj = data.episodes;
-                let seasons = Array.isArray(epObj) ? epObj : Object.values(epObj);
-                if(seasons.length > 0 && seasons[0].length > 0) {
-                    id = seasons[0][0].id;
-                    ext = seasons[0][0].container_extension || 'mp4';
+                currentSeriesData = data.episodes;
+                const seasonKeys = Object.keys(currentSeriesData);
+                
+                if (seasonKeys.length > 0) {
+                    seasonSelect.style.display = 'block';
+                    seasonSelect.innerHTML = seasonKeys.map(s => `<option value="${s}">Temporada ${s}</option>`).join('');
+                    
+                    // Quando trocar a temporada, renderiza a lista de episódios nova
+                    seasonSelect.onchange = (e) => renderEpisodes(e.target.value);
+                    
+                    // Renderiza a temporada 1 por padrão
+                    renderEpisodes(seasonKeys[0]);
                 } else {
-                    return alert("Série vazia.");
+                    epList.innerHTML = '<p style="color:#ff4444; padding:20px;">Nenhum episódio encontrado no servidor.</p>';
                 }
             } catch(e) {
-                document.getElementById('loader').style.display = 'none';
-                return alert("Falha ao abrir série.");
+                document.getElementById('detLoader').style.display = 'none';
+                epList.innerHTML = '<p style="color:#ff4444; padding:20px;">Falha ao carregar temporadas.</p>';
             }
         }
+    }
 
-        // Constrói a URL Segura que passa pelo Render
+    function renderEpisodes(seasonNumber) {
+        const episodes = currentSeriesData[seasonNumber] || [];
+        const epList = document.getElementById('episodeList');
+        
+        if (episodes.length === 0) {
+            epList.innerHTML = '<p style="color:#aaa;">Temporada vazia.</p>';
+            return;
+        }
+
+        epList.innerHTML = episodes.map(ep => {
+            const epExt = ep.container_extension || 'mp4';
+            const safeEpTitle = ep.title ? ep.title.replace(/'/g, "\\'") : `Episódio ${ep.episode_num}`;
+            const displayName = `T${seasonNumber}:E${ep.episode_num} - ${safeEpTitle}`;
+            
+            return `
+            <div class="ep-item" onclick="play('${ep.id}', 'series', '${epExt}', '', '${displayName}')">
+                <div class="ep-img"><i class="fa-solid fa-play"></i></div>
+                <div class="ep-info">
+                    <div class="ep-title">${displayName}</div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function closeDetails() {
+        document.getElementById('detailsView').style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
+        // Restaura a rolagem de onde o usuário parou
+        document.getElementById('catalogRoot').scrollTop = STATE.scrollPos;
+    }
+
+    // =========================================================
+    // O PLAYER BLINDADO (TÚNEL RENDER)
+    // =========================================================
+    function play(id, type, ext, series_id, name) {
+        document.getElementById('pTitle').innerText = name;
+        
         const secureUrl = `${PROXY_BASE}/${type}/${user}/${pass}/${id}.${type==='live'?'m3u8':ext}`;
 
+        document.getElementById('detailsView').style.display = 'none';
         document.getElementById('app').style.display = 'none';
         document.getElementById('playerRoot').style.display = 'flex';
+        
         const video = document.getElementById('video');
 
         if(hls) { hls.destroy(); hls = null; }
 
         if(type === 'live' && Hls.isSupported()) {
             hls = new Hls({
-                // RASTREADOR: Captura os pedacinhos soltos da TV e obriga a passar pelo Render
                 xhrSetup: function(xhr, url) {
                     if (url.startsWith('http') && !url.includes('api.consysencia.com')) {
                         try {
@@ -229,18 +354,9 @@
             hls.attachMedia(video);
             hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
             
-            // Tratamento de Erros da TV ao Vivo
             hls.on(Hls.Events.ERROR, function (event, data) {
-                if (data.fatal) {
-                    switch (data.type) {
-                        case Hls.ErrorTypes.NETWORK_ERROR:
-                            console.log("Tentando reconectar a TV...");
-                            hls.startLoad();
-                            break;
-                        default:
-                            hls.destroy();
-                            break;
-                    }
+                if (data.fatal && data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+                    hls.startLoad();
                 }
             });
         } else {
@@ -249,14 +365,24 @@
         }
     }
 
+    // Botão Voltar do Player (Ele sabe se volta pro Catálogo ou pra Página de Detalhes da Série)
     document.getElementById('btnBack').onclick = () => {
         const video = document.getElementById('video');
         video.pause(); video.src = "";
         if(hls) hls.destroy();
+        
         document.getElementById('playerRoot').style.display = 'none';
-        document.getElementById('app').style.display = 'flex';
+        
+        // Se a página de detalhes tiver algo na tela (capa), volta pra ela. Senão, volta pro app.
+        if (document.getElementById('detTitle').innerText !== "Nome do Filme/Série" && STATE.tab !== 'live') {
+            document.getElementById('detailsView').style.display = 'block';
+        } else {
+            document.getElementById('app').style.display = 'flex';
+            document.getElementById('catalogRoot').scrollTop = STATE.scrollPos;
+        }
     };
 
+    // Navegação Lateral
     document.getElementById('hamb').onclick = () => document.getElementById('sidebar').classList.toggle('open');
     
     document.querySelectorAll('.navItem[data-tab]').forEach(el => {
