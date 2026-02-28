@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Play Consysencia | V9 Supreme</title>
+  <title>Play Consysencia | V10 Ultimate</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
   <style>
     /* ============================
-       UI/UX DE ELITE (Camaleão Completo)
+       FONTS & DESIGN CAMALEÃO
        ============================ */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
@@ -23,20 +23,19 @@
       --shadow2:0 16px 48px rgba(0,0,0,.62);
       --navGrad:linear-gradient(to bottom, rgba(0,0,0,.92), rgba(0,0,0,.45), transparent);
       --panelBg:rgba(0,0,0,.88);
-      --btnBg:rgba(255,255,255,.06); --btnBd:rgba(255,255,255,.14);
+      --btnBg:rgba(255,255,255,.06); --btnBd:rgba(255,255,255,.14); --btnHover:rgba(255,255,255,.10);
       --cardBd:rgba(255,255,255,.10);
       --focus: 0 0 0 2px rgba(255,255,255,.10), 0 0 22px rgba(0,255,136,.18);
-      --brandFont: "Inter", sans-serif;
+      --brandFont: "Inter", system-ui, sans-serif;
       --rowCardW: 152px; --rowCardH: 228px;
     }
 
-    /* TEMAS OFICIAIS */
-    body[data-theme="consysencia"]{ --bg:#070a0b; --bg2:#0b0f10; --accent:#00ff88; --accent2:rgba(0,255,136,.18); --panelBg:rgba(0,0,0,.90); }
-    body[data-theme="netflix"]{ --bg:#141414; --bg2:#0f0f0f; --accent:#E50914; --accent2:rgba(229,9,20,.20); --panelBg:rgba(10,10,10,.94); --navGrad:linear-gradient(to bottom, rgba(20,20,20,.95), transparent); --brandFont:"Bebas Neue", sans-serif; --radius:10px; }
-    body[data-theme="prime"]{ --bg:#0f171e; --bg2:#0b1116; --accent:#00A8E1; --accent2:rgba(0,168,225,.20); --panelBg:rgba(7,12,16,.92); --navGrad:linear-gradient(to bottom, rgba(15,23,30,.95), transparent); --radius:12px; }
-    body[data-theme="disney"]{ --bg:#1a1d29; --bg2:#121422; --accent:#0063e5; --accent2:rgba(0,99,229,.20); --panelBg:rgba(10,12,18,.92); --navGrad:linear-gradient(to bottom, rgba(26,29,41,.95), transparent); --radius:12px; }
-    body[data-theme="hbomax"]{ --bg:#0b0616; --bg2:#07030f; --accent:#8b5cf6; --accent2:rgba(139,92,246,.22); --panelBg:rgba(8,4,14,.92); --navGrad:linear-gradient(to bottom, rgba(11,6,22,.95), transparent); --radius:14px; }
-    body[data-theme="globoplay"]{ --bg:#0b0b0f; --bg2:#07070a; --accent:#ff3d00; --accent2:rgba(255,61,0,.20); --panelBg:rgba(6,6,8,.92); --navGrad:linear-gradient(to bottom, rgba(11,11,15,.95), transparent); --radius:12px; }
+    body[data-theme="consysencia"]{ --bg:#070a0b; --accent:#00ff88; --panelBg:rgba(0,0,0,.90); }
+    body[data-theme="netflix"]{ --bg:#141414; --accent:#E50914; --panelBg:rgba(10,10,10,.94); --navGrad:linear-gradient(to bottom, rgba(20,20,20,.95), transparent); --brandFont:"Bebas Neue", sans-serif; --radius:10px; }
+    body[data-theme="prime"]{ --bg:#0f171e; --accent:#00A8E1; --panelBg:rgba(7,12,16,.92); --navGrad:linear-gradient(to bottom, rgba(15,23,30,.95), transparent); --radius:12px; }
+    body[data-theme="disney"]{ --bg:#1a1d29; --accent:#0063e5; --panelBg:rgba(10,12,18,.92); --navGrad:linear-gradient(to bottom, rgba(26,29,41,.95), transparent); --radius:12px; }
+    body[data-theme="hbomax"]{ --bg:#0b0616; --accent:#8b5cf6; --panelBg:rgba(8,4,14,.92); --navGrad:linear-gradient(to bottom, rgba(11,6,22,.95), transparent); --radius:14px; }
+    body[data-theme="globoplay"]{ --bg:#0b0b0f; --accent:#ff3d00; --panelBg:rgba(6,6,8,.92); --navGrad:linear-gradient(to bottom, rgba(11,11,15,.95), transparent); --radius:12px; }
 
     *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
     body{ background: var(--bg); color: var(--text); font-family: "Inter", sans-serif; overflow: hidden; transition: 0.24s ease; }
@@ -44,7 +43,7 @@
 
     #app{ height:100vh; width:100vw; display:flex; background: var(--bg); }
 
-    /* SIDEBAR */
+    /* SIDEBAR LUXO */
     #sidebar{ width: 280px; background: var(--panelBg); border-right: 1px solid rgba(255,255,255,.10); backdrop-filter: blur(14px); box-shadow: 18px 0 40px rgba(0,0,0,.35); padding: 22px 14px; position: relative; transition: 0.3s; z-index: 30; }
     #sidebar .brand{ display:flex; align-items:center; gap:10px; padding: 8px 10px 16px; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,.08); }
     #sidebar .brand .logoDot{ width: 10px; height: 10px; border-radius: 999px; background: var(--accent); box-shadow: 0 0 16px rgba(0,0,0,.35); }
@@ -67,23 +66,23 @@
     #searchWrap:focus-within{ border-color: var(--accent2); background: rgba(255,255,255,.08); box-shadow: 0 0 22px rgba(0,0,0,.25); }
     #search{ flex:1; background: transparent; border: none; color:#fff; font-weight: 800; outline:none; }
 
-    /* CATALOGO EM TRILHAS (ROWS) */
-    #catalogRoot{ position:absolute; top:0; left:0; right:0; bottom:0; overflow-y: auto; padding-top: 86px; padding-bottom: 30px; scroll-behavior: smooth; }
+    /* CATALOGO EM TRILHAS (ROWS) - ESTILO NETFLIX */
+    #catalogRoot{ position:absolute; inset:0; overflow-y: auto; padding-top: 86px; padding-bottom: 30px; scroll-behavior: smooth; }
     .row{ padding: 12px 18px 8px; }
     .rowTitle{ display:flex; align-items:center; gap:10px; margin-bottom: 10px; font-weight: 900; color: rgba(255,255,255,.90); text-shadow: 0 2px 12px rgba(0,0,0,.45); }
     .rowTitle .pill{ width: 8px; height: 8px; border-radius: 999px; background: var(--accent); }
     .rail{ display:flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; scroll-snap-type: x mandatory; }
     .rail::-webkit-scrollbar{ display: none; }
 
-    /* CARDS */
+    /* CARDS MICRO-INTERACTIONS */
     .card{ flex: 0 0 auto; width: var(--rowCardW); height: var(--rowCardH); border-radius: var(--radius); background: #111; border: 1px solid var(--cardBd); box-shadow: 0 10px 18px rgba(0,0,0,.22); overflow:hidden; position: relative; cursor: pointer; scroll-snap-align: start; transition: 0.16s ease; transform: translateZ(0); }
     .card.live{ width: calc(var(--rowCardW) * 1.35); height: calc(var(--rowCardH) * .62); }
-    .card:hover, .card:focus-visible{ transform: translateY(-4px) scale(1.06); border-color: var(--accent); box-shadow: var(--shadow2); z-index: 2; }
-    .poster{ width:100%; height:100%; background-size: cover; background-position: center; }
+    .card:hover{ transform: translateY(-4px) scale(1.06); border-color: var(--accent); box-shadow: var(--shadow2); z-index: 2; }
+    .poster{ width:100%; height:100%; background-size: cover; background-position: center; transition: 0.3s; }
     .meta{ position:absolute; left:0; right:0; bottom:0; padding: 25px 10px 8px; background: linear-gradient(to top, rgba(0,0,0,.95), transparent); }
     .name{ font-size: 11px; font-weight: 900; text-align: center; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; text-shadow: 0 2px 10px black; }
 
-    /* LOADER E PLAYER UNMOUNT */
+    /* LOADER E PLAYER (UNMOUNT) */
     #loader{ position: fixed; inset: 0; display:flex; align-items:center; justify-content:center; flex-direction: column; gap: 14px; background: var(--bg2); z-index: 9999; color: var(--accent); font-weight: 900; }
     .spinner{ width: 38px; height: 38px; border: 4px solid rgba(255,255,255,.10); border-top-color: var(--accent); border-radius: 50%; animation: spin .9s linear infinite; }
     @keyframes spin{ to{ transform: rotate(360deg); } }
@@ -109,14 +108,17 @@
   <div id="app">
     <aside id="sidebar">
       <div class="brand"><div class="logoDot"></div><h1>CONSYSENCIA</h1></div>
+      
       <div class="navItem active" data-tab="live" data-theme="consysencia"><i class="fa-solid fa-tv"></i> TV ao Vivo</div>
       <div class="navItem" data-tab="movies" data-theme="consysencia"><i class="fa-solid fa-film"></i> Todo o Catálogo</div>
       <div style="height:10px"></div>
+      
       <div class="navItem" data-tab="netflix" data-theme="netflix"><i class="fa-brands fa-neos"></i> Netflix</div>
       <div class="navItem" data-tab="disney" data-theme="disney"><i class="fa-brands fa-play"></i> Disney+</div>
       <div class="navItem" data-tab="prime" data-theme="prime"><i class="fa-brands fa-amazon"></i> Prime Video</div>
       <div class="navItem" data-tab="hbomax" data-theme="hbomax"><i class="fa-solid fa-m"></i> HBO Max</div>
       <div class="navItem" data-tab="globoplay" data-theme="globoplay"><i class="fa-solid fa-g"></i> GloboPlay</div>
+      
       <div style="height:16px"></div>
       <div class="navItem" id="btnClear" style="color:#ff4444" onclick="clearData()"><i class="fa-solid fa-power-off"></i> Reparar Erros (Limpar)</div>
     </aside>
@@ -146,12 +148,13 @@
     (function(){
       'use strict';
 
+      // 1. CREDENCIAIS E LINKS BLINDADOS
       const user = localStorage.getItem('cs_user');
       const pass = localStorage.getItem('cs_pass');
       if(!user || !pass) window.location.href = 'index.html';
 
       const apiBase = 'https://api.consysencia.com/catalog';
-      // TÚNEL HTTPS DA CONSYSENCIA: Fura o bloqueio do Chrome e SmartTVs
+      // O NOSSO TÚNEL VENCEDOR (Resolve a tela preta)
       const proxyBase = 'https://api.consysencia.com/stream?url='; 
       const rawStreamServer = 'http://playtvstreaming.shop';
 
@@ -163,37 +166,32 @@
 
       const raf = (fn) => requestAnimationFrame(fn);
 
-      // Limpeza brutal de caracteres para o Filtro Fuzzy (Fura-Emojis)
+      // FILTRO FUZZY: Ignora emojis "🍿", espaços e pontuações do servidor
       function normKey(s){
         if(!s) return '';
         return (''+s).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'');
       }
 
-      // BANCO DE DADOS LOCAL (IndexedDB - Performance)
+      // BANCO DE DADOS (Velocidade)
       function idbOpen(){
         return new Promise((res, rej)=>{
-          const req = indexedDB.open('consysencia_v9', 1);
+          const req = indexedDB.open('consysencia_v10', 1);
           req.onupgradeneeded = e => { if(!req.result.objectStoreNames.contains('cache')) req.result.createObjectStore('cache'); };
           req.onsuccess = ()=> res(req.result);
           req.onerror = ()=> rej(req.error);
         });
       }
-      function idbGet(db, key){
-        return new Promise(res => { db.transaction('cache', 'readonly').objectStore('cache').get(key).onsuccess = e => res(e.target.result); });
-      }
-      function idbSet(db, key, val){
-        return new Promise(res => { db.transaction('cache', 'readwrite').objectStore('cache').put(val, key).oncomplete = ()=> res(true); });
-      }
+      function idbGet(db, key){ return new Promise(res => { db.transaction('cache', 'readonly').objectStore('cache').get(key).onsuccess = e => res(e.target.result); }); }
+      function idbSet(db, key, val){ return new Promise(res => { db.transaction('cache', 'readwrite').objectStore('cache').put(val, key).oncomplete = ()=> res(true); }); }
 
       window.clearData = async function() {
-          indexedDB.deleteDatabase('consysencia_v9');
-          localStorage.clear();
-          window.location.href = 'index.html';
+          indexedDB.deleteDatabase('consysencia_v10');
+          localStorage.clear(); window.location.href = 'index.html';
       };
 
-      // FUSÃO DE MULTIVERSO: Baixa Filmes E Séries para encher a Netflix
+      // O GRANDE DOWNLOADER (Filmes + Séries juntos)
       async function fetchData(){
-        document.getElementById('loaderText').innerText = "Baixando Filmes e Séries (Pode levar 20s)...";
+        document.getElementById('loaderText').innerText = "Montando o Catálogo (Pode levar 20s)...";
         const h = { 'Authorization': 'Basic ' + btoa(user + ':' + pass) };
         
         try {
@@ -211,10 +209,7 @@
               vod_cat: [...(vc||[]), ...(sc||[])],
               vod_streams: [...(vs||[]), ...(ss||[])]
             };
-        } catch(e) {
-            alert("Falha extrema de conexão. Pressione OK para reparar.");
-            clearData();
-        }
+        } catch(e) { clearData(); }
       }
 
       function buildIndexes(){
@@ -223,7 +218,7 @@
         STATE.vod_streams.forEach(it => { const k=''+it.category_id; STATE.vodByCat.set(k, (STATE.vodByCat.get(k)||[]).concat(it)); });
       }
 
-      // LAZY LOAD COM INTERSECTION OBSERVER (Poupando RAM na TV)
+      // LAZY LOAD DE IMAGENS (Poupa memória)
       function observePoster(el){
         if (!STATE.io) {
           STATE.io = new IntersectionObserver((entries)=>{
@@ -238,7 +233,7 @@
         STATE.io.observe(el);
       }
 
-      // RENDERIZAÇÃO DAS LINHAS (ROWS) E FILTROS
+      // RENDERIZADOR DE TRILHAS (ROWS) IGUAL A NETFLIX
       const TAB_META = {
         live: { title: 'TV ao Vivo', theme: 'consysencia' },
         movies: { title: 'Todo o Catálogo', theme: 'consysencia' },
@@ -259,7 +254,7 @@
         const q = normKey(STATE.query);
 
         cats.forEach(c => {
-          // Filtro Inteligente de Plataformas (Ignora emojis das categorias do server)
+          // Filtro por Plataforma (Ignora emojis das pastas)
           if(!isLive && STATE.tab !== 'movies'){
             const t = STATE.tab === 'hbomax' ? 'hbo' : (STATE.tab === 'globoplay' ? 'globo' : STATE.tab);
             if(normKey(c.category_name).indexOf(t) === -1) return;
@@ -273,7 +268,7 @@
             row.innerHTML = `<div class="rowTitle"><span class="pill"></span><span>${c.category_name}</span></div><div class="rail"></div>`;
             const rail = row.querySelector('.rail');
             
-            // Limita a 100 itens por linha para não explodir a memória do DOM
+            // Renderiza 100 por trilha (Segurança de RAM)
             items.slice(0, 100).forEach(it => {
               const card = document.createElement('div');
               card.className = `card ${isLive ? 'live' : 'vod'}`;
@@ -297,35 +292,36 @@
         raf(() => root.scrollTop = 0);
       }
 
-      // TRATAMENTO DE SÉRIES VS FILMES
+      // 2. A CORREÇÃO DAS SÉRIES (Extrai S01E01)
       async function handlePlayClick(item, type) {
         if(type === 'series') {
             document.getElementById('loader').style.display = 'flex';
-            document.getElementById('loaderText').innerText = "Extraindo Episódios...";
+            document.getElementById('loaderText').innerText = "Abrindo Episódio...";
             try {
-                const res = await fetch(`${apiBase}?action=get_series_info&series_id=${item.series_id}`, {headers:{ 'Authorization': 'Basic ' + btoa(user + ':' + pass) }});
+                const h = { 'Authorization': 'Basic ' + btoa(user + ':' + pass) };
+                const res = await fetch(`${apiBase}?action=get_series_info&series_id=${item.series_id}`, {headers:h});
                 const data = await res.json();
                 document.getElementById('loader').style.display = 'none';
                 
-                // Extrai o S01E01 de forma segura (Xtream Codes retorna Objeto ou Array)
+                // Vassoura de Dados: Acha o primeiro episódio independente do formato do provedor
                 let epObj = data.episodes;
                 let seasons = Array.isArray(epObj) ? epObj : Object.values(epObj);
                 
                 if(seasons.length > 0 && seasons[0].length > 0) {
-                    const ep = seasons[0][0]; // Pega o episódio 1 da temporada 1
+                    const ep = seasons[0][0]; 
                     startSecurePlayback(ep.id, `S01E01 - ${ep.title}`, 'movie', ep.container_extension || 'mp4');
-                } else { alert("Nenhum episódio encontrado na base."); }
-            } catch(e) { document.getElementById('loader').style.display = 'none'; alert("Falha ao abrir série."); }
+                } else { alert("A série está vazia no servidor."); }
+            } catch(e) { document.getElementById('loader').style.display = 'none'; alert("Falha ao ler série."); }
         } else {
             startSecurePlayback(item.stream_id, item.name, type, item.container_extension || 'mp4');
         }
       }
 
-      // O TÚNEL HTTPS (BYPASS DO BLOQUEIO DE NAVEGADOR) + UNMOUNT
+      // 3. O MOTOR BLINDADO (Túnel + Unmount)
       function startSecurePlayback(id, name, type, ext) {
           const root = document.getElementById('catalogRoot');
           STATE.scrollTop = root.scrollTop || 0;
-          if (root.parentNode) root.parentNode.removeChild(root); // UNMOUNT TOTAL DO DOM
+          if (root.parentNode) root.parentNode.removeChild(root); // MODO PENA: Remove DOM
           STATE.mounted = false;
           
           document.getElementById('pTitle').innerText = name;
@@ -333,18 +329,16 @@
           
           const video = document.getElementById('video');
           
-          // 1. Monta o Link Cru HTTP do Wolverine
+          // O Segredo: O link cru entra dentro do seu link protegido
           const rawUrl = type === 'live' 
             ? `${rawStreamServer}/live/${user}/${pass}/${id}.m3u8`
             : `${rawStreamServer}/movie/${user}/${pass}/${id}.${ext}`;
-            
-          // 2. Encapsula o Link no seu Túnel HTTPS do Render
           const secureUrl = `${proxyBase}${encodeURIComponent(rawUrl)}`;
 
           if(STATE.hls) { STATE.hls.destroy(); STATE.hls = null; }
 
           if (type === 'live' && Hls.isSupported()) {
-              STATE.hls = new Hls();
+              STATE.hls = new Hls({ backBufferLength: 30, maxBufferLength: 30 });
               STATE.hls.loadSource(secureUrl);
               STATE.hls.attachMedia(video);
               STATE.hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
@@ -360,13 +354,12 @@
           if(STATE.hls) { STATE.hls.destroy(); STATE.hls = null; }
           document.getElementById('playerRoot').style.display = 'none';
           
-          // REMOUNT DO DOM
           document.getElementById('main').appendChild(document.getElementById('catalogRoot'));
           STATE.mounted = true;
           raf(() => document.getElementById('catalogRoot').scrollTop = STATE.scrollTop || 0);
       };
 
-      // EVENTOS DE INTERFACE
+      // EVENTOS DE NAVEGAÇÃO
       document.getElementById('hamb').onclick = ()=> document.getElementById('sidebar').classList.toggle('open');
       document.querySelectorAll('.navItem[data-tab]').forEach(el => {
         el.onclick = () => {
