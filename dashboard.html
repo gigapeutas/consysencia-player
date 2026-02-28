@@ -3,81 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Play Consysencia | Categorias</title>
+    <title>Play Consysencia | Premium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --cs-bg: #070a0b; --cs-neon: #00ff88; }
-        body { 
-            background: var(--cs-bg); color: white; margin: 0; padding: 20px; padding-bottom: 50px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-image: radial-gradient(circle at top right, #0a1a14 0%, var(--cs-bg) 60%);
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+        :root { 
+            --cs-bg: #0b0f12; 
+            --cs-neon: #00ff88; 
+            --cs-text: #ffffff;
+            --cs-glass: rgba(255, 255, 255, 0.05);
         }
-        .header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid rgba(0,255,136,0.1); 
-        }
-        .logo { color: var(--cs-neon); font-weight: 800; font-size: 22px; letter-spacing: 1px; }
-        .title { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: #ccc; text-transform: uppercase; letter-spacing: 1px; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* A Mágica do Visual Novo */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
-        .category-card { 
-            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.4) 100%);
-            padding: 20px 15px; border-radius: 12px; text-align: center; 
-            border: 1px solid rgba(255,255,255,0.03); cursor: pointer; transition: all 0.3s ease;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            min-height: 85px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        body { 
+            background-color: var(--cs-bg); 
+            color: var(--cs-text); 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden;
         }
-        .category-card:hover { 
-            border-color: var(--cs-neon); transform: translateY(-5px); 
-            box-shadow: 0 8px 25px rgba(0,255,136,0.15); background: rgba(0,255,136,0.05);
+
+        /* Navbar estilo Netflix */
+        .navbar {
+            position: fixed; top: 0; width: 100%; padding: 20px 4%;
+            display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 100%);
+            z-index: 1000; transition: 0.3s;
         }
-        .category-icon { font-size: 26px; margin-bottom: 12px; }
-        .category-name { font-size: 13px; font-weight: 600; line-height: 1.3; }
-        .loading { text-align: center; color: var(--cs-neon); font-size: 16px; margin-top: 50px; font-weight: bold; }
+        .nav-brand { font-size: 24px; font-weight: 800; color: var(--cs-neon); text-transform: uppercase; letter-spacing: 1px;}
+        .nav-brand span { color: white; font-weight: 300; }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a { color: #ccc; text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.3s; cursor: pointer;}
+        .nav-links a:hover, .nav-links a.active { color: white; }
+        .nav-profile { display: flex; align-items: center; gap: 15px; color: white; cursor: pointer;}
+
+        /* Hero Banner (Destaque Principal) */
+        .hero {
+            height: 70vh; width: 100%; position: relative;
+            background-image: url('https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=2070&auto=format&fit=crop'); /* Imagem de fundo premium provisória */
+            background-size: cover; background-position: center;
+            display: flex; align-items: flex-end; padding: 50px 4%;
+        }
+        .hero-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to right, rgba(11,15,18,1) 0%, rgba(11,15,18,0) 70%),
+                        linear-gradient(to top, rgba(11,15,18,1) 0%, rgba(11,15,18,0) 100%);
+        }
+        .hero-content { position: relative; z-index: 10; max-width: 600px; }
+        .hero-title { font-size: 3rem; font-weight: 800; margin-bottom: 10px; line-height: 1.1; }
+        .hero-desc { font-size: 14px; color: #ccc; margin-bottom: 25px; line-height: 1.5; }
+        .btn-play { 
+            background: var(--cs-neon); color: #000; padding: 12px 30px; 
+            border: none; border-radius: 8px; font-size: 16px; font-weight: 800; 
+            cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s;
+        }
+        .btn-play:hover { transform: scale(1.05); background: white; }
+
+        /* Trilhas Horizontais (Carrosséis) */
+        .content-section { padding: 0 4%; margin-top: -30px; position: relative; z-index: 20; padding-bottom: 50px;}
+        .row-container { margin-bottom: 40px; }
+        .row-title { font-size: 20px; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;}
+        
+        .carousel {
+            display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px;
+            scroll-behavior: smooth; scroll-snap-type: x mandatory;
+        }
+        .carousel::-webkit-scrollbar { height: 6px; }
+        .carousel::-webkit-scrollbar-track { background: transparent; }
+        .carousel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        .carousel:hover::-webkit-scrollbar-thumb { background: rgba(0,255,136,0.3); }
+
+        /* Os Cards (Canais/Filmes) */
+        .card {
+            flex: 0 0 auto; width: 220px; aspect-ratio: 16/9; 
+            background: var(--cs-glass); border-radius: 8px; overflow: hidden;
+            position: relative; cursor: pointer; transition: 0.3s; scroll-snap-align: start;
+            border: 1px solid transparent; display:flex; align-items:center; justify-content:center;
+            text-align:center;
+        }
+        .card img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; opacity: 0.8; transition: 0.3s;}
+        .card-name { position: relative; z-index: 2; font-size: 14px; font-weight: 800; padding: 10px; text-shadow: 0 2px 5px black; }
+        
+        .card:hover { transform: translateY(-5px) scale(1.02); border-color: var(--cs-neon); z-index: 5; box-shadow: 0 10px 20px rgba(0,0,0,0.5);}
+        .card:hover img { opacity: 0.3; }
+        .card:hover .card-name { color: var(--cs-neon); }
+
+        /* Tela de Carregamento (Igual ao seu Vídeo 2) */
+        .loader-screen {
+            position: fixed; top:0; left:0; width: 100%; height: 100%;
+            background: var(--cs-bg); z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .spinner {
+            width: 50px; height: 50px; border: 4px solid var(--cs-glass);
+            border-top-color: var(--cs-neon); border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">PLAY CONSYSENCIA</div>
+
+    <div class="loader-screen" id="loader">
+        <div class="spinner"></div>
+        <div style="color: var(--cs-neon); font-weight: 600; letter-spacing: 1px;">Sincronizando catálogo milenar...</div>
     </div>
 
-    <div class="title">Categorias ao Vivo</div>
-    <div class="grid" id="category-grid">
-        <div class="loading">Carregando seu catálogo...</div>
-    </div>
+    <nav class="navbar">
+        <div class="nav-brand">Play <span>Consysencia</span></div>
+        <div class="nav-links">
+            <a class="active">TV ao Vivo</a>
+            <a>Filmes & Séries</a>
+        </div>
+        <div class="nav-profile">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <i class="fa-solid fa-circle-user" style="font-size: 24px;"></i>
+            <span style="font-size: 12px; font-weight:bold;" onclick="logout()">SAIR</span>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div style="color: var(--cs-neon); font-weight: 800; font-size: 12px; letter-spacing: 2px; margin-bottom: 5px;">LANÇAMENTO</div>
+            <h1 class="hero-title" id="hero-title">BBB 26 <br>Câmera Exclusiva</h1>
+            <p class="hero-desc">Acompanhe 24 horas por dia, em alta definição, tudo o que rola na casa mais vigiada do Brasil. Sem cortes e sem censura.</p>
+            <button class="btn-play"><i class="fa-solid fa-play"></i> Assistir Agora</button>
+        </div>
+    </header>
+
+    <section class="content-section" id="catalog-container">
+        </section>
 
     <script>
         const user = localStorage.getItem('cs_user');
         const pass = localStorage.getItem('cs_pass');
+        const apiBase = 'https://api.consysencia.com/catalog';
 
-        async function loadCategories() {
+        if(!user) window.location.href = 'index.html';
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        async function fetchAPI(action) {
+            const res = await fetch(`${apiBase}?action=${action}`, {
+                headers: { 'Authorization': 'Basic ' + btoa(user + ':' + pass) }
+            });
+            if(!res.ok) throw new Error("Erro na API");
+            return res.json();
+        }
+
+        async function buildMilenarDashboard() {
             try {
-                const res = await fetch(`https://api.consysencia.com/catalog?action=get_live_categories`, {
-                    headers: { 'Authorization': 'Basic ' + btoa(user + ':' + pass) }
+                // 1. Puxa as categorias E os canais ao mesmo tempo!
+                const [categories, streams] = await Promise.all([
+                    fetchAPI('get_live_categories'),
+                    fetchAPI('get_live_streams')
+                ]);
+
+                const container = document.getElementById('catalog-container');
+                let htmlStr = '';
+
+                // 2. Vamos pegar as 10 primeiras categorias (para não travar o celular do cliente de cara)
+                const topCategories = categories.slice(0, 10);
+
+                topCategories.forEach(cat => {
+                    // Filtra os canais que pertencem a esta categoria
+                    const catStreams = streams.filter(s => s.category_id === cat.category_id);
+                    
+                    // Só cria a trilha se tiver canal dentro dela
+                    if(catStreams.length > 0) {
+                        htmlStr += `
+                        <div class="row-container">
+                            <h2 class="row-title"><i class="fa-solid fa-circle" style="color:#00ff88; font-size:8px;"></i> ${cat.category_name}</h2>
+                            <div class="carousel">
+                        `;
+
+                        // Cria as capas dos canais (pegando a logo se existir, senão mostra o nome)
+                        catStreams.forEach(stream => {
+                            const icon = stream.stream_icon ? `<img src="${stream.stream_icon}" onerror="this.style.display='none'">` : '';
+                            htmlStr += `
+                                <div class="card" onclick="playStream(${stream.stream_id})">
+                                    ${icon}
+                                    <div class="card-name">${stream.name}</div>
+                                </div>
+                            `;
+                        });
+
+                        htmlStr += `</div></div>`;
+                    }
                 });
-                const data = await res.json();
-                
-                const grid = document.getElementById('category-grid');
-                grid.innerHTML = data.map(cat => `
-                    <div class="category-card" onclick="openCategory('${cat.category_id}', '${cat.category_name}')">
-                        <div class="category-icon">📺</div>
-                        <div class="category-name">${cat.category_name}</div>
-                    </div>
-                `).join('');
+
+                container.innerHTML = htmlStr;
+
+                // Esconde a tela de carregamento suavemente
+                setTimeout(() => {
+                    document.getElementById('loader').style.opacity = '0';
+                    setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+                }, 1000);
+
             } catch (e) {
-                document.getElementById('category-grid').innerHTML = "<div class='loading' style='color:#ff4444;'>Erro ao carregar catálogo.</div>";
+                console.error(e);
+                document.getElementById('loader').innerHTML = `<h3 style="color:red;">Falha ao carregar o catálogo. Verifique sua conexão.</h3>`;
             }
         }
 
-        // A AÇÃO DE CLIQUE: Salva o que o cliente clicou e manda para a tela de canais
-        window.openCategory = function(id, name) {
-            localStorage.setItem('cs_current_category_id', id);
-            localStorage.setItem('cs_current_category_name', name);
-            window.location.href = 'canais.html'; // Próxima página que vamos criar!
+        function playStream(streamId) {
+            alert("A mágica do player vai entrar aqui no próximo passo! ID do canal: " + streamId);
         }
 
-        if(!user) window.location.href = 'index.html';
-        else loadCategories();
+        // Inicia a construção da tela
+        buildMilenarDashboard();
     </script>
 </body>
 </html>
