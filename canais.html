@@ -1,258 +1,259 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Consysencia | TV ao Vivo Premium</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
-    :root { --bg: #0b0f10; --bg-card: #151a1c; --text: #fff; --accent: #00ff88; }
-    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Consysencia | TV ao Vivo</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        :root { --theme-color: #00ff88; --bg-main: #070a0b; --bg-sidebar: #111518; }
+        body { background-color: var(--bg-main); color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; }
+        
+        /* Layout Sidebar */
+        .sidebar { background-color: var(--bg-sidebar); height: 100vh; overflow-y: auto; border-right: 1px solid rgba(255,255,255,0.05); }
+        .list-group-item { background: transparent; color: #aaa; border: none; border-radius: 8px; margin-bottom: 5px; cursor: pointer; transition: 0.2s; font-weight: 600; font-size: 0.9rem;}
+        .list-group-item:hover, .list-group-item.active { background-color: rgba(0, 255, 136, 0.1); color: #fff; border-left: 3px solid var(--theme-color); }
+        
+        /* Barra do Topo */
+        .top-bar { background-color: rgba(17, 21, 24, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        /* Cards dos Canais (Bootstrap Grid) */
+        .channel-card { background-color: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; cursor: pointer; transition: 0.2s; position: relative; }
+        .channel-card:hover { border-color: var(--theme-color); transform: translateY(-3px); background-color: rgba(255,255,255,0.05); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .channel-logo { max-width: 60px; max-height: 60px; object-fit: contain; margin-bottom: 10px; }
+        
+        /* Player de Vídeo */
+        #playerOverlay { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; flex-direction: column; }
+        .player-header { padding: 20px; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); position: absolute; width: 100%; z-index: 10; }
+        #videoElement { width: 100%; height: 100%; object-fit: contain; }
 
-    /* TOPO: VOLTAR E PESQUISA */
-    header { display: flex; align-items: center; justify-content: space-between; padding: 20px; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); z-index: 10; gap: 15px;}
-    .btn-back { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
-    .btn-back:hover { background: var(--accent); color: black; border-color: var(--accent); }
-    .search-box { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); padding: 12px 20px; border-radius: 20px; color: white; width: 100%; max-width: 300px; font-size: 1rem; outline: none; transition: 0.3s; }
-    .search-box:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(0,255,136,0.2); }
-
-    /* CATEGORIAS (Pílulas no topo) */
-    .cat-rail { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px 20px; scroll-behavior: smooth; flex-shrink: 0; }
-    .cat-rail::-webkit-scrollbar { display: none; }
-    .cat-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 30px; font-weight: bold; font-size: 0.95rem; white-space: nowrap; cursor: pointer; transition: 0.2s; user-select: none; }
-    .cat-pill.active { background: var(--accent); color: black; border-color: var(--accent); transform: scale(1.05); }
-
-    /* LISTA DE CANAIS */
-    #channelGrid { flex: 1; overflow-y: auto; padding: 0 20px 40px; display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; align-content: start; }
-    .channel-card { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 20px 10px 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; cursor: pointer; transition: 0.2s; aspect-ratio: 1; text-align: center; position: relative; overflow: hidden; }
-    .channel-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); background: rgba(255,255,255,0.08); z-index: 2; }
-    .channel-card img { width: 65px; height: 65px; object-fit: contain; }
-    .channel-card span { font-size: 0.85rem; font-weight: 800; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-    /* O ENFEITE: SELOS DE QUALIDADE */
-    .badge-container { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; }
-    .badge { font-size: 0.65rem; font-weight: 900; padding: 3px 6px; border-radius: 4px; color: #000; letter-spacing: 0.5px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-    .badge-4K, .badge-UHD { background: #FFD700; } /* Dourado */
-    .badge-FHD { background: #00ff88; } /* Verde */
-    .badge-HD { background: #00A8E1; color: white; } /* Azul */
-    .badge-SD { background: #888; color: white; } /* Cinza */
-    .badge-H265 { background: #8b5cf6; color: white; } /* Roxo */
-
-    /* PLAYER DE VÍDEO (ECRÃ INTEIRO) */
-    #playerView { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; flex-direction: column; }
-    #pControls { position: absolute; top: 0; left: 0; right: 0; padding: 20px; display: flex; align-items: center; gap: 20px; background: linear-gradient(rgba(0,0,0,0.9), transparent); z-index: 10; }
-    #pTitle { font-size: 1.3rem; font-weight: 900; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-    #video { width: 100%; height: 100%; object-fit: contain; }
-
-    /* LOADING OTIMIZADO */
-    #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; font-weight: 900; color: var(--accent); font-size: 1.2rem; gap: 15px; }
-    .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    @media (min-width: 768px) { 
-        #channelGrid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; } 
-        .channel-card img { width: 80px; height: 80px; } 
-        .channel-card span { font-size: 1rem; } 
-    }
-  </style>
+        /* Loader */
+        #loader { position: fixed; inset: 0; background: var(--bg-main); z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+    </style>
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><div>A ligar à Antena Central...</div></div>
-
-<header>
-    <button class="btn-back" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left"></i> Sair</button>
-    <input type="text" id="search" class="search-box" placeholder="Procurar canal (ex: Globo, Fox)..." autocomplete="off">
-</header>
-
-<div class="cat-rail" id="catRail"></div>
-
-<div id="channelGrid"></div>
-
-<div id="playerView">
-    <div id="pControls">
-        <button class="btn-back" onclick="closePlayer()"><i class="fa-solid fa-xmark"></i> Fechar Canal</button>
-        <div id="pTitle">Nome do Canal</div>
+    <div id="loader">
+        <div class="spinner-border mb-3" style="color: var(--theme-color); width: 3rem; height: 3rem;" role="status"></div>
+        <h5 class="fw-bold">Sintonizando Servidor...</h5>
     </div>
-    <video id="video" controls autoplay playsinline></video>
-</div>
 
-<script>
-    const u = new URLSearchParams(window.location.search).get('u') || localStorage.getItem('cs_user');
-    const p = new URLSearchParams(window.location.search).get('p') || localStorage.getItem('cs_pass');
-    if(!u || !p) window.location.href = 'index.html';
-
-    const API = 'https://api.consysencia.com/catalog';
-    const PROXY_BASE = 'https://api.consysencia.com/proxy';
-    const h = { 'Authorization': 'Basic ' + btoa(u + ':' + p) };
-
-    let channels = [];
-    let categories = [];
-    let activeCat = '';
-    let hls = null;
-    let renderTimer = null;
-
-    // A ENGENHARIA DO NOME: Separa a Qualidade do Lixo
-    function processChannelName(rawName) {
-        if (!rawName) return { cleanName: "Canal", badges: [] };
+    <div class="container-fluid p-0 d-flex vh-100">
         
-        let name = rawName;
-        let badges = [];
-        
-        // 1. Extrai as qualidades conhecidas
-        const badgeRegex = /\b(4K|FHD|UHD|HD|SD|H265)\b/gi;
-        let match;
-        while ((match = badgeRegex.exec(name)) !== null) {
-            badges.push(match[1].toUpperCase());
-        }
-        
-        // 2. Remove o lixo (O "F2", barras, traços e espaços extras)
-        name = name.replace(badgeRegex, ''); // Remove a qualidade do texto
-        name = name.replace(/\b(F\d)\b/gi, ''); // Remove lixo como F2, F3, F4
-        name = name.replace(/\|.*?\|/g, ''); // Remove cenas tipo |PT|
-        name = name.replace(/===+/g, ''); // Remove divisórias
-        name = name.replace(/[-_]/g, ' '); // Troca traços por espaços
-        name = name.replace(/\s{2,}/g, ' '); // Remove espaços duplos
-        name = name.replace(/^[^\wÀ-ÿ]+|[^\wÀ-ÿ]+$/g, ''); // Limpa pontuação nas bordas
-        
-        return {
-            cleanName: name.trim() || rawName.trim(),
-            badges: [...new Set(badges)] // Remove qualidades repetidas
-        };
-    }
+        <div class="sidebar d-none d-lg-block col-lg-2 p-3 flex-shrink-0">
+            <div class="mb-4">
+                <a href="index.html" class="btn btn-outline-secondary w-100 fw-bold text-white border-secondary"><i class="fa-solid fa-arrow-left me-2"></i>Hub Principal</a>
+            </div>
+            <h6 class="text-uppercase text-secondary fw-bold mb-3 fs-7 px-2">Categorias</h6>
+            <div class="list-group list-group-flush" id="catListDesktop"></div>
+        </div>
 
-    async function bootLive() {
-        try {
-            // OTIMIZAÇÃO: Promise.all baixa categorias e canais ao mesmo tempo
-            const [cRes, sRes] = await Promise.all([
-                fetch(`${API}?action=get_live_categories`, {headers:h}).then(r=>r.json()),
-                fetch(`${API}?action=get_live_streams`, {headers:h}).then(r=>r.json())
-            ]);
+        <div class="d-flex flex-column flex-grow-1 overflow-hidden">
             
-            categories = (cRes || [])
-                .map(c => ({ id: c.category_id, name: processChannelName(c.category_name).cleanName }))
-                .filter(c => c.name.length > 2);
+            <div class="top-bar p-3 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-dark border-secondary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 fw-bold text-uppercase text-light d-none d-sm-block" id="currentCatTitle" style="color: var(--theme-color) !important;">Todos os Canais</h5>
+                </div>
+                <div class="w-100" style="max-width: 250px;">
+                    <input type="text" class="form-control rounded-pill bg-dark border-secondary text-white" id="searchInp" placeholder="Procurar canal...">
+                </div>
+            </div>
 
-            channels = sRes || [];
+            <div class="flex-grow-1 overflow-auto p-3 p-md-4 bg-black">
+                <div class="row g-3" id="channelGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-start bg-dark text-white border-end border-secondary" tabindex="-1" id="mobileSidebar" style="width: 280px;">
+        <div class="offcanvas-header border-bottom border-secondary">
+            <h5 class="offcanvas-title fw-bold"><span style="color: var(--theme-color);">●</span> Categorias</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body p-3">
+            <div class="mb-4">
+                <a href="index.html" class="btn btn-outline-secondary w-100 fw-bold text-white border-secondary"><i class="fa-solid fa-arrow-left me-2"></i>Voltar ao Hub</a>
+            </div>
+            <div class="list-group list-group-flush" id="catListMobile"></div>
+        </div>
+    </div>
+
+    <div id="playerOverlay">
+        <div class="player-header d-flex align-items-center gap-3">
+            <button class="btn btn-dark border-secondary fw-bold" onclick="closePlayer()"><i class="fa-solid fa-xmark me-2"></i>Fechar</button>
+            <h4 class="mb-0 fw-bold text-white" id="playerTitle" style="text-shadow: 0 2px 4px black;">Canal</h4>
+        </div>
+        <video id="videoElement" controls autoplay playsinline></video>
+    </div>
+
+    <script>
+        const u = new URLSearchParams(window.location.search).get('u') || localStorage.getItem('cs_user');
+        const p = new URLSearchParams(window.location.search).get('p') || localStorage.getItem('cs_pass');
+        if(!u || !p) window.location.href = 'index.html';
+
+        const API = 'https://api.consysencia.com/catalog';
+        const PROXY_BASE = 'https://api.consysencia.com/proxy';
+        const h = { 'Authorization': 'Basic ' + btoa(u + ':' + p) };
+
+        let channels = [];
+        let categories = [];
+        let activeCat = '';
+        let hls = null;
+        let renderTimer = null;
+
+        // O FILTRO DE LIMPEZA E SELOS DE QUALIDADE
+        function processChannelName(rawName) {
+            if (!rawName) return { cleanName: "Canal", badge: null };
+            let name = rawName;
+            let badge = null;
             
-            renderCategories();
-            renderChannels();
-            document.getElementById('loader').style.display = 'none';
-        } catch(e) {
-            alert("Falha ao ligar ao servidor IPTV.");
-            window.location.href = 'index.html';
-        }
-    }
-
-    function renderCategories() {
-        const rail = document.getElementById('catRail');
-        let html = `<div class="cat-pill active" onclick="selectCategory('', this)">Tudo</div>`;
-        
-        categories.forEach(c => {
-            html += `<div class="cat-pill" onclick="selectCategory('${c.id}', this)">${c.name}</div>`;
-        });
-        rail.innerHTML = html;
-    }
-
-    function selectCategory(id, el) {
-        activeCat = id;
-        document.querySelectorAll('.cat-pill').forEach(pill => pill.classList.remove('active'));
-        if(el) {
-            el.classList.add('active');
-            el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        }
-        document.getElementById('search').value = '';
-        renderChannels();
-    }
-
-    function renderChannels() {
-        const grid = document.getElementById('channelGrid');
-        const q = document.getElementById('search').value.toLowerCase();
-        
-        let filtered = channels;
-        if(activeCat) filtered = filtered.filter(c => c.category_id == activeCat);
-        if(q) filtered = filtered.filter(c => c.name.toLowerCase().includes(q));
-
-        // Renderiza pacotes de 150 canais por vez para ser instantâneo e não encravar a tela
-        grid.innerHTML = filtered.slice(0, 150).map(c => {
-            const data = processChannelName(c.name);
-            const img = c.stream_icon || 'https://via.placeholder.com/150/111/fff?text=TV';
-            const safeName = data.cleanName.replace(/'/g, "\\'");
+            // 1. Identifica a qualidade para criar o selo visual
+            if (/\b(4K|UHD)\b/i.test(name)) badge = { text: '4K', class: 'bg-warning text-dark' };
+            else if (/\b(FHD|1080p)\b/i.test(name)) badge = { text: 'FHD', class: 'bg-success text-dark' };
+            else if (/\b(HD|720p)\b/i.test(name)) badge = { text: 'HD', class: 'bg-primary text-white' };
             
-            // Monta as etiquetas (Selos)
-            let badgesHtml = '';
-            if(data.badges.length > 0) {
-                badgesHtml = '<div class="badge-container">' + 
-                    data.badges.map(b => `<span class="badge badge-${b}">${b}</span>`).join('') + 
-                '</div>';
+            // 2. Arranca todo o "lixo" do nome
+            name = name.replace(/\b(4K|FHD|UHD|HD|SD|H265)\b/gi, '');
+            name = name.replace(/\b(F\d)\b/gi, ''); // Remove F2, F3 etc
+            name = name.replace(/\|.*?\|/g, ''); // Remove tags como |PT|
+            name = name.replace(/===+/g, ''); // Remove barras
+            name = name.replace(/[-_]/g, ' '); // Troca traços por espaço
+            name = name.replace(/\s{2,}/g, ' '); // Remove espaços duplos
+            name = name.replace(/^[^\wÀ-ÿ]+|[^\wÀ-ÿ]+$/g, ''); // Limpa os cantos
+            
+            return {
+                cleanName: name.trim() || rawName.trim(),
+                badge: badge
+            };
+        }
+
+        async function bootLive() {
+            try {
+                const [cRes, sRes] = await Promise.all([
+                    fetch(`${API}?action=get_live_categories`, {headers:h}).then(r=>r.json()),
+                    fetch(`${API}?action=get_live_streams`, {headers:h}).then(r=>r.json())
+                ]);
+                
+                categories = (cRes || []).map(c => ({ id: c.category_id, name: processChannelName(c.category_name).cleanName })).filter(c => c.name.length > 2);
+                channels = sRes || [];
+                
+                renderCategories();
+                renderChannels();
+                document.getElementById('loader').style.display = 'none';
+            } catch(e) {
+                alert("Falha ao ligar ao servidor IPTV.");
+                window.location.href = 'index.html';
             }
-
-            return `
-            <div class="channel-card" onclick="playChannel('${c.stream_id}', '${safeName}')">
-                ${badgesHtml}
-                <img src="${img}" loading="lazy" onerror="this.src='https://via.placeholder.com/150/111/fff?text=TV'">
-                <span>${data.cleanName}</span>
-            </div>`;
-        }).join('');
-    }
-
-    // O REPRODUTOR CORRIGIDO (Bypass de CORS para links com load balancer)
-    function playChannel(id, name) {
-        document.getElementById('pTitle').innerText = name;
-        document.getElementById('playerView').style.display = 'flex';
-        
-        const video = document.getElementById('video');
-        const url = `${PROXY_BASE}/live/${u}/${p}/${id}.m3u8`;
-
-        if (hls) { hls.destroy(); hls = null; }
-
-        if (Hls.isSupported()) {
-            hls = new Hls({
-                // O segredo do sucesso: sequestrar os pedaços de vídeo que tentam fugir do HTTPS
-                xhrSetup: function(xhr, fragUrl) {
-                    if (fragUrl.startsWith('http://') && !fragUrl.includes('api.consysencia.com')) {
-                        try {
-                            const uObj = new URL(fragUrl);
-                            fragUrl = PROXY_BASE + uObj.pathname + uObj.search;
-                        } catch(e) {}
-                    }
-                    xhr.open('GET', fragUrl, true);
-                }
-            });
-            hls.loadSource(url);
-            hls.attachMedia(video);
-            hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
-            
-            // Auto-Recuperação de Quedas de Rede
-            hls.on(Hls.Events.ERROR, function (event, data) {
-                if (data.fatal && data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-                    hls.startLoad();
-                }
-            });
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            video.src = url;
-            video.play().catch(()=>{});
         }
-    }
 
-    function closePlayer() {
-        if(hls) { hls.destroy(); hls = null; }
-        const video = document.getElementById('video');
-        video.pause(); video.src = '';
-        document.getElementById('playerView').style.display = 'none';
-    }
+        function renderCategories() {
+            let html = `<button class="list-group-item active" onclick="selectCategory('', 'Todos os Canais')">Todos os Canais</button>`;
+            categories.forEach(c => {
+                html += `<button class="list-group-item" onclick="selectCategory('${c.id}', '${c.name.replace(/'/g, "\\'")}')">${c.name}</button>`;
+            });
+            document.getElementById('catListDesktop').innerHTML = html;
+            document.getElementById('catListMobile').innerHTML = html;
+        }
 
-    // Debounce na pesquisa para não encravar o teclado
-    document.getElementById('search').oninput = () => {
-        clearTimeout(renderTimer);
-        renderTimer = setTimeout(renderChannels, 300);
-    };
+        function selectCategory(id, name) {
+            activeCat = id;
+            document.getElementById('currentCatTitle').innerText = name;
+            document.getElementById('searchInp').value = '';
+            
+            // Fecha o menu mobile do Bootstrap se estiver aberto
+            const bsOffcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('mobileSidebar'));
+            if (bsOffcanvas) bsOffcanvas.hide();
 
-    bootLive();
-</script>
+            // Atualiza cor do menu
+            document.querySelectorAll('.list-group-item').forEach(el => {
+                if(el.innerText === name) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+            renderChannels();
+        }
+
+        function renderChannels() {
+            const grid = document.getElementById('channelGrid');
+            const q = document.getElementById('searchInp').value.toLowerCase();
+            
+            let filtered = channels;
+            if(activeCat) filtered = filtered.filter(c => c.category_id == activeCat);
+            if(q) filtered = filtered.filter(c => c.name.toLowerCase().includes(q));
+
+            // Usa as colunas do Bootstrap para responsividade perfeita
+            grid.innerHTML = filtered.slice(0, 200).map(c => {
+                const data = processChannelName(c.name);
+                const img = c.stream_icon || 'https://via.placeholder.com/150/111/fff?text=TV';
+                const safeName = data.cleanName.replace(/'/g, "\\'");
+                
+                let badgeHtml = '';
+                if(data.badge) {
+                    badgeHtml = `<span class="position-absolute top-0 end-0 m-2 badge ${data.badge.class} shadow-sm">${data.badge.text}</span>`;
+                }
+
+                return `
+                <div class="col-6 col-sm-4 col-md-3 col-xl-2">
+                    <div class="channel-card h-100 p-3" onclick="playChannel('${c.stream_id}', '${safeName}')">
+                        ${badgeHtml}
+                        <img src="${img}" class="channel-logo" loading="lazy" onerror="this.src='https://via.placeholder.com/150/111/fff?text=TV'">
+                        <span class="channel-name text-white">${data.cleanName}</span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function playChannel(id, name) {
+            document.getElementById('playerTitle').innerText = name;
+            document.getElementById('playerOverlay').style.display = 'flex';
+            const video = document.getElementById('videoElement');
+            const url = `${PROXY_BASE}/live/${u}/${p}/${id}.m3u8`;
+
+            if (hls) { hls.destroy(); hls = null; }
+
+            if (Hls.isSupported()) {
+                hls = new Hls({
+                    // O Interceptador HLS!
+                    xhrSetup: function(xhr, fragUrl) {
+                        if (fragUrl.startsWith('http://') && !fragUrl.includes('api.consysencia.com')) {
+                            try {
+                                const caminho = new URL(fragUrl).pathname;
+                                fragUrl = PROXY_BASE + caminho;
+                            } catch(e) {}
+                        }
+                        xhr.open('GET', fragUrl, true);
+                    }
+                });
+                hls.loadSource(url);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = url;
+                video.play().catch(()=>{});
+            }
+        }
+
+        function closePlayer() {
+            if(hls) { hls.destroy(); hls = null; }
+            const video = document.getElementById('videoElement');
+            video.pause(); video.src = '';
+            document.getElementById('playerOverlay').style.display = 'none';
+        }
+
+        document.getElementById('searchInp').oninput = () => {
+            clearTimeout(renderTimer);
+            renderTimer = setTimeout(renderChannels, 300);
+        };
+
+        bootLive();
+    </script>
 </body>
 </html>
