@@ -3,138 +3,169 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Consysencia | TV ao Vivo</title>
+  <title>Consysencia | TV ao Vivo Premium</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
-    :root { --bg: #0b0f10; --bg2: #151a1c; --text: #fff; --accent: #00ff88; --radius: 10px; }
+    :root { --bg: #0b0f10; --bg-card: #151a1c; --text: #fff; --accent: #00ff88; }
     * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-    /* LAYOUT: Barra lateral e Conteúdo */
-    #sidebar { width: 280px; background: var(--bg2); border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; z-index: 50; transition: 0.3s; }
-    .brand { padding: 20px; font-weight: 900; font-size: 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px; }
-    .brand i { color: var(--accent); cursor: pointer; }
-    
-    #catList { flex: 1; overflow-y: auto; padding: 10px; }
-    #catList::-webkit-scrollbar { display: none; }
-    .cat-item { padding: 12px 15px; border-radius: var(--radius); cursor: pointer; font-weight: 600; color: rgba(255,255,255,0.6); margin-bottom: 4px; font-size: 0.9rem; transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .cat-item:hover, .cat-item.active { background: rgba(255,255,255,0.08); color: #fff; border-left: 3px solid var(--accent); }
+    /* TOPO: VOLTAR E PESQUISA */
+    header { display: flex; align-items: center; justify-content: space-between; padding: 20px; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); z-index: 10; gap: 15px;}
+    .btn-back { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+    .btn-back:hover { background: var(--accent); color: black; border-color: var(--accent); }
+    .search-box { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); padding: 12px 20px; border-radius: 20px; color: white; width: 100%; max-width: 300px; font-size: 1rem; outline: none; transition: 0.3s; }
+    .search-box:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(0,255,136,0.2); }
 
-    #main { flex: 1; display: flex; flex-direction: column; position: relative; }
-    
-    /* TOPO COM BUSCA */
-    #topbar { height: 65px; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid rgba(255,255,255,0.05); gap: 15px; }
-    #btnMenu { background: none; border: none; color: white; font-size: 1.5rem; display: none; }
-    #catTitle { font-weight: 900; font-size: 1.1rem; flex: 1; text-transform: uppercase; }
-    #search { max-width: 200px; padding: 8px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); color: white; outline: none; }
+    /* CATEGORIAS (Pílulas no topo) */
+    .cat-rail { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px 20px; scroll-behavior: smooth; flex-shrink: 0; }
+    .cat-rail::-webkit-scrollbar { display: none; }
+    .cat-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 30px; font-weight: bold; font-size: 0.95rem; white-space: nowrap; cursor: pointer; transition: 0.2s; user-select: none; }
+    .cat-pill.active { background: var(--accent); color: black; border-color: var(--accent); transform: scale(1.05); }
 
-    /* PLAYER DE VÍDEO (Fixo no topo quando ativo) */
-    #playerContainer { display: none; width: 100%; background: #000; position: relative; aspect-ratio: 16/9; max-height: 40vh; flex-shrink: 0; }
+    /* LISTA DE CANAIS */
+    #channelGrid { flex: 1; overflow-y: auto; padding: 0 20px 40px; display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; align-content: start; }
+    .channel-card { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 20px 10px 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; cursor: pointer; transition: 0.2s; aspect-ratio: 1; text-align: center; position: relative; overflow: hidden; }
+    .channel-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); background: rgba(255,255,255,0.08); z-index: 2; }
+    .channel-card img { width: 65px; height: 65px; object-fit: contain; }
+    .channel-card span { font-size: 0.85rem; font-weight: 800; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    /* O ENFEITE: SELOS DE QUALIDADE */
+    .badge-container { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; }
+    .badge { font-size: 0.65rem; font-weight: 900; padding: 3px 6px; border-radius: 4px; color: #000; letter-spacing: 0.5px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+    .badge-4K, .badge-UHD { background: #FFD700; } /* Dourado */
+    .badge-FHD { background: #00ff88; } /* Verde */
+    .badge-HD { background: #00A8E1; color: white; } /* Azul */
+    .badge-SD { background: #888; color: white; } /* Cinza */
+    .badge-H265 { background: #8b5cf6; color: white; } /* Roxo */
+
+    /* PLAYER DE VÍDEO (ECRÃ INTEIRO) */
+    #playerView { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; flex-direction: column; }
+    #pControls { position: absolute; top: 0; left: 0; right: 0; padding: 20px; display: flex; align-items: center; gap: 20px; background: linear-gradient(rgba(0,0,0,0.9), transparent); z-index: 10; }
+    #pTitle { font-size: 1.3rem; font-weight: 900; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
     #video { width: 100%; height: 100%; object-fit: contain; }
-    #closePlayer { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; z-index: 10; backdrop-filter: blur(5px); }
 
-    /* GRID DE CANAIS */
-    #channelGrid { flex: 1; overflow-y: auto; padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; align-content: start; }
-    .channel-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius); padding: 15px 10px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; aspect-ratio: 1; }
-    .channel-card:hover { border-color: var(--accent); background: rgba(255,255,255,0.05); transform: translateY(-3px); }
-    .channel-card img { width: 60px; height: 60px; object-fit: contain; }
-    .channel-card span { font-size: 0.85rem; font-weight: bold; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-    #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; color: var(--accent); font-weight: 900; }
-    .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+    /* LOADING OTIMIZADO */
+    #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; font-weight: 900; color: var(--accent); font-size: 1.2rem; gap: 15px; }
+    .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    @media (max-width: 900px) {
-      #sidebar { position: absolute; left: -100%; height: 100%; }
-      #sidebar.open { left: 0; }
-      #btnMenu { display: block; }
-      #playerContainer { max-height: 35vh; }
-      #channelGrid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; padding: 15px; }
+    @media (min-width: 768px) { 
+        #channelGrid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; } 
+        .channel-card img { width: 80px; height: 80px; } 
+        .channel-card span { font-size: 1rem; } 
     }
   </style>
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><div>Sintonizando Servidor...</div></div>
+<div id="loader"><div class="spinner"></div><div>A ligar à Antena Central...</div></div>
 
-<div id="app">
-    <aside id="sidebar">
-        <div class="brand"><i class="fa-solid fa-arrow-left" onclick="window.location.href='index.html'"></i> TV AO VIVO</div>
-        <div id="catList"></div>
-    </aside>
+<header>
+    <button class="btn-back" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left"></i> Sair</button>
+    <input type="text" id="search" class="search-box" placeholder="Procurar canal (ex: Globo, Fox)..." autocomplete="off">
+</header>
 
-    <main id="main">
-        <div id="topbar">
-            <button id="btnMenu" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fa-solid fa-bars"></i></button>
-            <div id="catTitle">Todas as Categorias</div>
-            <input type="text" id="search" placeholder="Buscar canal..." autocomplete="off">
-        </div>
-        
-        <div id="playerContainer">
-            <button id="closePlayer" onclick="stopPlayer()"><i class="fa-solid fa-xmark"></i> Fechar</button>
-            <video id="video" controls autoplay playsinline></video>
-        </div>
+<div class="cat-rail" id="catRail"></div>
 
-        <div id="channelGrid"></div>
-    </main>
+<div id="channelGrid"></div>
+
+<div id="playerView">
+    <div id="pControls">
+        <button class="btn-back" onclick="closePlayer()"><i class="fa-solid fa-xmark"></i> Fechar Canal</button>
+        <div id="pTitle">Nome do Canal</div>
+    </div>
+    <video id="video" controls autoplay playsinline></video>
 </div>
 
 <script>
-    const u = new URLSearchParams(window.location.search).get('u');
-    const p = new URLSearchParams(window.location.search).get('p');
+    const u = new URLSearchParams(window.location.search).get('u') || localStorage.getItem('cs_user');
+    const p = new URLSearchParams(window.location.search).get('p') || localStorage.getItem('cs_pass');
     if(!u || !p) window.location.href = 'index.html';
 
     const API = 'https://api.consysencia.com/catalog';
     const PROXY_BASE = 'https://api.consysencia.com/proxy';
     const h = { 'Authorization': 'Basic ' + btoa(u + ':' + p) };
 
-    let categories = [];
     let channels = [];
+    let categories = [];
     let activeCat = '';
     let hls = null;
+    let renderTimer = null;
+
+    // A ENGENHARIA DO NOME: Separa a Qualidade do Lixo
+    function processChannelName(rawName) {
+        if (!rawName) return { cleanName: "Canal", badges: [] };
+        
+        let name = rawName;
+        let badges = [];
+        
+        // 1. Extrai as qualidades conhecidas
+        const badgeRegex = /\b(4K|FHD|UHD|HD|SD|H265)\b/gi;
+        let match;
+        while ((match = badgeRegex.exec(name)) !== null) {
+            badges.push(match[1].toUpperCase());
+        }
+        
+        // 2. Remove o lixo (O "F2", barras, traços e espaços extras)
+        name = name.replace(badgeRegex, ''); // Remove a qualidade do texto
+        name = name.replace(/\b(F\d)\b/gi, ''); // Remove lixo como F2, F3, F4
+        name = name.replace(/\|.*?\|/g, ''); // Remove cenas tipo |PT|
+        name = name.replace(/===+/g, ''); // Remove divisórias
+        name = name.replace(/[-_]/g, ' '); // Troca traços por espaços
+        name = name.replace(/\s{2,}/g, ' '); // Remove espaços duplos
+        name = name.replace(/^[^\wÀ-ÿ]+|[^\wÀ-ÿ]+$/g, ''); // Limpa pontuação nas bordas
+        
+        return {
+            cleanName: name.trim() || rawName.trim(),
+            badges: [...new Set(badges)] // Remove qualidades repetidas
+        };
+    }
 
     async function bootLive() {
         try {
+            // OTIMIZAÇÃO: Promise.all baixa categorias e canais ao mesmo tempo
             const [cRes, sRes] = await Promise.all([
                 fetch(`${API}?action=get_live_categories`, {headers:h}).then(r=>r.json()),
                 fetch(`${API}?action=get_live_streams`, {headers:h}).then(r=>r.json())
             ]);
-            categories = cRes || [];
+            
+            categories = (cRes || [])
+                .map(c => ({ id: c.category_id, name: processChannelName(c.category_name).cleanName }))
+                .filter(c => c.name.length > 2);
+
             channels = sRes || [];
             
             renderCategories();
             renderChannels();
             document.getElementById('loader').style.display = 'none';
         } catch(e) {
-            alert("Falha ao carregar canais.");
+            alert("Falha ao ligar ao servidor IPTV.");
             window.location.href = 'index.html';
         }
     }
 
     function renderCategories() {
-        const list = document.getElementById('catList');
-        let html = `<div class="cat-item active" onclick="selectCategory('', 'Todos os Canais')">Todos os Canais</div>`;
+        const rail = document.getElementById('catRail');
+        let html = `<div class="cat-pill active" onclick="selectCategory('', this)">Tudo</div>`;
+        
         categories.forEach(c => {
-            html += `<div class="cat-item" onclick="selectCategory('${c.category_id}', '${c.category_name}')">${c.category_name}</div>`;
+            html += `<div class="cat-pill" onclick="selectCategory('${c.id}', this)">${c.name}</div>`;
         });
-        list.innerHTML = html;
+        rail.innerHTML = html;
     }
 
-    function selectCategory(id, name) {
+    function selectCategory(id, el) {
         activeCat = id;
-        document.getElementById('catTitle').innerText = name;
-        document.getElementById('sidebar').classList.remove('open');
+        document.querySelectorAll('.cat-pill').forEach(pill => pill.classList.remove('active'));
+        if(el) {
+            el.classList.add('active');
+            el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
         document.getElementById('search').value = '';
-        
-        // Atualiza a cor visual do menu
-        const items = document.querySelectorAll('.cat-item');
-        items.forEach(el => {
-            if(el.innerText === name) el.classList.add('active');
-            else el.classList.remove('active');
-        });
-        
         renderChannels();
     }
 
@@ -146,32 +177,42 @@
         if(activeCat) filtered = filtered.filter(c => c.category_id == activeCat);
         if(q) filtered = filtered.filter(c => c.name.toLowerCase().includes(q));
 
-        // Limite de segurança de renderização
+        // Renderiza pacotes de 150 canais por vez para ser instantâneo e não encravar a tela
         grid.innerHTML = filtered.slice(0, 150).map(c => {
-            const img = c.stream_icon || 'https://via.placeholder.com/60x60/111/fff?text=TV';
-            const safeName = c.name.replace(/'/g, "\\'");
+            const data = processChannelName(c.name);
+            const img = c.stream_icon || 'https://via.placeholder.com/150/111/fff?text=TV';
+            const safeName = data.cleanName.replace(/'/g, "\\'");
+            
+            // Monta as etiquetas (Selos)
+            let badgesHtml = '';
+            if(data.badges.length > 0) {
+                badgesHtml = '<div class="badge-container">' + 
+                    data.badges.map(b => `<span class="badge badge-${b}">${b}</span>`).join('') + 
+                '</div>';
+            }
+
             return `
-            <div class="channel-card" onclick="playChannel('${c.stream_id}')">
-                <img src="${img}" loading="lazy" onerror="this.src='https://via.placeholder.com/60x60/111/fff?text=TV'">
-                <span>${c.name}</span>
+            <div class="channel-card" onclick="playChannel('${c.stream_id}', '${safeName}')">
+                ${badgesHtml}
+                <img src="${img}" loading="lazy" onerror="this.src='https://via.placeholder.com/150/111/fff?text=TV'">
+                <span>${data.cleanName}</span>
             </div>`;
         }).join('');
     }
 
-    // A SOLUÇÃO DEFINITIVA DO HLS (Sua pesquisa aplicada)
-    function playChannel(id) {
+    // O REPRODUTOR CORRIGIDO (Bypass de CORS para links com load balancer)
+    function playChannel(id, name) {
+        document.getElementById('pTitle').innerText = name;
+        document.getElementById('playerView').style.display = 'flex';
+        
         const video = document.getElementById('video');
-        const container = document.getElementById('playerContainer');
         const url = `${PROXY_BASE}/live/${u}/${p}/${id}.m3u8`;
-
-        container.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
 
         if (hls) { hls.destroy(); hls = null; }
 
         if (Hls.isSupported()) {
             hls = new Hls({
-                // O Interceptador Anti-CORS! Se o canal mandar baixar .ts via HTTP, nós jogamos pro Render.
+                // O segredo do sucesso: sequestrar os pedaços de vídeo que tentam fugir do HTTPS
                 xhrSetup: function(xhr, fragUrl) {
                     if (fragUrl.startsWith('http://') && !fragUrl.includes('api.consysencia.com')) {
                         try {
@@ -186,10 +227,9 @@
             hls.attachMedia(video);
             hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
             
-            // Tratamento de travamento: tenta reconectar automaticamente
+            // Auto-Recuperação de Quedas de Rede
             hls.on(Hls.Events.ERROR, function (event, data) {
                 if (data.fatal && data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-                    console.log("Queda na rede. Reconectando...");
                     hls.startLoad();
                 }
             });
@@ -199,14 +239,18 @@
         }
     }
 
-    function stopPlayer() {
+    function closePlayer() {
         if(hls) { hls.destroy(); hls = null; }
         const video = document.getElementById('video');
         video.pause(); video.src = '';
-        document.getElementById('playerContainer').style.display = 'none';
+        document.getElementById('playerView').style.display = 'none';
     }
 
-    document.getElementById('search').oninput = () => setTimeout(renderChannels, 300);
+    // Debounce na pesquisa para não encravar o teclado
+    document.getElementById('search').oninput = () => {
+        clearTimeout(renderTimer);
+        renderTimer = setTimeout(renderChannels, 300);
+    };
 
     bootLive();
 </script>
