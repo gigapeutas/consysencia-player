@@ -4,256 +4,211 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Consysencia | TV ao Vivo</title>
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  
-  <script src="https://cdn.jsdelivr.net/npm/mpegts.js@1.7.3/dist/mpegts.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
-    
-    :root {
-      --bg: #070a0b; --text: #fff; --accent: #00ff88;
-      --panelBg: rgba(10,14,15,0.95); --radius: 12px;
-    }
-
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+    :root { --bg: #0b0f10; --bg2: #151a1c; --text: #fff; --accent: #00ff88; --radius: 10px; }
     * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow: hidden; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden; }
 
-    #app { display: flex; height: 100vh; width: 100vw; }
+    /* LAYOUT: Barra lateral e Conteúdo */
+    #sidebar { width: 280px; background: var(--bg2); border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; z-index: 50; transition: 0.3s; }
+    .brand { padding: 20px; font-weight: 900; font-size: 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px; }
+    .brand i { color: var(--accent); cursor: pointer; }
     
-    /* SIDEBAR DE CATEGORIAS */
-    #sidebar { width: 280px; height: 100vh; background: var(--panelBg); border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; z-index: 100; transition: 0.3s; position: relative; }
-    .brand { padding: 20px; font-weight: 900; font-size: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px; }
-    .brand span { color: var(--accent); }
+    #catList { flex: 1; overflow-y: auto; padding: 10px; }
+    #catList::-webkit-scrollbar { display: none; }
+    .cat-item { padding: 12px 15px; border-radius: var(--radius); cursor: pointer; font-weight: 600; color: rgba(255,255,255,0.6); margin-bottom: 4px; font-size: 0.9rem; transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cat-item:hover, .cat-item.active { background: rgba(255,255,255,0.08); color: #fff; border-left: 3px solid var(--accent); }
+
+    #main { flex: 1; display: flex; flex-direction: column; position: relative; }
     
-    .nav-back { margin: 15px; padding: 12px; border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: bold; color: var(--accent); border: 1px solid var(--accent); transition: 0.2s; }
-    .nav-back:hover { background: var(--accent); color: #000; }
+    /* TOPO COM BUSCA */
+    #topbar { height: 65px; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid rgba(255,255,255,0.05); gap: 15px; }
+    #btnMenu { background: none; border: none; color: white; font-size: 1.5rem; display: none; }
+    #catTitle { font-weight: 900; font-size: 1.1rem; flex: 1; text-transform: uppercase; }
+    #search { max-width: 200px; padding: 8px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); color: white; outline: none; }
 
-    #categoryList { flex: 1; overflow-y: auto; padding: 10px 15px; }
-    #categoryList::-webkit-scrollbar { display: none; }
-    .cat-item { padding: 12px 15px; border-radius: var(--radius); cursor: pointer; font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 5px; transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .cat-item:hover, .cat-item.active { background: rgba(255,255,255,0.1); color: #fff; border-left: 3px solid var(--accent); }
+    /* PLAYER DE VÍDEO (Fixo no topo quando ativo) */
+    #playerContainer { display: none; width: 100%; background: #000; position: relative; aspect-ratio: 16/9; max-height: 40vh; flex-shrink: 0; }
+    #video { width: 100%; height: 100%; object-fit: contain; }
+    #closePlayer { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; z-index: 10; backdrop-filter: blur(5px); }
 
-    /* ÁREA PRINCIPAL DOS CANAIS */
-    #main { flex: 1; display: flex; flex-direction: column; height: 100vh; position: relative; }
-    #topbar { height: 70px; display: flex; align-items: center; padding: 0 20px; gap: 15px; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); }
-    #hamb { background: rgba(255,255,255,0.1); border: none; color: white; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; display: none; }
-    #viewTitle { font-weight: 900; font-size: 20px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    #search { max-width: 250px; padding: 10px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white; outline: none; }
-
+    /* GRID DE CANAIS */
     #channelGrid { flex: 1; overflow-y: auto; padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; align-content: start; }
-    .channel-card { background: #111; border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden; cursor: pointer; transition: 0.2s; position: relative; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; }
-    .channel-card:hover { transform: scale(1.05); border-color: var(--accent); box-shadow: 0 10px 20px rgba(0,0,0,0.5); z-index: 2; }
-    .channel-card img { max-width: 80%; max-height: 80%; object-fit: contain; z-index: 1; }
-    .channel-card .name { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.9); font-size: 11px; padding: 5px; text-align: center; font-weight: bold; z-index: 2; }
+    .channel-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius); padding: 15px 10px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; aspect-ratio: 1; }
+    .channel-card:hover { border-color: var(--accent); background: rgba(255,255,255,0.05); transform: translateY(-3px); }
+    .channel-card img { width: 60px; height: 60px; object-fit: contain; }
+    .channel-card span { font-size: 0.85rem; font-weight: bold; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-    /* LOADER */
-    #loader { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 9999; color: var(--accent); font-weight: bold; gap: 10px; }
-    .spinner { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-
-    /* PLAYER ECRÃ INTEIRO */
-    #playerRoot { display: none; position: fixed; inset: 0; background: #000; z-index: 10000; flex-direction: column; }
-    #pControls { position: absolute; top: 0; width: 100%; padding: 20px; display: flex; align-items: center; gap: 15px; background: linear-gradient(rgba(0,0,0,0.9), transparent); z-index: 10; }
-    #btnBackPlayer { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; backdrop-filter: blur(5px); }
-    #btnBackPlayer:hover { background: var(--accent); color: #000; }
-    #video { width: 100%; height: 100%; object-fit: contain; background: #000; }
+    #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; color: var(--accent); font-weight: 900; }
+    .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     @media (max-width: 900px) {
-      #sidebar { position: absolute; left: -100%; }
+      #sidebar { position: absolute; left: -100%; height: 100%; }
       #sidebar.open { left: 0; }
-      #hamb { display: block; }
-      #channelGrid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+      #btnMenu { display: block; }
+      #playerContainer { max-height: 35vh; }
+      #channelGrid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; padding: 15px; }
     }
   </style>
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><div id="lText">A sintonizar canais...</div></div>
+<div id="loader"><div class="spinner"></div><div>Sintonizando Servidor...</div></div>
 
 <div id="app">
     <aside id="sidebar">
-        <div class="brand"><span>●</span> TV AO VIVO</div>
-        <div class="nav-back" onclick="goBackToHub()"><i class="fa-solid fa-house"></i> Voltar ao Hub</div>
-        <div id="categoryList"></div>
+        <div class="brand"><i class="fa-solid fa-arrow-left" onclick="window.location.href='index.html'"></i> TV AO VIVO</div>
+        <div id="catList"></div>
     </aside>
 
     <main id="main">
         <div id="topbar">
-            <button id="hamb" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
-            <div id="viewTitle">Todos os Canais</div>
-            <input type="text" id="search" placeholder="Procurar canal..." autocomplete="off">
+            <button id="btnMenu" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fa-solid fa-bars"></i></button>
+            <div id="catTitle">Todas as Categorias</div>
+            <input type="text" id="search" placeholder="Buscar canal..." autocomplete="off">
         </div>
+        
+        <div id="playerContainer">
+            <button id="closePlayer" onclick="stopPlayer()"><i class="fa-solid fa-xmark"></i> Fechar</button>
+            <video id="video" controls autoplay playsinline></video>
+        </div>
+
         <div id="channelGrid"></div>
     </main>
 </div>
 
-<div id="playerRoot">
-    <div id="pControls">
-        <button id="btnBackPlayer" onclick="closePlayer()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
-        <div id="pTitle" style="font-weight: 900; text-shadow: 0 2px 4px black; font-size: 1.2rem;"></div>
-    </div>
-    <video id="video" controls autoplay playsinline></video>
-</div>
-
 <script>
-    // 1. CAPTURAR OS DADOS ENVIADOS PELO HUB
-    const urlParams = new URLSearchParams(window.location.search);
-    const u = urlParams.get('u');
-    const p = urlParams.get('p');
-
-    // Se alguém tentar aceder direto sem login, volta para o início
-    if(!u || !p) { window.location.href = 'index.html'; }
+    const u = new URLSearchParams(window.location.search).get('u');
+    const p = new URLSearchParams(window.location.search).get('p');
+    if(!u || !p) window.location.href = 'index.html';
 
     const API = 'https://api.consysencia.com/catalog';
     const PROXY_BASE = 'https://api.consysencia.com/proxy';
+    const h = { 'Authorization': 'Basic ' + btoa(u + ':' + p) };
 
     let categories = [];
     let channels = [];
-    let activeCategory = '';
-    let mpegPlayer = null;
-    let hlsPlayer = null;
+    let activeCat = '';
+    let hls = null;
 
-    // 2. BUSCAR APENAS A TV AO VIVO
-    async function bootTV() {
-        const h = { 'Authorization': 'Basic ' + btoa(u + ':' + p) };
+    async function bootLive() {
         try {
-            const [catRes, streamRes] = await Promise.all([
+            const [cRes, sRes] = await Promise.all([
                 fetch(`${API}?action=get_live_categories`, {headers:h}).then(r=>r.json()),
                 fetch(`${API}?action=get_live_streams`, {headers:h}).then(r=>r.json())
             ]);
-            
-            categories = catRes || [];
-            channels = streamRes || [];
+            categories = cRes || [];
+            channels = sRes || [];
             
             renderCategories();
             renderChannels();
-            
             document.getElementById('loader').style.display = 'none';
         } catch(e) {
-            alert("Erro ao ligar ao servidor de TV.");
-            goBackToHub();
+            alert("Falha ao carregar canais.");
+            window.location.href = 'index.html';
         }
     }
 
-    // 3. RENDERIZAR INTERFACE
     function renderCategories() {
-        const list = document.getElementById('categoryList');
-        let html = `<div class="cat-item active" onclick="selectCategory('', this, 'Todos os Canais')">Todos os Canais</div>`;
-        
+        const list = document.getElementById('catList');
+        let html = `<div class="cat-item active" onclick="selectCategory('', 'Todos os Canais')">Todos os Canais</div>`;
         categories.forEach(c => {
-            html += `<div class="cat-item" onclick="selectCategory('${c.category_id}', this, '${c.category_name}')">${c.category_name}</div>`;
+            html += `<div class="cat-item" onclick="selectCategory('${c.category_id}', '${c.category_name}')">${c.category_name}</div>`;
         });
         list.innerHTML = html;
     }
 
-    function selectCategory(id, element, name) {
-        document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('active'));
-        element.classList.add('active');
-        activeCategory = id;
-        document.getElementById('viewTitle').innerText = name;
-        toggleSidebar(false); // Fecha no telemóvel
+    function selectCategory(id, name) {
+        activeCat = id;
+        document.getElementById('catTitle').innerText = name;
+        document.getElementById('sidebar').classList.remove('open');
         document.getElementById('search').value = '';
+        
+        // Atualiza a cor visual do menu
+        const items = document.querySelectorAll('.cat-item');
+        items.forEach(el => {
+            if(el.innerText === name) el.classList.add('active');
+            else el.classList.remove('active');
+        });
+        
         renderChannels();
     }
 
     function renderChannels() {
         const grid = document.getElementById('channelGrid');
-        const query = document.getElementById('search').value.toLowerCase();
+        const q = document.getElementById('search').value.toLowerCase();
         
         let filtered = channels;
-        if (activeCategory) {
-            filtered = filtered.filter(ch => ch.category_id == activeCategory);
-        }
-        if (query) {
-            filtered = filtered.filter(ch => ch.name.toLowerCase().includes(query));
-        }
+        if(activeCat) filtered = filtered.filter(c => c.category_id == activeCat);
+        if(q) filtered = filtered.filter(c => c.name.toLowerCase().includes(q));
 
-        // Renderiza apenas os primeiros 200 para não bloquear a memória do telemóvel
-        grid.innerHTML = filtered.slice(0, 200).map(ch => `
-            <div class="channel-card" onclick="playChannel('${ch.stream_id}', '${ch.name.replace(/'/g, "\\'")}')">
-                <img src="${ch.stream_icon}" loading="lazy" onerror="this.style.display='none'">
-                <div class="name">${ch.name}</div>
-            </div>
-        `).join('');
+        // Limite de segurança de renderização
+        grid.innerHTML = filtered.slice(0, 150).map(c => {
+            const img = c.stream_icon || 'https://via.placeholder.com/60x60/111/fff?text=TV';
+            const safeName = c.name.replace(/'/g, "\\'");
+            return `
+            <div class="channel-card" onclick="playChannel('${c.stream_id}')">
+                <img src="${img}" loading="lazy" onerror="this.src='https://via.placeholder.com/60x60/111/fff?text=TV'">
+                <span>${c.name}</span>
+            </div>`;
+        }).join('');
     }
 
-    // 4. O MOTOR HÍBRIDO (MPEGTS + HLS)
-    function playChannel(id, name) {
-        document.getElementById('pTitle').innerText = name;
-        document.getElementById('app').style.display = 'none';
-        document.getElementById('playerRoot').style.display = 'flex';
+    // A SOLUÇÃO DEFINITIVA DO HLS (Sua pesquisa aplicada)
+    function playChannel(id) {
         const video = document.getElementById('video');
+        const container = document.getElementById('playerContainer');
+        const url = `${PROXY_BASE}/live/${u}/${p}/${id}.m3u8`;
 
-        destroyPlayers();
+        container.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        // Rota principal: O fluxo direto .ts (Sem Delay)
-        const tsUrl = `${PROXY_BASE}/live/${u}/${p}/${id}.ts`;
+        if (hls) { hls.destroy(); hls = null; }
 
-        // Tenta usar o mpegts.js (Perfeito para TV ao Vivo)
-        if (mpegts.getFeatureList().mseLivePlayback) {
-            mpegPlayer = mpegts.createPlayer({
-                type: 'mse',
-                isLive: true,
-                url: tsUrl
-            });
-            mpegPlayer.attachMediaElement(video);
-            mpegPlayer.load();
-            mpegPlayer.play().catch(e => console.log("MPEGTS Fallback necessário"));
-        } 
-        // Plano B: HLS padrão com interceção (Para iPhones/Safaris)
-        else if (Hls.isSupported()) {
-            const m3u8Url = `${PROXY_BASE}/live/${u}/${p}/${id}.m3u8`;
-            hlsPlayer = new Hls({
-                xhrSetup: function(xhr, url) {
-                    if (url.startsWith('http') && !url.includes('api.consysencia.com')) {
+        if (Hls.isSupported()) {
+            hls = new Hls({
+                // O Interceptador Anti-CORS! Se o canal mandar baixar .ts via HTTP, nós jogamos pro Render.
+                xhrSetup: function(xhr, fragUrl) {
+                    if (fragUrl.startsWith('http://') && !fragUrl.includes('api.consysencia.com')) {
                         try {
-                            const urlObj = new URL(url);
-                            url = PROXY_BASE + urlObj.pathname + urlObj.search;
+                            const uObj = new URL(fragUrl);
+                            fragUrl = PROXY_BASE + uObj.pathname + uObj.search;
                         } catch(e) {}
                     }
-                    xhr.open('GET', url, true);
+                    xhr.open('GET', fragUrl, true);
                 }
             });
-            hlsPlayer.loadSource(m3u8Url);
-            hlsPlayer.attachMedia(video);
-            hlsPlayer.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
-        } 
-        // Plano C: Navegadores que suportam m3u8 nativamente (Mobile Apple)
-        else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            video.src = `${PROXY_BASE}/live/${u}/${p}/${id}.m3u8`;
+            hls.loadSource(url);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
+            
+            // Tratamento de travamento: tenta reconectar automaticamente
+            hls.on(Hls.Events.ERROR, function (event, data) {
+                if (data.fatal && data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+                    console.log("Queda na rede. Reconectando...");
+                    hls.startLoad();
+                }
+            });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = url;
             video.play().catch(()=>{});
         }
     }
 
-    function destroyPlayers() {
-        if (mpegPlayer) { mpegPlayer.destroy(); mpegPlayer = null; }
-        if (hlsPlayer) { hlsPlayer.destroy(); hlsPlayer = null; }
-    }
-
-    function closePlayer() {
-        destroyPlayers();
+    function stopPlayer() {
+        if(hls) { hls.destroy(); hls = null; }
         const video = document.getElementById('video');
-        video.pause(); video.src = "";
-        
-        document.getElementById('playerRoot').style.display = 'none';
-        document.getElementById('app').style.display = 'flex';
+        video.pause(); video.src = '';
+        document.getElementById('playerContainer').style.display = 'none';
     }
 
-    // INTERAÇÕES
-    function goBackToHub() { window.location.href = 'index.html'; }
-    function toggleSidebar(force) { 
-        const sb = document.getElementById('sidebar');
-        if (force === false) sb.classList.remove('open');
-        else sb.classList.toggle('open');
-    }
-    
-    document.getElementById('search').oninput = () => { setTimeout(renderChannels, 300); };
+    document.getElementById('search').oninput = () => setTimeout(renderChannels, 300);
 
-    // INICIAR
-    bootTV();
+    bootLive();
 </script>
 </body>
 </html>
