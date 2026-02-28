@@ -1,103 +1,165 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Consysencia | Portal</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
-    :root { --bg: #070a0b; --text: #fff; --accent: #00ff88; }
-    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; }
-
-    #loginView { display: flex; min-height: 100vh; width: 100vw; align-items: center; justify-content: center; padding: 20px; background: radial-gradient(circle at center, rgba(0,255,136,0.08), var(--bg)); }
-    .login-box { background: #111; padding: 40px; border-radius: 16px; width: 100%; max-width: 400px; text-align: center; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-    .login-box h1 { font-weight: 900; margin-bottom: 10px; font-size: 2rem; }
-    .login-box h1 span { color: var(--accent); }
-    .login-box p { color: #888; margin-bottom: 30px; font-size: 0.95rem; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Consysencia | WebPlayer</title>
     
-    .input-group { margin-bottom: 20px; text-align: left; }
-    .input-group label { display: block; margin-bottom: 8px; font-weight: bold; color: rgba(255,255,255,0.7); }
-    .input-group input { width: 100%; padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); color: white; font-size: 1rem; outline: none; transition: 0.3s; }
-    .input-group input:focus { border-color: var(--accent); }
-    .btn-login { width: 100%; padding: 15px; background: var(--accent); color: black; font-weight: 900; font-size: 1.1rem; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-
-    #hubView { display: none; min-height: 100vh; padding: 40px 20px; }
-    .hub-header { text-align: center; margin-bottom: 40px; }
-    .hub-header h1 { font-size: 2.2rem; font-weight: 900; }
-    .hub-header h1 span { color: var(--accent); }
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
     
-    .hub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; max-width: 800px; margin: 0 auto; }
-    .hub-card { background: #111; border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 30px 15px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 15px; }
-    .hub-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); }
-    .hub-card i { font-size: 3rem; }
-    .hub-card span { font-weight: 800; }
-
-    .hc-live { color: var(--accent); } .hc-movie { color: #00A8E1; } .hc-series { color: #E50914; }
-  </style>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        :root {
+            --theme-color: #00ff88;
+            --bg-main: #070a0b;
+            --bg-card: #111518;
+        }
+        body {
+            background-color: var(--bg-main);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .form-control {
+            background-color: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 15px;
+        }
+        .form-control:focus {
+            background-color: rgba(255,255,255,0.1);
+            color: #fff;
+            box-shadow: 0 0 0 0.25rem rgba(0, 255, 136, 0.25);
+            border-color: var(--theme-color);
+        }
+        .btn-theme {
+            background-color: var(--theme-color);
+            color: #000;
+            font-weight: 800;
+            padding: 14px;
+            transition: 0.3s;
+        }
+        .btn-theme:hover {
+            background-color: #00cc6a;
+            color: #000;
+            transform: translateY(-2px);
+        }
+        .hub-card {
+            background-color: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            display: block;
+            text-decoration: none;
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .hub-card:hover {
+            border-color: var(--theme-color);
+            transform: translateY(-5px);
+            color: #fff;
+            background-color: rgba(255,255,255,0.05);
+        }
+        .hub-card i {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
+        .hc-live:hover i { color: var(--theme-color); }
+        .hc-movie:hover i { color: #00A8E1; }
+        .hc-series:hover i { color: #E50914; }
+    </style>
 </head>
 <body>
 
-<div id="loginView">
-    <div class="login-box">
-        <h1><span>●</span> CONSYSENCIA</h1>
-        <p>Acesso ao Sistema</p>
-        <div class="input-group">
-            <label>Usuário</label>
-            <input type="text" id="userInp" autocomplete="off">
+    <div id="loginView" class="container min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="col-12 col-md-8 col-lg-5">
+            <div class="card bg-transparent border-0">
+                <div class="card-body p-4 p-md-5" style="background-color: var(--bg-card); border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05);">
+                    <div class="text-center mb-5">
+                        <h2 class="fw-black mb-1" style="font-weight: 900; letter-spacing: 1px;"><span style="color: var(--theme-color);">●</span> CONSYSENCIA</h2>
+                        <p class="text-secondary">Acesso ao WebPlayer Premium</p>
+                    </div>
+                    <form onsubmit="event.preventDefault(); doLogin();">
+                        <div class="mb-4">
+                            <label class="form-label text-secondary fw-bold">Usuário</label>
+                            <input type="text" id="userInp" class="form-control rounded-3" placeholder="Seu usuário" autocomplete="off" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-secondary fw-bold">Senha</label>
+                            <input type="password" id="passInp" class="form-control rounded-3" placeholder="Sua senha" required>
+                        </div>
+                        <div class="d-grid mt-5">
+                            <button type="submit" class="btn btn-theme rounded-3 fs-5">Entrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="input-group">
-            <label>Senha</label>
-            <input type="password" id="passInp">
-        </div>
-        <button class="btn-login" onclick="doLogin()">Entrar</button>
     </div>
-</div>
 
-<div id="hubView">
-    <div class="hub-header">
-        <h1><span>●</span> CONSYSENCIA</h1>
-        <p style="color:#aaa; margin-top:5px;">O que você quer assistir?</p>
+    <div id="hubView" class="container min-vh-100 py-5" style="display: none;">
+        <div class="text-center mb-5 mt-4">
+            <h2 class="fw-black" style="font-weight: 900;"><span style="color: var(--theme-color);">●</span> CONSYSENCIA</h2>
+            <p class="text-secondary fs-5">O que você deseja assistir?</p>
+        </div>
+        
+        <div class="row g-4 justify-content-center mx-auto" style="max-width: 900px;">
+            <div class="col-6 col-md-4">
+                <a href="#" onclick="goTo('canais.html')" class="hub-card hc-live">
+                    <i class="fa-solid fa-tv"></i>
+                    <h5 class="fw-bold mb-0">TV ao Vivo</h5>
+                </a>
+            </div>
+            <div class="col-6 col-md-4">
+                <a href="#" onclick="goTo('filmes.html')" class="hub-card hc-movie">
+                    <i class="fa-solid fa-film"></i>
+                    <h5 class="fw-bold mb-0">Filmes</h5>
+                </a>
+            </div>
+            <div class="col-6 col-md-4">
+                <a href="#" onclick="goTo('series.html')" class="hub-card hc-series">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <h5 class="fw-bold mb-0">Séries</h5>
+                </a>
+            </div>
+        </div>
+        
+        <div class="text-center mt-5 pt-4">
+            <button onclick="doLogout()" class="btn btn-outline-danger px-4 py-2 rounded-3 fw-bold"><i class="fa-solid fa-power-off me-2"></i>Sair da Conta</button>
+        </div>
     </div>
-    <div class="hub-grid">
-        <div class="hub-card hc-live" onclick="goTo('canais.html')">
-            <i class="fa-solid fa-tv"></i><span>TV ao Vivo</span>
-        </div>
-        <div class="hub-card hc-movie" onclick="goTo('filmes.html')">
-            <i class="fa-solid fa-film"></i><span>Filmes</span>
-        </div>
-        <div class="hub-card hc-series" onclick="goTo('series.html')">
-            <i class="fa-solid fa-layer-group"></i><span>Séries</span>
-        </div>
-        </div>
-    <div style="text-align:center; margin-top:40px;">
-        <button onclick="localStorage.clear(); location.reload();" style="background:transparent; color:#ff4444; border:1px solid #ff4444; padding:10px 20px; border-radius:8px; font-weight:bold;">Sair da Conta</button>
-    </div>
-</div>
 
-<script>
-    let u = localStorage.getItem('cs_user');
-    let p = localStorage.getItem('cs_pass');
+    <script>
+        let u = localStorage.getItem('cs_user');
+        let p = localStorage.getItem('cs_pass');
 
-    if (u && p) {
-        document.getElementById('loginView').style.display = 'none';
-        document.getElementById('hubView').style.display = 'block';
-    }
+        if (u && p) {
+            document.getElementById('loginView').style.display = 'none';
+            document.getElementById('hubView').style.display = 'block';
+        }
 
-    function doLogin() {
-        u = document.getElementById('userInp').value.trim();
-        p = document.getElementById('passInp').value.trim();
-        if(!u || !p) return alert("Preencha tudo.");
-        localStorage.setItem('cs_user', u);
-        localStorage.setItem('cs_pass', p);
-        document.getElementById('loginView').style.display = 'none';
-        document.getElementById('hubView').style.display = 'block';
-    }
+        function doLogin() {
+            u = document.getElementById('userInp').value.trim();
+            p = document.getElementById('passInp').value.trim();
+            localStorage.setItem('cs_user', u);
+            localStorage.setItem('cs_pass', p);
+            document.getElementById('loginView').style.display = 'none';
+            document.getElementById('hubView').style.display = 'block';
+        }
 
-    function goTo(page) {
-        window.location.href = `${page}?u=${encodeURIComponent(u)}&p=${encodeURIComponent(p)}`;
-    }
-</script>
+        function doLogout() {
+            localStorage.clear();
+            window.location.reload();
+        }
+
+        function goTo(page) {
+            window.location.href = page + '?u=' + encodeURIComponent(u) + '&p=' + encodeURIComponent(p);
+        }
+    </script>
 </body>
 </html>
