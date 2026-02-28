@@ -1,0 +1,21 @@
+{
+  "name": "Play Consysencia Ultra",
+  "short_name": "Consysencia",
+  "description": "O Multiverso do Streaming",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#070a0b",
+  "theme_color": "#00ff88",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/google/material-design-icons/master/png/av/play_circle_filled/materialicons/192dp/2x/baseline_play_circle_filled_white_192dp.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://raw.githubusercontent.com/google/material-design-icons/master/png/av/play_circle_filled/materialicons/192dp/2x/baseline_play_circle_filled_white_192dp.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
