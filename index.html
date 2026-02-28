@@ -1,394 +1,148 @@
-<!doctype html>
-<html lang="pt-br">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Consysencia - Streaming Premium</title>
-  <meta name="theme-color" content="#05070b" />
+<script>
+  const SUPABASE_URL = 'https://zlvxbgxdrmllzmbmhitm.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpsdnhiZ3hkcm1sbHptYm1oaXRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyOTgzMzQsImV4cCI6MjA4Nzg3NDMzNH0.N-zyV1YlxUba7E7mWK5xqmYeCr-KeBj9yiuiOOw62xs';
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  const clienteSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  <style>
-    :root{
-      --bg0:#05070b;
-      --bg1:#070a10;
-      --txt:#e7f0ff;
-      --muted: rgba(231,240,255,.72);
-      --muted2: rgba(231,240,255,.55);
-      --neon:#00ff88;
-      --danger:#ff3b6b;
-      --warning:#ffcc00;
-      --shadow: 0 18px 60px rgba(0,0,0,.55);
-      --radius: 18px;
-      --radius2: 26px;
-      --max: 1120px;
+  function setErro(msg){
+    const errorMsg = document.getElementById('error-msg');
+    if (!errorMsg) return;
+    errorMsg.innerText = msg;
+    errorMsg.style.display = 'block';
+  }
+
+  function setBtnLoading(isLoading){
+    const btn = document.getElementById('btn-login');
+    if (!btn) return;
+    if (isLoading){
+      btn.innerHTML = "Aguarde...";
+      btn.disabled = true;
+    } else {
+      btn.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google" width="20" style="margin-right: 6px;"> Entrar com Google`;
+      btn.disabled = false;
     }
+  }
 
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-    body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif;
-      color: var(--txt);
-      background: radial-gradient(1200px 800px at 20% 0%, rgba(0,255,136,.10), transparent 60%),
-                  radial-gradient(900px 600px at 90% 30%, rgba(0,255,136,.08), transparent 55%),
-                  linear-gradient(180deg, var(--bg0), var(--bg1));
-      overflow-x:hidden;
+  async function checarSessao() {
+    try {
+      // garante que o SDK teve chance de processar callback/fragment
+      const { data: { session }, error } = await clienteSupabase.auth.getSession();
+      if (error) throw error;
+
+      if (session?.user) {
+        mostrarPlayer(session.user);
+        buscarAlertas(session.user.id);
+      }
+    } catch (err) {
+      console.error("Erro na sessão:", err);
     }
+  }
 
-    /* Efeitos de Fundo */
-    #particles{ position: fixed; inset: 0; z-index: 0; pointer-events:none; opacity: .9; }
-    .grid-overlay{
-      position:fixed; inset:-2px; z-index:0; pointer-events:none;
-      background: linear-gradient(to right, rgba(255,255,255,.04) 1px, transparent 1px),
-                  linear-gradient(to bottom, rgba(255,255,255,.04) 1px, transparent 1px);
-      background-size: 44px 44px;
-      mask-image: radial-gradient(55% 45% at 50% 18%, rgba(0,0,0,1), transparent 72%);
-      opacity:.25;
-    }
-    .vignette{
-      position:fixed; inset:0; z-index:0; pointer-events:none;
-      background: radial-gradient(1200px 800px at 50% 25%, transparent 35%, rgba(0,0,0,.55) 100%);
-      opacity:.8;
-    }
+  async function loginComGoogle() {
+    const errorMsg = document.getElementById('error-msg');
+    if (errorMsg) errorMsg.style.display = 'none';
+    setBtnLoading(true);
 
-    /* Layout Base */
-    .wrap{ position:relative; z-index:1; min-height: 100vh; display: flex; flex-direction: column; }
-    .container{ width:min(var(--max), calc(100% - 32px)); margin:0 auto; }
+    try {
+      const redirectTo = window.location.href.split('#')[0]; // mais robusto
 
-    /* Topbar */
-    .topbar{
-      position:sticky; top:0; z-index:5;
-      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-      background: rgba(5,7,11,.55); border-bottom: 1px solid rgba(255,255,255,.06);
-    }
-    .topbar__inner{ display:flex; align-items:center; justify-content:space-between; padding: 14px 0; gap: 14px; }
-    .brand{ display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--txt); }
-    .logo{
-      width:40px;height:40px; border-radius: 14px;
-      background: radial-gradient(12px 12px at 30% 30%, rgba(0,255,136,.90), transparent 70%),
-                  radial-gradient(16px 16px at 70% 65%, rgba(0,255,136,.55), transparent 70%),
-                  linear-gradient(180deg, rgba(0,255,136,.20), rgba(0,0,0,0));
-      border: 1px solid rgba(0,255,136,.22);
-      box-shadow: 0 0 0 6px rgba(0,255,136,.07), 0 0 26px rgba(0,255,136,.18);
-    }
-    .brand__text{ display:flex; flex-direction:column; line-height:1.05; }
-    .brand__name{ font-weight:800; letter-spacing: .6px; }
-    .brand__tag{ font-size:12px; color:var(--muted2); }
-
-    .nav{ display:flex; align-items:center; gap: 10px; flex-wrap:wrap; justify-content:flex-end; }
-    .chip{
-      display:inline-flex; align-items:center; gap:8px; padding: 10px 12px;
-      border-radius: 999px; border: 1px solid rgba(255,255,255,.08);
-      background: rgba(12,18,26,.35); color: var(--muted);
-      text-decoration:none; font-size: 13px; transition: .18s ease; cursor: pointer;
-    }
-    .chip:hover{
-      transform: translateY(-1px); border-color: rgba(0,255,136,.22);
-      box-shadow: 0 0 0 5px rgba(0,255,136,.06); color: var(--txt);
-    }
-
-    /* Hero / Login */
-    .hero{ padding: 48px 0 22px; flex: 1; display: flex; align-items: center;}
-    .hero__grid{ display:grid; grid-template-columns: 1fr; gap: 18px; align-items:center; max-width: 800px; margin: 0 auto; width: 100%;}
-
-    .card{
-      border-radius: var(--radius2);
-      background: linear-gradient(180deg, rgba(12,18,26,.72), rgba(12,18,26,.48));
-      border: 1px solid rgba(255,255,255,.08); box-shadow: var(--shadow);
-      position:relative; overflow:hidden;
-    }
-    .card::before{
-      content:""; position:absolute; inset:-2px;
-      background: radial-gradient(600px 260px at 20% 0%, rgba(0,255,136,.18), transparent 55%),
-                  radial-gradient(500px 240px at 90% 45%, rgba(0,255,136,.10), transparent 60%);
-      opacity: .9; pointer-events:none;
-    }
-    .card::after{
-      content:""; position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), transparent 38%);
-      opacity:.7; pointer-events:none;
-    }
-    .card__body{ position:relative; padding: 40px; text-align: center; }
-    
-    .kicker{
-      display:inline-flex; align-items:center; gap:10px; padding: 8px 12px;
-      border-radius: 999px; border: 1px solid rgba(0,255,136,.26);
-      background: rgba(0,255,136,.08); color: rgba(231,240,255,.85);
-      font-size: 13px; letter-spacing: .2px; margin-bottom: 10px;
-    }
-    .dot{ width:8px;height:8px;border-radius:999px;background: var(--neon); box-shadow: 0 0 16px rgba(0,255,136,.55); }
-    .h1{ margin: 10px 0 14px; font-size: clamp(28px, 4.2vw, 44px); line-height: 1.05; letter-spacing: -0.8px; font-weight: 900; }
-    .p{ margin: 0 auto 24px; color: var(--muted); font-size: 16px; line-height: 1.6; max-width: 58ch; }
-
-    .cta{ display:flex; gap: 10px; justify-content: center; flex-wrap:wrap; align-items:center; }
-    .btn{
-      appearance:none; border:0; cursor:pointer; padding: 12px 24px; border-radius: 14px;
-      font-weight: 800; letter-spacing:.2px; transition: .18s ease; text-decoration:none;
-      display:inline-flex; align-items:center; justify-content:center; gap:10px;
-      user-select:none; -webkit-tap-highlight-color: transparent; min-height: 46px;
-    }
-    .btn--primary{
-      color: #02130b; background: linear-gradient(180deg, rgba(0,255,136,1), rgba(0,200,107,1));
-      box-shadow: 0 10px 30px rgba(0,255,136,.18);
-    }
-    .btn--primary:hover{ transform: translateY(-1px); box-shadow: 0 14px 44px rgba(0,255,136,.22); }
-    .btn--google{ color: var(--bg0); background: #ffffff; box-shadow: 0 10px 30px rgba(255,255,255,.10); font-size: 15px;}
-    .btn--google:hover{ transform: translateY(-1px); background: #f1f1f1; }
-
-    /* Area do Player e Alertas */
-    .section{ padding: 18px 0 44px; display: none; flex: 1; align-items: center; justify-content: center;}
-    .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap: 16px; margin-bottom: 24px; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;}
-    .col-12{ grid-column: span 12; }
-
-    .tile{
-      position:relative; border-radius: var(--radius); background: rgba(12,18,26,.44);
-      border: 1px solid rgba(255,255,255,.08); overflow:hidden;
-    }
-    .tile.alert-sucesso { border-color: rgba(0,255,136,.4); background: rgba(0,255,136,.05); }
-    .tile.alert-vencimento { border-color: rgba(255,204,0,.4); background: rgba(255,204,0,.05); }
-    .tile.alert-bloqueio { border-color: rgba(255,59,107,.4); background: rgba(255,59,107,.05); }
-    
-    .tile__body{ position:relative; padding: 18px 24px; display:flex; flex-direction:column; gap:8px; text-align: left; }
-    .tile__title{ font-weight: 900; letter-spacing: -.3px; display: flex; align-items: center; justify-content: space-between;}
-    .tile__text{ margin:0; color: var(--muted); font-size: 14px; line-height: 1.55; }
-    .close-btn { cursor: pointer; color: var(--muted2); font-weight: bold; padding: 4px 8px; }
-    .close-btn:hover { color: var(--txt); }
-
-    /* Footer */
-    .footer{
-      padding: 28px 0; border-top: 1px solid rgba(255,255,255,.06);
-      background: rgba(5,7,11,.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    }
-    .footer__inner{ text-align: center; color: var(--muted2); font-size: 13px; }
-    .neonline{ height:1px; width:100%; background: linear-gradient(90deg, transparent, rgba(0,255,136,.45), transparent); opacity:.55; margin-top:10px; }
-
-    /* Mensagem de Erro */
-    #error-msg { color: var(--danger); font-size: 13px; margin-top: 15px; display: none; font-weight: 600; }
-  </style>
-</head>
-
-<body>
-  <div id="particles" aria-hidden="true"></div>
-  <div class="grid-overlay" aria-hidden="true"></div>
-  <div class="vignette" aria-hidden="true"></div>
-
-  <div class="wrap">
-    
-    <header class="topbar">
-      <div class="container">
-        <div class="topbar__inner">
-          <a class="brand" href="#">
-            <span class="logo" aria-hidden="true"></span>
-            <span class="brand__text">
-              <span class="brand__name">Consysencia</span>
-              <span class="brand__tag">Streaming Premium</span>
-            </span>
-          </a>
-
-          <nav class="nav" id="nav-login">
-            <a class="chip" onclick="loginComGoogle()">Entrar</a>
-          </nav>
-          
-          <nav class="nav" id="nav-user" style="display:none;">
-            <span class="chip" id="user-name"></span>
-            <a class="chip" onclick="logout()" style="border-color: var(--danger); color: var(--danger);">Sair</a>
-          </nav>
-        </div>
-      </div>
-    </header>
-
-    <main class="hero" id="login-section">
-      <div class="container">
-        <div class="hero__grid">
-          <section class="card">
-            <div class="card__body">
-              <span class="kicker"><span class="dot"></span> Liberado 4 Horas com Adultos</span>
-              <h1 class="h1">Seu Cinema Particular.</h1>
-              <p class="p">
-                Acesse agora para gerar seu teste automático. Interface premium, sem travamentos e com qualidade 4K.
-              </p>
-              <div class="cta">
-                <button onclick="loginComGoogle()" class="btn btn--google" id="btn-login">
-                  <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google" width="20" style="margin-right: 6px;">
-                  Entrar com Google
-                </button>
-              </div>
-              <div id="error-msg"></div>
-            </div>
-          </section>
-        </div>
-      </div>
-    </main>
-
-    <section id="player-section" class="section">
-      <div class="container" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-        
-        <div id="alert-container" class="grid" style="display: none;"></div>
-
-        <div class="card" style="width: 100%; max-width: 800px;">
-          <div class="card__body" style="text-align: left;">
-            <span class="kicker"><span class="dot"></span> Conectado</span>
-            <h2 class="h1" style="margin-top: 10px;">Catálogo Consysencia</h2>
-            <p class="p" style="margin-left: 0; max-width: 100%;">
-              Suas credenciais IPTV estão sendo sincronizadas pelo nosso sistema. O player será carregado abaixo.
-            </p>
-            
-            <div style="width: 100%; height: 400px; background: rgba(0,0,0,0.5); border-radius: 14px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.05);">
-                <span style="color: var(--muted2)">[ Player HLS entrará aqui ]</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <footer class="footer">
-      <div class="container">
-        <div class="footer__inner">
-          <strong style="color:rgba(231,240,255,.92)">Consysencia</strong> • Todos os direitos reservados
-          <div class="neonline" aria-hidden="true"></div>
-        </div>
-      </div>
-    </footer>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-  <script>
-    (function () {
-      const el = document.getElementById('particles');
-      if (!el || typeof window.particlesJS !== 'function') return;
-      window.particlesJS('particles', {
-        particles: {
-          number: { value: 58, density: { enable: true, value_area: 900 } },
-          color: { value: '#00ff88' },
-          shape: { type: 'circle' },
-          opacity: { value: 0.22, random: true },
-          size: { value: 2.2, random: true },
-          line_linked: { enable: true, distance: 140, color: '#00ff88', opacity: 0.10, width: 1 },
-          move: { enable: true, speed: 1.1, direction: 'none', random: true, straight: false, out_mode: 'out' }
-        },
-        interactivity: {
-          detect_on: 'canvas',
-          events: { onhover: { enable: true, mode: 'grab' }, onclick: { enable: true, mode: 'push' }, resize: true },
-          modes: { grab: { distance: 170, line_linked: { opacity: 0.16 } }, push: { particles_nb: 2 } }
-        },
-        retina_detect: true
+      const { error } = await clienteSupabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo }
       });
-    })();
-  </script>
 
-  <script>
-    const SUPABASE_URL = 'https://zlvxbgxdrmllzmbmhitm.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpsdnhiZ3hkcm1sbHptYm1oaXRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyOTgzMzQsImV4cCI6MjA4Nzg3NDMzNH0.N-zyV1YlxUba7E7mWK5xqmYeCr-KeBj9yiuiOOw62xs';
+      if (error) throw error;
+      // daqui pra frente o browser vai redirecionar
+    } catch (err) {
+      console.error("Falha no login:", err);
+      setErro("Erro no Google: " + (err?.message || "desconhecido"));
+      setBtnLoading(false);
+    }
+  }
 
-    // CORREÇÃO: O nome da variável agora é 'clienteSupabase' para evitar conflito com a SDK global
-    const clienteSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  async function logout() {
+    await clienteSupabase.auth.signOut();
+    window.location.reload();
+  }
 
-    async function checarSessao() {
-        try {
-            const { data: { session }, error } = await clienteSupabase.auth.getSession();
-            if (error) throw error;
-            
-            if (session) {
-                mostrarPlayer(session.user);
-                buscarAlertas(session.user.id);
-            }
-        } catch (err) {
-            console.error("Erro na sessão:", err);
+  function mostrarPlayer(user) {
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('nav-login').style.display = 'none';
+
+    document.getElementById('player-section').style.display = 'flex';
+    document.getElementById('nav-user').style.display = 'flex';
+
+    const nome = user?.user_metadata?.full_name || 'Cliente';
+    document.getElementById('user-name').innerText = "Olá, " + nome.split(' ')[0];
+  }
+
+  async function buscarAlertas(userId) {
+    try {
+      const { data, error } = await clienteSupabase
+        .from('alertas_player')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('exibida', false);
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        const container = document.getElementById('alert-container');
+        container.style.display = 'grid';
+
+        // performance: render 1 vez
+        let html = '';
+        for (const alerta of data) {
+          const classTema =
+            alerta.tipo === 'sucesso' ? 'alert-sucesso' :
+            (alerta.tipo === 'vencimento' ? 'alert-vencimento' : 'alert-bloqueio');
+
+          const acaoHTML = alerta.link_acao
+            ? `<a href="${alerta.link_acao}" target="_blank" class="btn btn--primary" style="margin-top:10px; padding: 8px 16px; min-height:36px; max-width: max-content;">Renovar Agora</a>`
+            : '';
+
+          html += `
+            <article class="tile col-12 ${classTema}" id="alerta-${alerta.id}">
+              <div class="tile__body">
+                <div class="tile__title">
+                  <span>${alerta.titulo}</span>
+                  <span class="close-btn" onclick="marcarAlertaLido('${alerta.id}')">✕</span>
+                </div>
+                <p class="tile__text">${alerta.mensagem}</p>
+                ${acaoHTML}
+              </div>
+            </article>
+          `;
         }
+        container.innerHTML = html;
+      }
+    } catch (err) {
+      console.error("Erro ao buscar alertas:", err);
     }
+  }
 
-    async function loginComGoogle() {
-        const btn = document.getElementById('btn-login');
-        const errorMsg = document.getElementById('error-msg');
-        
-        btn.innerHTML = "Aguarde...";
-        btn.disabled = true;
-        errorMsg.style.display = 'none';
+  async function marcarAlertaLido(alertaId) {
+    const el = document.getElementById(`alerta-${alertaId}`);
+    if (el) el.style.display = 'none';
 
-        try {
-            const { data, error } = await clienteSupabase.auth.signInWithOAuth({ 
-                provider: 'google',
-                options: {
-                    redirectTo: window.location.origin + window.location.pathname
-                }
-            });
-            
-            if (error) {
-                throw error;
-            }
-        } catch (err) {
-            console.error("Falha no login:", err);
-            errorMsg.innerText = "Erro no Google: " + err.message;
-            errorMsg.style.display = 'block';
-            btn.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google" width="20" style="margin-right: 6px;"> Entrar com Google`;
-            btn.disabled = false;
-        }
+    const { error } = await clienteSupabase
+      .from('alertas_player')
+      .update({ exibida: true })
+      .eq('id', alertaId);
+
+    if (error) console.error("Erro ao marcar alerta:", error);
+  }
+
+  // reatividade: se o usuário logar/deslogar, atualiza UI sem depender só do load
+  clienteSupabase.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' && session?.user) {
+      mostrarPlayer(session.user);
+      buscarAlertas(session.user.id);
     }
-
-    async function logout() {
-        await clienteSupabase.auth.signOut();
-        window.location.reload();
+    if (event === 'SIGNED_OUT') {
+      window.location.reload();
     }
+  });
 
-    function mostrarPlayer(user) {
-        document.getElementById('login-section').style.display = 'none';
-        document.getElementById('nav-login').style.display = 'none';
-        
-        document.getElementById('player-section').style.display = 'flex';
-        document.getElementById('nav-user').style.display = 'flex';
-        
-        let nome = user.user_metadata.full_name || 'Cliente';
-        document.getElementById('user-name').innerText = "Olá, " + nome.split(' ')[0];
-    }
-
-    async function buscarAlertas(userId) {
-        try {
-            const { data, error } = await clienteSupabase
-                .from('alertas_player')
-                .select('*')
-                .eq('user_id', userId)
-                .eq('exibida', false);
-
-            if (data && data.length > 0) {
-                const container = document.getElementById('alert-container');
-                container.style.display = 'grid'; 
-                
-                data.forEach(alerta => {
-                    let classTema = alerta.tipo === 'sucesso' ? 'alert-sucesso' : (alerta.tipo === 'vencimento' ? 'alert-vencimento' : 'alert-bloqueio');
-                    let acaoHTML = alerta.link_acao ? `<a href="${alerta.link_acao}" target="_blank" class="btn btn--primary" style="margin-top:10px; padding: 8px 16px; min-height:36px; max-width: max-content;">Renovar Agora</a>` : '';
-                    
-                    container.innerHTML += `
-                        <article class="tile col-12 ${classTema}" id="alerta-${alerta.id}">
-                            <div class="tile__body">
-                                <div class="tile__title">
-                                    <span>${alerta.titulo}</span>
-                                    <span class="close-btn" onclick="marcarAlertaLido('${alerta.id}')">✕</span>
-                                </div>
-                                <p class="tile__text">${alerta.mensagem}</p>
-                                ${acaoHTML}
-                            </div>
-                        </article>
-                    `;
-                });
-            }
-        } catch (err) {
-            console.error("Erro ao buscar alertas:", err);
-        }
-    }
-
-    async function marcarAlertaLido(alertaId) {
-        document.getElementById(`alerta-${alertaId}`).style.display = 'none';
-        await clienteSupabase.from('alertas_player').update({ exibida: true }).eq('id', alertaId);
-    }
-
-    // Inicia a verificação de login assim que a página carrega
-    document.addEventListener("DOMContentLoaded", checarSessao);
-  </script>
-</body>
-</html>
+  document.addEventListener("DOMContentLoaded", checarSessao);
+</script>
