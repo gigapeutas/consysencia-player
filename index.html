@@ -93,8 +93,8 @@
     }
 
     /* Hero / Login */
-    .hero{ padding: 48px 0 22px; flex: 1; }
-    .hero__grid{ display:grid; grid-template-columns: 1fr; gap: 18px; align-items:center; max-width: 800px; margin: 0 auto; }
+    .hero{ padding: 48px 0 22px; flex: 1; display: flex; align-items: center;}
+    .hero__grid{ display:grid; grid-template-columns: 1fr; gap: 18px; align-items:center; max-width: 800px; margin: 0 auto; width: 100%;}
 
     .card{
       border-radius: var(--radius2);
@@ -119,10 +119,10 @@
       display:inline-flex; align-items:center; gap:10px; padding: 8px 12px;
       border-radius: 999px; border: 1px solid rgba(0,255,136,.26);
       background: rgba(0,255,136,.08); color: rgba(231,240,255,.85);
-      font-size: 13px; letter-spacing: .2px;
+      font-size: 13px; letter-spacing: .2px; margin-bottom: 10px;
     }
     .dot{ width:8px;height:8px;border-radius:999px;background: var(--neon); box-shadow: 0 0 16px rgba(0,255,136,.55); }
-    .h1{ margin: 20px 0 14px; font-size: clamp(28px, 4.2vw, 44px); line-height: 1.05; letter-spacing: -0.8px; font-weight: 900; }
+    .h1{ margin: 10px 0 14px; font-size: clamp(28px, 4.2vw, 44px); line-height: 1.05; letter-spacing: -0.8px; font-weight: 900; }
     .p{ margin: 0 auto 24px; color: var(--muted); font-size: 16px; line-height: 1.6; max-width: 58ch; }
 
     .cta{ display:flex; gap: 10px; justify-content: center; flex-wrap:wrap; align-items:center; }
@@ -137,12 +137,12 @@
       box-shadow: 0 10px 30px rgba(0,255,136,.18);
     }
     .btn--primary:hover{ transform: translateY(-1px); box-shadow: 0 14px 44px rgba(0,255,136,.22); }
-    .btn--google{ color: var(--bg0); background: #ffffff; box-shadow: 0 10px 30px rgba(255,255,255,.10); }
+    .btn--google{ color: var(--bg0); background: #ffffff; box-shadow: 0 10px 30px rgba(255,255,255,.10); font-size: 15px;}
     .btn--google:hover{ transform: translateY(-1px); background: #f1f1f1; }
 
     /* Area do Player e Alertas */
-    .section{ padding: 18px 0 44px; display: none; flex: 1; }
-    .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap: 16px; margin-bottom: 24px;}
+    .section{ padding: 18px 0 44px; display: none; flex: 1; align-items: center; justify-content: center;}
+    .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap: 16px; margin-bottom: 24px; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;}
     .col-12{ grid-column: span 12; }
 
     .tile{
@@ -153,7 +153,7 @@
     .tile.alert-vencimento { border-color: rgba(255,204,0,.4); background: rgba(255,204,0,.05); }
     .tile.alert-bloqueio { border-color: rgba(255,59,107,.4); background: rgba(255,59,107,.05); }
     
-    .tile__body{ position:relative; padding: 18px 24px; display:flex; flex-direction:column; gap:8px; }
+    .tile__body{ position:relative; padding: 18px 24px; display:flex; flex-direction:column; gap:8px; text-align: left; }
     .tile__title{ font-weight: 900; letter-spacing: -.3px; display: flex; align-items: center; justify-content: space-between;}
     .tile__text{ margin:0; color: var(--muted); font-size: 14px; line-height: 1.55; }
     .close-btn { cursor: pointer; color: var(--muted2); font-weight: bold; padding: 4px 8px; }
@@ -166,6 +166,9 @@
     }
     .footer__inner{ text-align: center; color: var(--muted2); font-size: 13px; }
     .neonline{ height:1px; width:100%; background: linear-gradient(90deg, transparent, rgba(0,255,136,.45), transparent); opacity:.55; margin-top:10px; }
+
+    /* Mensagem de Erro */
+    #error-msg { color: var(--danger); font-size: 13px; margin-top: 15px; display: none; font-weight: 600; }
   </style>
 </head>
 
@@ -210,11 +213,12 @@
                 Acesse agora para gerar seu teste automático. Interface premium, sem travamentos e com qualidade 4K.
               </p>
               <div class="cta">
-                <button onclick="loginComGoogle()" class="btn btn--google">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" width="20">
+                <button onclick="loginComGoogle()" class="btn btn--google" id="btn-login">
+                  <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google" width="20" style="margin-right: 6px;">
                   Entrar com Google
                 </button>
               </div>
+              <div id="error-msg"></div>
             </div>
           </section>
         </div>
@@ -222,11 +226,11 @@
     </main>
 
     <section id="player-section" class="section">
-      <div class="container">
+      <div class="container" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
         
         <div id="alert-container" class="grid" style="display: none;"></div>
 
-        <div class="card">
+        <div class="card" style="width: 100%; max-width: 800px;">
           <div class="card__body" style="text-align: left;">
             <span class="kicker"><span class="dot"></span> Conectado</span>
             <h2 class="h1" style="margin-top: 10px;">Catálogo Consysencia</h2>
@@ -255,6 +259,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <script>
+    // Configuração das partículas mantida
     (function () {
       const el = document.getElementById('particles');
       if (!el || typeof window.particlesJS !== 'function') return;
@@ -285,19 +290,46 @@
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     async function checarSessao() {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-            mostrarPlayer(session.user);
-            buscarAlertas(session.user.id);
+        try {
+            const { data: { session }, error } = await supabase.auth.getSession();
+            if (error) throw error;
+            
+            if (session) {
+                mostrarPlayer(session.user);
+                buscarAlertas(session.user.id);
+            }
+        } catch (err) {
+            console.error("Erro na sessão:", err);
         }
     }
 
     async function loginComGoogle() {
-        const { data, error } = await supabase.auth.signInWithOAuth({ 
-            provider: 'google',
-            options: { redirectTo: window.location.origin }
-        });
-        if (error) alert("Erro ao fazer login: " + error.message);
+        const btn = document.getElementById('btn-login');
+        const errorMsg = document.getElementById('error-msg');
+        
+        btn.innerHTML = "Aguarde...";
+        btn.disabled = true;
+        errorMsg.style.display = 'none';
+
+        try {
+            const { data, error } = await supabase.auth.signInWithOAuth({ 
+                provider: 'google',
+                options: {
+                    // Força a voltar para o site atual após o login
+                    redirectTo: window.location.origin + window.location.pathname
+                }
+            });
+            
+            if (error) {
+                throw error;
+            }
+        } catch (err) {
+            console.error("Falha no login:", err);
+            errorMsg.innerText = "Erro no Google: " + err.message + ". Verifique se o URL do site está liberado no Supabase.";
+            errorMsg.style.display = 'block';
+            btn.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google" width="20" style="margin-right: 6px;"> Entrar com Google`;
+            btn.disabled = false;
+        }
     }
 
     async function logout() {
@@ -317,33 +349,37 @@
     }
 
     async function buscarAlertas(userId) {
-        const { data, error } = await supabase
-            .from('alertas_player')
-            .select('*')
-            .eq('user_id', userId)
-            .eq('exibida', false);
+        try {
+            const { data, error } = await supabase
+                .from('alertas_player')
+                .select('*')
+                .eq('user_id', userId)
+                .eq('exibida', false);
 
-        if (data && data.length > 0) {
-            const container = document.getElementById('alert-container');
-            container.style.display = 'grid'; 
-            
-            data.forEach(alerta => {
-                let classTema = alerta.tipo === 'sucesso' ? 'alert-sucesso' : (alerta.tipo === 'vencimento' ? 'alert-vencimento' : 'alert-bloqueio');
-                let acaoHTML = alerta.link_acao ? `<a href="${alerta.link_acao}" target="_blank" class="btn btn--primary" style="margin-top:10px; padding: 8px 16px; min-height:36px; max-width: max-content;">Renovar Agora</a>` : '';
+            if (data && data.length > 0) {
+                const container = document.getElementById('alert-container');
+                container.style.display = 'grid'; 
                 
-                container.innerHTML += `
-                    <article class="tile col-12 ${classTema}" id="alerta-${alerta.id}">
-                        <div class="tile__body">
-                            <div class="tile__title">
-                                <span>${alerta.titulo}</span>
-                                <span class="close-btn" onclick="marcarAlertaLido('${alerta.id}')">✕</span>
+                data.forEach(alerta => {
+                    let classTema = alerta.tipo === 'sucesso' ? 'alert-sucesso' : (alerta.tipo === 'vencimento' ? 'alert-vencimento' : 'alert-bloqueio');
+                    let acaoHTML = alerta.link_acao ? `<a href="${alerta.link_acao}" target="_blank" class="btn btn--primary" style="margin-top:10px; padding: 8px 16px; min-height:36px; max-width: max-content;">Renovar Agora</a>` : '';
+                    
+                    container.innerHTML += `
+                        <article class="tile col-12 ${classTema}" id="alerta-${alerta.id}">
+                            <div class="tile__body">
+                                <div class="tile__title">
+                                    <span>${alerta.titulo}</span>
+                                    <span class="close-btn" onclick="marcarAlertaLido('${alerta.id}')">✕</span>
+                                </div>
+                                <p class="tile__text">${alerta.mensagem}</p>
+                                ${acaoHTML}
                             </div>
-                            <p class="tile__text">${alerta.mensagem}</p>
-                            ${acaoHTML}
-                        </div>
-                    </article>
-                `;
-            });
+                        </article>
+                    `;
+                });
+            }
+        } catch (err) {
+            console.error("Erro ao buscar alertas:", err);
         }
     }
 
@@ -352,7 +388,8 @@
         await supabase.from('alertas_player').update({ exibida: true }).eq('id', alertaId);
     }
 
-    checarSessao();
+    // Inicia a verificação de login assim que a página carrega
+    document.addEventListener("DOMContentLoaded", checarSessao);
   </script>
 </body>
 </html>
